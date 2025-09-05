@@ -11,7 +11,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Endurance Training",
+  title: "Momentom Training",
   description: "Dark minimalist endurance training app",
   generator: "v0.app",
 }
