@@ -11,7 +11,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Momentom Training",
+  title: "Endurance Training",
   description: "Dark minimalist endurance training app",
   generator: "v0.app",
 }
@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`font-sans ${inter.variable} antialiased`}>
+      <body className={`font-sans ${inter.variable} antialiased theme-default`}>
         <SidebarLayout>{children}</SidebarLayout>
       </body>
     </html>

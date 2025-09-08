@@ -21,7 +21,18 @@ interface MonthGridProps {
   }>
   selectedDateRange?: { start: Date; end: Date } | null
   onLifeBlockerClick?: (date: Date) => void
-  onRaceClick?: (date: Date) => void
+  onRaceClick?: (race: Race) => void
+}
+
+// Add a deterministic random number generator at the top of the file
+const deterministicRandom = (seed: string): number => {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  return Math.abs(hash) / 2147483647 // Normalize to 0-1
 }
 
 // Mock data generator
@@ -180,17 +191,19 @@ const generateMockData = (date: Date): DayAggregate | undefined => {
     }
   } else {
     // Generate varied training for other weeks
-    const random = Math.random()
+    const random = deterministicRandom(date.toISOString())
     if (random < 0.15) return undefined // 15% rest days
 
-    const sessionCount = Math.floor(Math.random() * 3) + 1
+    const sessionCount = Math.floor(deterministicRandom(`${date.toISOString()}-sessions`) * 3) + 1
     const sports = ["swim", "bike", "run", "strength"] as const
     const intensities = ["recovery", "endurance", "tempo", "threshold", "vo2"] as const
 
     for (let i = 0; i < sessionCount; i++) {
-      const sport = sports[Math.floor(Math.random() * sports.length)]
-      const intensity = intensities[Math.floor(Math.random() * intensities.length)]
-      const minutes = sport === "strength" ? Math.floor(Math.random() * 60) + 30 : Math.floor(Math.random() * 120) + 45
+      const sport = sports[Math.floor(deterministicRandom(`${date.toISOString()}-sport-${i}`) * sports.length)]
+      const intensity = intensities[Math.floor(deterministicRandom(`${date.toISOString()}-intensity-${i}`) * intensities.length)]
+      const minutes = sport === "strength" 
+        ? Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 60) + 30 
+        : Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 120) + 45
 
       sessions.push({
         id: `${date.toISOString()}-${i}`,
@@ -199,7 +212,7 @@ const generateMockData = (date: Date): DayAggregate | undefined => {
         title: `${sport.charAt(0).toUpperCase() + sport.slice(1)} Session`,
         minutes,
         intensity,
-        load: Math.floor(Math.random() * 150) + 50,
+        load: Math.floor(deterministicRandom(`${date.toISOString()}-load-${i}`) * 150) + 50,
       })
 
       bySportMinutes[sport] = (bySportMinutes[sport] || 0) + minutes
@@ -411,7 +424,7 @@ export function MonthGrid({
   }
 
   const getLifeBlockerForDate = (date: Date) => {
-    return lifeBlockers.find((blocker) => date >= blocker.startDate && date <= blocker.endDate)
+    return lifeBlockers.find((blocker) => date >= blocker.startDate && date <= blocker.endDate) || null
   }
 
   const isDateInDragSelection = (date: Date) => {
@@ -475,7 +488,7 @@ export function MonthGrid({
               : undefined
           }
           onLifeBlockerClick={onLifeBlockerClick}
-          onRaceClick={onRaceClick}
+          onRaceClick={(race) => onRaceClick?.(race)}
           raceDetails={raceDetails}
           rowIndex={week}
         />,
@@ -502,19 +515,19 @@ export function MonthGrid({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#64748B" }}></div>
+            <div className="w-3 h-3 rounded-sm bg-phase-base"></div>
             <span className="text-text-dim">Base</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#FB923C" }}></div>
+            <div className="w-3 h-3 rounded-sm bg-phase-build"></div>
             <span className="text-text-dim">Build</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#DC2626" }}></div>
+            <div className="w-3 h-3 rounded-sm bg-phase-peak"></div>
             <span className="text-text-dim">Peak</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#FACC15" }}></div>
+            <div className="w-3 h-3 rounded-sm bg-phase-taper"></div>
             <span className="text-text-dim">Taper</span>
           </div>
           <div className="flex items-center gap-1">
@@ -525,22 +538,31 @@ export function MonthGrid({
         <div className="flex items-center gap-3 text-xs">
           <span className="text-text-dim">Hold Shift + drag to create life blockers</span>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-red-500 text-white text-xs font-bold rounded flex items-center justify-center">
-              A
+            <div className="px-2 py-1 rounded text-xs font-medium border" style={{ 
+              backgroundColor: 'rgba(from var(--race-a) r g b / 0.2)', 
+              borderColor: 'var(--race-a)', 
+              color: 'var(--race-a)' 
+            }}>
+              A Race
             </div>
-            <span className="text-text-dim">A Race</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-amber-500 text-white text-xs font-bold rounded flex items-center justify-center">
-              B
+            <div className="px-2 py-1 rounded text-xs font-medium border" style={{ 
+              backgroundColor: 'rgba(from var(--race-b) r g b / 0.2)', 
+              borderColor: 'var(--race-b)', 
+              color: 'var(--race-b)' 
+            }}>
+              B Race
             </div>
-            <span className="text-text-dim">B Race</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-blue-500 text-white text-xs font-bold rounded flex items-center justify-center">
-              C
+            <div className="px-2 py-1 rounded text-xs font-medium border" style={{ 
+              backgroundColor: 'rgba(from var(--race-c) r g b / 0.2)', 
+              borderColor: 'var(--race-c)', 
+              color: 'var(--race-c)' 
+            }}>
+              C Race
             </div>
-            <span className="text-text-dim">C Race</span>
           </div>
         </div>
       </div>

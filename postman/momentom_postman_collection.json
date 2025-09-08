@@ -1,0 +1,1048 @@
+{
+  "info": {
+    "name": "Momentom MVP API (H1-H6 Complete)",
+    "_postman_id": "b8c6b4d8-2f1a-4f7c-9e2a-aaa000111222",
+    "description": "Complete API collection covering H1-H6 features:\n- H1: 424 readiness missing + bypasses\n- H2: Volume guard (clamp/block)\n- H3: Correlation headers\n- H4: Idempotency key replay\n- H5: Security/cache headers\n- H6: Authentication modes (dev/prod)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "H1: 424 Readiness Missing",
+      "item": [
+        {
+          "name": "H1.1: Missing Readiness → 424",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{missingDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 424\n\n**Headers to check:**\n- `Retry-After: 300`\n- `Warning: 199 - readiness missing`\n- `X-Request-Id: {{requestId}}`\n- `X-Explainability-Id: xpl_*`\n\n**Body:** UNPROCESSABLE_DEPENDENCY error with retry_after"
+          }
+        },
+        {
+          "name": "H1.2: Bypass via Query Parameter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview?allowMissingReadiness=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"],
+              "query": [
+                {
+                  "key": "allowMissingReadiness",
+                  "value": "1"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{missingDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Dev bypass should work despite missing readiness**"
+          }
+        },
+        {
+          "name": "H1.3: Bypass via Header",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "X-Allow-Missing-Readiness",
+                "value": "true"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{missingDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Header bypass should work despite missing readiness**"
+          }
+        },
+        {
+          "name": "H1.4: Strict Mode Enforcement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "X-Strict-Readiness",
+                "value": "true"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{missingDate}}\",\"scope\":\"week\"}"
+            },
+            "description": "**Expected Response:** HTTP 424\n\n**Strict mode should require readiness even for week scope**"
+          }
+        }
+      ]
+    },
+    {
+      "name": "H2: Volume Guard",
+      "item": [
+        {
+          "name": "H2.1: Preview with Volume Guard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"2025-09-08\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Check `data_snapshot.volume_guard` in response for:**\n- `clamped: true/false`\n- `original_volume: number`\n- `new_volume: number`\n- `delta_percent: number`"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Save adaptation_id for decision tests",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('adaptationId', response.adaptation_id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "H2.2: Decision Clamp Mode (Default)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/{{adaptationId}}/decision",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "{{adaptationId}}", "decision"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\":\"modified\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Headers to check:**\n- `X-Request-Id`\n- `X-Explainability-Id`\n\n**Body should include:**\n- `success: true`\n- `guard_applied: true/false`"
+          }
+        },
+        {
+          "name": "H2.3: Decision Block Mode → 422",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "X-Guard-Mode",
+                "value": "block"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/{{adaptationId}}/decision",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "{{adaptationId}}", "decision"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"decision\":\"modified\"}"
+            },
+            "description": "**Expected Response:** HTTP 200 or 422\n\n**If 422:**\n- Error code: `GUARDRAIL_VIOLATION`\n- Details about volume violation\n\n**If 200:**\n- Volume changes within ±20% limit"
+          }
+        }
+      ]
+    },
+    {
+      "name": "H3: Correlation Headers",
+      "item": [
+        {
+          "name": "H3.1: Custom Request ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "custom-test-12345"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Headers in Response:**\n- `X-Request-Id: custom-test-12345` (echoed back)\n- `X-Explainability-Id: xpl_*` (generated)\n\n**Both headers should appear in server logs for tracing**"
+          }
+        },
+        {
+          "name": "H3.2: Auto-Generated Request ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Headers in Response:**\n- `X-Request-Id: <auto-generated-uuid>`\n- `X-Explainability-Id: xpl_*`\n\n**Request ID should be a valid UUID format**"
+          }
+        },
+        {
+          "name": "H3.3: Headers in 424 Error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "error-424-correlation"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{missingDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 424\n\n**Headers should include:**\n- `X-Request-Id: error-424-correlation`\n- `X-Explainability-Id: xpl_*`\n- `Retry-After: 300`\n- `Warning: 199 - readiness missing`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "H4: Idempotency",
+      "item": [
+        {
+          "name": "H4.1: First Call (Idempotency-Replayed: false)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotencyKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{freshDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Headers to check:**\n- `Idempotency-Key: {{idempotencyKey}}`\n- `Idempotency-Replayed: false`\n- `X-Request-Id`\n- `X-Explainability-Id`\n\n**This is the first call with this idempotency key**"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Save first adaptation ID for comparison",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('firstAdaptationId', response.adaptation_id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "H4.2: Replay Call (Idempotency-Replayed: true)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "replay-test-{{$randomUUID}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotencyKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{freshDate}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Headers to check:**\n- `Idempotency-Key: {{idempotencyKey}}`\n- `Idempotency-Replayed: true`\n- `X-Request-Id: replay-test-*`\n- `X-Explainability-Id`\n\n**Should return SAME adaptation_id as first call**"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test idempotency worked correctly",
+                  "pm.test('Idempotency replay worked', function () {",
+                  "    const response = pm.response.json();",
+                  "    const firstId = pm.environment.get('firstAdaptationId');",
+                  "    pm.expect(response.adaptation_id).to.equal(firstId);",
+                  "});",
+                  "",
+                  "pm.test('Idempotency-Replayed header is true', function () {",
+                  "    pm.expect(pm.response.headers.get('Idempotency-Replayed')).to.equal('true');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "H4.3: Different Input (No Replay)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotencyKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"2025-09-16\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Response:** HTTP 200\n\n**Headers to check:**\n- `Idempotency-Key: {{idempotencyKey}}`\n- `Idempotency-Replayed: false` (different input data)\n\n**Should return DIFFERENT adaptation_id (new computation)**"
+          }
+        }
+      ]
+    },
+    {
+      "name": "H5: Security & Cache Headers",
+      "item": [
+        {
+          "name": "H5.1: POST Routes (no-store)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "{{athleteId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Expected Security Headers:**\n- `Cache-Control: no-store, no-cache, must-revalidate`\n- `Content-Type: application/json; charset=utf-8`\n- `X-Content-Type-Options: nosniff`\n- `Referrer-Policy: no-referrer`\n- `Cross-Origin-Resource-Policy: same-origin`\n- `Vary: X-Request-Id, X-Client-Timezone`"
+          }
+        },
+        {
+          "name": "H5.2: GET Readiness (30s cache)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/readiness",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "readiness"]
+            },
+            "description": "**Expected Cache Headers:**\n- `Cache-Control: private, max-age=30, stale-while-revalidate=30`\n\n**Expected Security Headers:**\n- `Content-Type: application/json; charset=utf-8`\n- `X-Content-Type-Options: nosniff`\n- `Referrer-Policy: no-referrer`\n- `Cross-Origin-Resource-Policy: same-origin`\n- `Vary: X-Request-Id, X-Client-Timezone`"
+          }
+        },
+        {
+          "name": "H5.3: GET Plan (60s cache)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/plan",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plan"]
+            },
+            "description": "**Expected Cache Headers:**\n- `Cache-Control: private, max-age=60, stale-while-revalidate=60`\n\n**Expected Security Headers:**\n- `Content-Type: application/json; charset=utf-8`\n- `X-Content-Type-Options: nosniff`\n- `Referrer-Policy: no-referrer`\n- `Cross-Origin-Resource-Policy: same-origin`\n- `Vary: X-Request-Id, X-Client-Timezone`"
+          }
+        },
+        {
+          "name": "H5.4: GET Sessions (60s cache)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sessions"]
+            },
+            "description": "**Expected Cache Headers:**\n- `Cache-Control: private, max-age=60, stale-while-revalidate=60`\n\n**All security headers should be present**"
+          }
+        },
+        {
+          "name": "H5.5: GET Fuel Session (60s cache)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/fuel/session/{{sessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fuel", "session", "{{sessionId}}"]
+            },
+            "description": "**Expected Cache Headers:**\n- `Cache-Control: private, max-age=60, stale-while-revalidate=60`\n\n**All security headers should be present**"
+          }
+        }
+      ]
+    },
+    {
+      "name": "H6: Authentication Modes",
+      "item": [
+        {
+          "name": "H6.1: Dev Mode - X-Athlete-Id",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "X-Athlete-Id",
+                "value": "ath_mock"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Dev Mode (AUTH_MODE=dev or unset):**\n\n**Expected Response:** HTTP 200\n\n**Dev mode should accept X-Athlete-Id header**"
+          }
+        },
+        {
+          "name": "H6.2: Dev Mode - Bearer DUMMY",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer DUMMY"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Dev Mode (AUTH_MODE=dev or unset):**\n\n**Expected Response:** HTTP 200\n\n**Dev mode should accept Bearer DUMMY token**"
+          }
+        },
+        {
+          "name": "H6.3: Dev Mode - No Auth (Fallback)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Dev Mode (AUTH_MODE=dev or unset):**\n\n**Expected Response:** HTTP 200\n\n**Dev mode should fall back to mock athlete when no auth provided**"
+          }
+        },
+        {
+          "name": "H6.4: Prod Mode - No Auth → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Prod Mode (AUTH_MODE=prod):**\n\n**Expected Response:** HTTP 401\n\n**Headers to check:**\n- `WWW-Authenticate: Bearer realm=\"momentom\"`\n- `X-Request-Id`\n- `X-Explainability-Id`\n\n**Error code:** AUTH_REQUIRED"
+          }
+        },
+        {
+          "name": "H6.5: Prod Mode - Bearer DUMMY → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer DUMMY"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Prod Mode (AUTH_MODE=prod):**\n\n**Expected Response:** HTTP 401\n\n**Headers to check:**\n- `WWW-Authenticate: Bearer realm=\"momentom\", error=\"invalid_token\"`\n- `X-Request-Id`\n- `X-Explainability-Id`\n\n**Bearer DUMMY should be rejected in production**"
+          }
+        },
+        {
+          "name": "H6.6: Prod Mode - Invalid JWT → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer aaa.bbb.ccc"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Prod Mode (AUTH_MODE=prod):**\n\n**Expected Response:** HTTP 401\n\n**Headers to check:**\n- `WWW-Authenticate: Bearer realm=\"momentom\", error=\"invalid_token\"`\n\n**Invalid JWT structure should be rejected**"
+          }
+        },
+        {
+          "name": "H6.7: Prod Mode - Valid JWT → 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adaptations/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adaptations", "preview"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"date\":\"{{today}}\",\"scope\":\"today\"}"
+            },
+            "description": "**Prod Mode (AUTH_MODE=prod):**\n\n**Expected Response:** HTTP 200\n\n**Valid JWT with 'sub' claim should be accepted**\n\nJWT payload: `{\"sub\":\"user_123\",\"exp\":9999999999}`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classic API Endpoints",
+      "item": [
+        {
+          "name": "GET /readiness",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/readiness?date={{today}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "readiness"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{today}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /plan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/plan",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "plan"]
+            }
+          }
+        },
+        {
+          "name": "GET /sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sessions?start={{weekStart}}&end={{weekEnd}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sessions"],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "{{weekStart}}"
+                },
+                {
+                  "key": "end",
+                  "value": "{{weekEnd}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /fuel/session/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "X-Client-Timezone",
+                "value": "{{timezone}}"
+              },
+              {
+                "key": "X-Request-Id",
+                "value": "{{requestId}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/fuel/session/{{sessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fuel", "session", "{{sessionId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate requestId if empty",
+          "if (!pm.environment.get('requestId') || pm.environment.get('requestId') === '') {",
+          "    pm.environment.set('requestId', pm.variables.replaceIn('{{$randomUUID}}'));",
+          "}",
+          "",
+          "// Auto-generate idempotencyKey if empty for H4 tests",
+          "if (!pm.environment.get('idempotencyKey') || pm.environment.get('idempotencyKey') === '') {",
+          "    pm.environment.set('idempotencyKey', pm.variables.replaceIn('{{$randomUUID}}'));",
+          "}",
+          "",
+          "// Set Content-Type for POST requests",
+          "if (pm.request.method === 'POST') {",
+          "    pm.request.headers.add({",
+          "        key: 'Content-Type',",
+          "        value: 'application/json'",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}"
+    }
+  ]
+}

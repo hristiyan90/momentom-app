@@ -31,7 +31,7 @@ export function QuickAddModal({ isOpen, onClose, defaultDate }: QuickAddModalPro
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-bg-surface border border-border-weak rounded-xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium text-text-1">Add Session</h2>
@@ -52,7 +52,7 @@ export function QuickAddModal({ isOpen, onClose, defaultDate }: QuickAddModalPro
                   onClick={() => setSport(sportOption)}
                   className={`px-3 py-2 text-sm rounded-lg border transition-colors capitalize ${
                     sport === sportOption
-                      ? "bg-swim text-bg-app border-swim"
+                      ? `bg-sport-${sportOption} text-white border-sport-${sportOption}`
                       : "bg-bg-raised border-border-weak text-text-2 hover:bg-bg-surface"
                   }`}
                 >
@@ -69,7 +69,7 @@ export function QuickAddModal({ isOpen, onClose, defaultDate }: QuickAddModalPro
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-bg-raised border border-border-weak rounded-lg text-text-1 placeholder-text-dim focus:outline-none focus:ring-2 focus:ring-swim"
+              className="w-full px-3 py-2 bg-bg-raised border border-border-weak rounded-lg text-text-1 placeholder-text-dim focus:outline-none focus:ring-2 focus:ring-brand"
               placeholder="e.g., Morning Run"
             />
           </div>
@@ -81,7 +81,7 @@ export function QuickAddModal({ isOpen, onClose, defaultDate }: QuickAddModalPro
               type="time"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="w-full px-3 py-2 bg-bg-raised border border-border-weak rounded-lg text-text-1 focus:outline-none focus:ring-2 focus:ring-swim"
+              className="w-full px-3 py-2 bg-bg-raised border border-border-weak rounded-lg text-text-1 focus:outline-none focus:ring-2 focus:ring-brand"
             />
           </div>
 
@@ -117,13 +117,13 @@ export function QuickAddModal({ isOpen, onClose, defaultDate }: QuickAddModalPro
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-bg-raised border border-border-weak text-text-2 rounded-lg hover:bg-bg-surface transition-colors"
+              className="btn flex-1"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-swim text-bg-app rounded-lg hover:bg-swim/90 transition-colors"
+              className="btn btn-primary flex-1"
             >
               Add Session
             </button>

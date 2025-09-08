@@ -105,7 +105,7 @@ export function WorkoutSplits({ className }: WorkoutSplitsProps) {
 
       {/* Filter Modal */}
       {showFilterModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-bg-1 rounded-lg p-6 w-96 max-w-[90vw]">
             <h3 className="text-text-1 font-medium mb-4">Filter Data</h3>
             <div className="space-y-3">

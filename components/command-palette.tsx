@@ -56,7 +56,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-32 z-50">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-start justify-center pt-32 z-50">
       <div className="bg-bg-surface border border-border-mid rounded-lg shadow-2xl w-full max-w-lg mx-4">
         {/* Search input */}
         <div className="flex items-center gap-3 p-4 border-b border-border-weak">

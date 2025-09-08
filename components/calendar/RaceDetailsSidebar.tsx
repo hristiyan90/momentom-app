@@ -20,9 +20,9 @@ interface RaceDetailsSidebarProps {
 }
 
 const raceTypeColors = {
-  A: "bg-red-500",
-  B: "bg-amber-500",
-  C: "bg-blue-500",
+  A: "bg-race-a",
+  B: "bg-race-b",
+  C: "bg-race-c",
 }
 
 const raceTypeLabels = {
@@ -56,7 +56,7 @@ export function RaceDetailsSidebar({ race, onClose }: RaceDetailsSidebarProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
 
       <div className="relative z-10 ml-auto w-96 bg-bg-app border-l border-border-weak shadow-2xl animate-in slide-in-from-right duration-300">
         <div className="flex flex-col h-full">

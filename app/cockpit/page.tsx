@@ -48,6 +48,7 @@ const mockCockpitData = {
       },
       fueling: ["Hydration only"],
       completed: true,
+      compliance: { duration: 95 },
     },
     {
       title: "Tempo Run",
@@ -259,7 +260,7 @@ const mockConditionsData = {
 }
 
 const mockWeekFocusData = {
-  hasAdaptations: true, // Toggle this to switch between states
+  hasAdaptations: true,
   weekType: "Push Week" as const,
   description: "Building volume and intensity to improve aerobic capacity",
   adaptationStatus: {
@@ -332,12 +333,10 @@ export default function CockpitPage() {
 
   const handleAcceptChanges = () => {
     console.log("Changes accepted")
-    // Update adaptation status
   }
 
   const handleModifyFurther = () => {
     console.log("Modify further requested")
-    // Open modification interface
   }
 
   const getStatusColor = (status: string) => {
@@ -370,7 +369,7 @@ export default function CockpitPage() {
 
   const AdaptationModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAdaptationModal(false)} />
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowAdaptationModal(false)} />
       <div className="relative bg-bg-surface border border-border-weak rounded-lg shadow-xl max-w-md w-full mx-4">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -383,19 +382,17 @@ export default function CockpitPage() {
             </button>
           </div>
 
-          {/* Trigger chips */}
           <div className="mb-4">
             <span className="text-text-2 text-sm mb-2 block">Adaptation Triggers:</span>
             <div className="flex flex-wrap gap-2">
               {mockAdaptationData.changes.map((_, index) => (
-                <span key={index} className="px-3 py-1 bg-amber-600 text-white text-xs rounded-full font-medium">
+                <span key={index} className="badge badge-ok">
                   {index === 0 ? "Low readiness" : "Missed session"}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Changes list */}
           <div className="mb-6">
             <span className="text-text-2 text-sm mb-2 block">Changes Made:</span>
             <div className="space-y-2">
@@ -403,7 +400,7 @@ export default function CockpitPage() {
                 <div key={index} className="flex items-center justify-between p-2 bg-bg-raised rounded">
                   <span className="text-text-1 text-sm">{change.description}</span>
                   <span
-                    className={`text-sm font-medium ${change.changeType === "negative" ? "text-red-400" : "text-green-400"}`}
+                    className={`text-sm font-medium ${change.changeType === "negative" ? "text-status-danger" : "text-status-success"}`}
                   >
                     {change.original}→{change.modified}
                   </span>
@@ -412,7 +409,6 @@ export default function CockpitPage() {
             </div>
           </div>
 
-          {/* Action buttons */}
           <div className="flex gap-3">
             <button
               onClick={() => {
@@ -423,7 +419,7 @@ export default function CockpitPage() {
                 })
                 setShowAdaptationModal(false)
               }}
-              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              className="flex-1 btn btn-primary"
             >
               Accept
             </button>
@@ -455,19 +451,19 @@ export default function CockpitPage() {
               {activeAlerts.map((alert, index) => (
                 <div
                   key={alert.id}
-                  className="flex items-center justify-between w-full px-6 py-3 bg-amber-950/50 border-l-4 border-amber-500 rounded-lg shadow-sm"
+                  className="alert-strip alert-strip-warning"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                    <span className="text-amber-200 text-sm font-medium">{alert.message}</span>
+                  <div className="alert-content">
+                    <div className="alert-indicator"></div>
+                    <span className="alert-message">{alert.message}</span>
                   </div>
                   {alert.dismissible && (
                     <button
                       onClick={() => dismissAlert(alert.id)}
-                      className="p-1 hover:bg-amber-900/50 rounded transition-colors"
+                      className="alert-button"
                       aria-label="Dismiss alert"
                     >
-                      <X className="w-4 h-4 text-amber-400 hover:text-amber-300" />
+                      <X className="alert-icon" />
                     </button>
                   )}
                 </div>
@@ -475,39 +471,39 @@ export default function CockpitPage() {
               {hasMoreAlerts && (
                 <button
                   onClick={() => setShowAllAlerts(false)}
-                  className="w-full px-6 py-2 text-amber-400 text-sm hover:text-amber-300 transition-colors text-center"
+                  className="w-full px-6 py-2 alert-dismiss text-sm text-center"
                 >
                   Show less
                 </button>
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-between w-full px-6 py-4 bg-amber-950/50 border-l-4 border-amber-500 rounded-lg shadow-sm">
-              <div className="flex items-center gap-3 flex-1">
-                <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                <span className="text-amber-200 text-sm font-medium">{visibleAlerts[currentAlertIndex]?.message}</span>
+            <div className="alert-strip alert-strip-warning">
+              <div className="alert-content flex-1">
+                <div className="alert-indicator"></div>
+                <span className="alert-message">{visibleAlerts[currentAlertIndex]?.message}</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="alert-actions">
                 {visibleAlerts.length > 1 && (
                   <div className="flex items-center gap-2">
                     <button
                       onClick={prevAlert}
-                      className="p-1 hover:bg-amber-900/50 rounded transition-colors"
+                      className="alert-button"
                       aria-label="Previous alert"
                     >
-                      <svg className="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <span className="text-amber-300 text-xs font-medium px-2 py-1 bg-amber-900/30 rounded">
+                    <span className="alert-counter">
                       {currentAlertIndex + 1}/{Math.min(activeAlerts.length, 3)}
                     </span>
                     <button
                       onClick={nextAlert}
-                      className="p-1 hover:bg-amber-900/50 rounded transition-colors"
+                      className="alert-button"
                       aria-label="Next alert"
                     >
-                      <svg className="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
@@ -516,7 +512,7 @@ export default function CockpitPage() {
                 {hasMoreAlerts && !showAllAlerts && (
                   <button
                     onClick={() => setShowAllAlerts(true)}
-                    className="text-amber-400 text-xs hover:text-amber-300 transition-colors px-2 py-1 bg-amber-900/30 rounded"
+                    className="alert-more"
                   >
                     +{activeAlerts.length - 3} more
                   </button>
@@ -524,10 +520,10 @@ export default function CockpitPage() {
                 {visibleAlerts[currentAlertIndex]?.dismissible && (
                   <button
                     onClick={() => dismissAlert(visibleAlerts[currentAlertIndex].id)}
-                    className="p-1 hover:bg-amber-900/50 rounded transition-colors"
+                    className="alert-button"
                     aria-label="Dismiss alert"
                   >
-                    <X className="w-4 h-4 text-amber-400 hover:text-amber-300" />
+                    <X className="alert-icon" />
                   </button>
                 )}
               </div>
@@ -539,14 +535,14 @@ export default function CockpitPage() {
       {mockAdaptationData.hasAdaptations && (
         <div className="w-full mb-6">
           <div
-            className="flex items-center justify-between w-full px-6 py-3 bg-amber-950/50 border-l-4 border-amber-500 rounded-lg shadow-sm cursor-pointer hover:bg-amber-950/70 transition-colors"
+            className="alert-strip alert-strip-warning cursor-pointer"
             onClick={() => setShowAdaptationModal(true)}
           >
-            <div className="flex items-center gap-3">
-              <Zap className="w-4 h-4 text-amber-500" />
-              <span className="text-amber-200 text-sm font-medium">Training adaptation applied today</span>
+            <div className="alert-content">
+              <Zap className="w-4 h-4 alert-icon" />
+              <span className="alert-message">Training adaptation applied today</span>
             </div>
-            <span className="text-amber-400 text-xs">Click to view details</span>
+            <span className="alert-dismiss">Click to view details</span>
           </div>
         </div>
       )}
@@ -644,7 +640,6 @@ export default function CockpitPage() {
             </div>
             <div className="bg-bg-surface border border-border-weak rounded-lg p-6">
               {!mockWeekFocusData.hasAdaptations ? (
-                // No adaptations state - show Week Focus
                 <>
                   <h3 className="text-text-1 font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-brand" />
@@ -652,15 +647,7 @@ export default function CockpitPage() {
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <span
-                        className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                          getWeekFocusColor(mockWeekFocusData.weekType) === "orange"
-                            ? "bg-orange-600 text-white border border-orange-700"
-                            : getWeekFocusColor(mockWeekFocusData.weekType) === "green"
-                              ? "bg-green-600 text-white border border-green-700"
-                              : "bg-red-600 text-white border border-red-700"
-                        }`}
-                      >
+                      <span className="chip chip-zone-z3">
                         {mockWeekFocusData.weekType}
                       </span>
                     </div>
@@ -668,7 +655,6 @@ export default function CockpitPage() {
                   </div>
                 </>
               ) : (
-                // Adaptations active state - show Adaptation Status
                 <>
                   <h3 className="text-text-1 font-semibold mb-3 flex items-center gap-2">
                     <Zap className="w-5 h-5 text-amber-500" />
@@ -679,7 +665,7 @@ export default function CockpitPage() {
                       <span className="text-lg font-medium text-text-1">
                         {mockWeekFocusData.adaptationStatus.focus}
                       </span>
-                      <span className="px-3 py-1 bg-amber-600 text-white border border-amber-700 rounded-full text-xs font-medium">
+                      <span className="badge badge-ok">
                         {mockWeekFocusData.adaptationStatus.triggers.join(" + ")}
                       </span>
                     </div>
@@ -690,11 +676,7 @@ export default function CockpitPage() {
                         {mockWeekFocusData.adaptationStatus.planChanges.map((change, index) => (
                           <span
                             key={index}
-                            className={`px-2 py-1 rounded text-xs font-medium ${
-                              change.type === "negative"
-                                ? "bg-red-600 text-white border border-red-700"
-                                : "bg-green-600 text-white border border-green-700"
-                            }`}
+                            className={`badge ${change.type === "negative" ? "badge-critical" : "badge-good"}`}
                           >
                             {change.text}
                           </span>
@@ -709,7 +691,7 @@ export default function CockpitPage() {
                     <div className="space-y-3 pt-2 border-t border-border-weak">
                       <button
                         onClick={() => setShowAdaptationModal(true)}
-                        className="w-full px-4 py-2.5 bg-brand text-white rounded-lg hover:bg-brand-hover transition-colors text-sm font-medium"
+                        className="w-full btn btn-primary"
                       >
                         View Plan Diff
                       </button>
@@ -723,7 +705,7 @@ export default function CockpitPage() {
                               timestamp: new Date().toISOString(),
                             })
                           }}
-                          className="flex-1 px-3 py-2 bg-green-600 text-white border border-green-700 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                          className="flex-1 btn btn-primary"
                         >
                           Accept Changes
                         </button>
@@ -813,28 +795,14 @@ export default function CockpitPage() {
               </div>
 
               <div className="flex gap-1 mb-3">
-                <span
-                  className={`px-2 py-1 text-xs rounded-md font-medium ${
-                    mockConditionsData.heat === "Low"
-                      ? "bg-green-600 text-white border border-green-700"
-                      : mockConditionsData.heat === "Med"
-                        ? "bg-amber-600 text-white border border-amber-700"
-                        : "bg-red-600 text-white border border-red-700"
-                  }`}
-                >
+                <span className="badge badge-good">
                   Heat {mockConditionsData.heat}
                 </span>
-                <span
-                  className={`px-2 py-1 text-xs rounded-md font-medium ${
-                    mockConditionsData.windStatus === "OK"
-                      ? "bg-green-600 text-white border border-green-700"
-                      : "bg-amber-600 text-white border border-amber-700"
-                  }`}
-                >
+                <span className="badge badge-good">
                   Wind {mockConditionsData.windStatus}
                 </span>
                 {mockConditionsData.aqi && (
-                  <span className="px-2 py-1 bg-red-600 text-white border border-red-700 text-xs rounded-md font-medium">
+                  <span className="badge badge-critical">
                     AQI {mockConditionsData.aqi}
                   </span>
                 )}

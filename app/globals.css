@@ -1,72 +1,303 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  /* Custom sport colors for the endurance app */
-  --sport-swim: #38bdf8;
-  --sport-bike: #ec4899;
-  --sport-run: #4f46e5;
+/* Theme Wrapper System */
+.theme-default {
+  /* Brand / Accent */
+  --brand: #22D3EE;
+  --brand-hover: #0EA5B7;
+  --brand-pressed: #0891B2;
+  --focus: #38BDF8;
 
-  /* Added zone color variables for zone segment bars */
-  --zone-1: #22d3ee; /* Cyan - Active Recovery */
-  --zone-2: #3b82f6; /* Blue - Endurance */
-  --zone-3: #6366f1; /* Indigo - Tempo */
-  --zone-4: #8b5cf6; /* Purple - Threshold */
-  --zone-5: #ec4899; /* Pink - VO2 Max */
+  /* Sport Identity */
+  --sport-swim: #0EA5B7;
+  --sport-bike: #FF3EB5;
+  --sport-run: #00E6B8;
 
-  /* Custom app colors */
-  --bg-app: #0b0f14;
-  --bg-surface: #11161c;
-  --bg-raised: #151c24;
-  --text-1: #e6eaf0;
-  --text-2: #a9b3be;
-  --text-dim: #6b7683;
-  --border-weak: #1e2630;
-  --border-mid: #2a3542;
-  --swim: #38bdf8;
-  --bike: #ec4899;
-  --run: #4f46e5;
-  --success: #2bd887;
-  --warn: #ffb020;
-  --danger: #ff5a5a;
-  --info: #35a2ff;
+  /* Training Phases */
+  --phase-base: #2E8B57;      /* Green */
+  --phase-build: #FFA500;     /* Orange */
+  --phase-peak: #DC143C;      /* Red */
+  --phase-taper: #20B2AA;     /* Teal */
+
+  /* Race Priorities */
+  --race-a: #FF4500;          /* Orange */
+  --race-b: #FFB800;          /* Yellow */
+  --race-c: #A9A9A9;          /* Grey */
+
+  /* Training Zones */
+  --zone-1: #22D3EE;
+  --zone-2: #3B82F6;
+  --zone-3: #8B5CF6;
+  --zone-4: #EC4899;
+  --zone-5: #EF4444;
+
+  /* Status Indicators */
+  --status-success: #22C55E;
+  --status-caution: #FACC15;
+  --status-alert: #FB923C;
+  --status-danger: #DC2626;
+  --status-info: #3B82F6;
+
+  /* Load Severity */
+  --load-low: #64748B;
+  --load-elevated: #FACC15;
+  --load-high: #FB923C;
+  --load-extreme: #DC2626;
+
+  /* Neutrals */
+  --bg: #0B0F14;
+  --surface: #10151C;
+  --surface-2: #161C24;
+  --border: #1F2937;
+  --text-primary: #E6EAF2;
+  --text-secondary: #9AA6B2;
+  --muted: #64748B;
+  --overlay: rgba(0, 0, 0, 0.6);
+
+  /* Chart Palette */
+  --chart-1: #22D3EE;
+  --chart-2: #0EA5B7;
+  --chart-3: #FF3EB5;
+  --chart-4: #00E6B8;
+  --chart-5: #F59E0B;
+  --chart-6: #F43F5E;
+  --chart-grid: #223041;
+  --chart-axis: #7C8A9A;
+
+  /* Legacy variables for compatibility */
+  --bg-app: #0B0F14;
+  --bg-surface: #10151C;
+  --bg-raised: #161C24;
+  --text-1: #E6EAF2;
+  --text-2: #9AA6B2;
+  --text-dim: #64748B;
+  --border-weak: #1F2937;
+  --border-mid: #1F2937;
+  --swim: #0EA5B7;
+  --bike: #FF3EB5;
+  --run: #00E6B8;
+  --success: #22C55E;
+  --warn: #FACC15;
+  --danger: #DC2626;
+  --info: #3B82F6;
 
   /* Default shadcn/ui variables */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --background: var(--bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand);
+  --primary-foreground: var(--text-primary);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--muted);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--status-danger);
+  --destructive-foreground: var(--text-primary);
+  --border: var(--border);
+  --input: var(--border);
+  --ring: var(--focus);
+  --chart-1: var(--chart-1);
+  --chart-2: var(--chart-2);
+  --chart-3: var(--chart-3);
+  --chart-4: var(--chart-4);
+  --chart-5: var(--chart-5);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--text-primary);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--focus);
+}
+
+/* Alternative Theme Variations */
+.theme-contrast {
+  /* Brand / Accent - High contrast version */
+  --brand: #00D4FF;
+  --brand-hover: #0099CC;
+  --brand-pressed: #006699;
+  --focus: #00D4FF;
+  
+  /* Sport Identity - More vibrant */
+  --sport-swim: #0066CC;
+  --sport-bike: #FF1493;
+  --sport-run: #00FF88;
+  
+  /* Training Zones - Higher contrast */
+  --zone-1: #00D4FF;
+  --zone-2: #0066FF;
+  --zone-3: #9900FF;
+  --zone-4: #FF00AA;
+  --zone-5: #FF0000;
+  
+  /* Status Indicators - More saturated */
+  --status-success: #00FF00;
+  --status-caution: #FFFF00;
+  --status-alert: #FF8800;
+  --status-danger: #FF0000;
+  --status-info: #00D4FF;
+  
+  /* Load Severity - Brighter */
+  --load-low: #888888;
+  --load-elevated: #FFFF00;
+  --load-high: #FF8800;
+  --load-extreme: #FF0000;
+  
+  /* Chart Palette - Vibrant */
+  --chart-1: #00D4FF;
+  --chart-2: #0066FF;
+  --chart-3: #9900FF;
+  --chart-4: #00FF88;
+  --chart-5: #FF8800;
+  --chart-6: #FF0000;
+  --chart-grid: #333333;
+  --chart-axis: #AAAAAA;
+  
+  /* Legacy variables */
+  --bg-app: #0B0F14;
+  --bg-surface: #10151C;
+  --bg-raised: #161C24;
+  --text-1: #FFFFFF;
+  --text-2: #CCCCCC;
+  --text-dim: #888888;
+  --border-weak: #333333;
+  --border-mid: #444444;
+  --swim: #0066CC;
+  --bike: #FF1493;
+  --run: #00FF88;
+  --success: #00FF00;
+  --warn: #FFFF00;
+  --danger: #FF0000;
+  --info: #00D4FF;
+  
+  /* Default shadcn/ui variables */
+  --background: var(--bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand);
+  --primary-foreground: var(--text-primary);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--muted);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--status-danger);
+  --destructive-foreground: var(--text-primary);
+  --border: var(--border);
+  --input: var(--border);
+  --ring: var(--focus);
+  --radius: 0.5rem;
+  --sidebar-background: var(--surface);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--text-primary);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--focus);
+}
+
+.theme-alt {
+  /* Brand / Accent - Alternative color scheme */
+  --brand: #FF6B35;
+  --brand-hover: #E55A2B;
+  --brand-pressed: #CC4A21;
+  --focus: #FF6B35;
+  
+  /* Sport Identity - Warm tones */
+  --sport-swim: #1E90FF;
+  --sport-bike: #FF8C00;
+  --sport-run: #32CD32;
+  
+  /* Training Zones - Warm palette */
+  --zone-1: #87CEEB;
+  --zone-2: #4169E1;
+  --zone-3: #9370DB;
+  --zone-4: #FF69B4;
+  --zone-5: #FF4500;
+  
+  /* Status Indicators - Warm colors */
+  --status-success: #32CD32;
+  --status-caution: #FFD700;
+  --status-alert: #FF8C00;
+  --status-danger: #FF4500;
+  --status-info: #1E90FF;
+  
+  /* Load Severity - Warm tones */
+  --load-low: #708090;
+  --load-elevated: #FFD700;
+  --load-high: #FF8C00;
+  --load-extreme: #FF4500;
+  
+  /* Chart Palette - Warm */
+  --chart-1: #87CEEB;
+  --chart-2: #4169E1;
+  --chart-3: #9370DB;
+  --chart-4: #32CD32;
+  --chart-5: #FF8C00;
+  --chart-6: #FF4500;
+  --chart-grid: #2F2F2F;
+  --chart-axis: #8A8A8A;
+  
+  /* Legacy variables */
+  --bg-app: #0B0F14;
+  --bg-surface: #10151C;
+  --bg-raised: #161C24;
+  --text-1: #F5F5DC;
+  --text-2: #D2B48C;
+  --text-dim: #8A8A8A;
+  --border-weak: #2F2F2F;
+  --border-mid: #3F3F3F;
+  --swim: #1E90FF;
+  --bike: #FF8C00;
+  --run: #32CD32;
+  --success: #32CD32;
+  --warn: #FFD700;
+  --danger: #FF4500;
+  --info: #1E90FF;
+  
+  /* Default shadcn/ui variables */
+  --background: var(--bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand);
+  --primary-foreground: var(--text-primary);
+  --secondary: var(--surface);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--muted);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--status-danger);
+  --destructive-foreground: var(--text-primary);
+  --border: var(--border);
+  --input: var(--border);
+  --ring: var(--focus);
+  --radius: 0.5rem;
+  --sidebar-background: var(--surface);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--text-primary);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--focus);
 }
 
 .dark {
@@ -105,21 +336,69 @@
 }
 
 @theme inline {
-  /* Custom sport color mappings */
+  /* Brand colors */
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-pressed: var(--brand-pressed);
+  --color-focus: var(--focus);
+
+  /* Sport colors */
   --color-sport-swim: var(--sport-swim);
   --color-sport-bike: var(--sport-bike);
   --color-sport-run: var(--sport-run);
-  --color-swim: var(--swim);
-  --color-bike: var(--bike);
-  --color-run: var(--run);
 
-  /* Added zone color mappings for Tailwind CSS */
+  /* Training phase colors */
+  --color-phase-base: var(--phase-base);
+  --color-phase-build: var(--phase-build);
+  --color-phase-peak: var(--phase-peak);
+  --color-phase-taper: var(--phase-taper);
+
+  /* Race priority colors */
+  --color-race-a: var(--race-a);
+  --color-race-b: var(--race-b);
+  --color-race-c: var(--race-c);
+
+  /* Zone colors */
   --color-zone-1: var(--zone-1);
   --color-zone-2: var(--zone-2);
   --color-zone-3: var(--zone-3);
   --color-zone-4: var(--zone-4);
   --color-zone-5: var(--zone-5);
 
+  /* Status colors */
+  --color-status-success: var(--status-success);
+  --color-status-caution: var(--status-caution);
+  --color-status-alert: var(--status-alert);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
+
+  /* Load colors */
+  --color-load-low: var(--load-low);
+  --color-load-elevated: var(--load-elevated);
+  --color-load-high: var(--load-high);
+  --color-load-extreme: var(--load-extreme);
+
+  /* Neutrals */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-muted: var(--muted);
+  --color-overlay: var(--overlay);
+
+  /* Chart colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+
+  /* Legacy compatibility */
   --color-bg-app: var(--bg-app);
   --color-bg-surface: var(--bg-surface);
   --color-bg-raised: var(--bg-raised);
@@ -128,6 +407,9 @@
   --color-text-dim: var(--text-dim);
   --color-border-weak: var(--border-weak);
   --color-border-mid: var(--border-mid);
+  --color-swim: var(--swim);
+  --color-bike: var(--bike);
+  --color-run: var(--run);
   --color-success: var(--success);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
@@ -178,5 +460,931 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Base chips/buttons/badges */
+  .chip {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-brand text-white hover:bg-brand-hover focus-visible:ring-brand;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all duration-200;
+  }
+
+  .badge-info {
+    @apply text-status-info border-status-info/40;
+    background-color: rgba(from var(--status-info) r g b / 0.2);
+  }
+  .badge-info:hover {
+    background-color: rgba(from var(--status-info) r g b / 0.4);
+  }
+
+  .badge-good {
+    @apply text-status-success border-status-success/40;
+    background-color: rgba(from var(--status-success) r g b / 0.2);
+  }
+  .badge-good:hover {
+    background-color: rgba(from var(--status-success) r g b / 0.4);
+  }
+
+  .badge-ok {
+    @apply text-status-caution border-status-caution/40;
+    background-color: rgba(from var(--status-caution) r g b / 0.2);
+  }
+  .badge-ok:hover {
+    background-color: rgba(from var(--status-caution) r g b / 0.4);
+  }
+
+  .badge-low {
+    @apply text-status-alert border-status-alert/40;
+    background-color: rgba(from var(--status-alert) r g b / 0.2);
+  }
+  .badge-low:hover {
+    background-color: rgba(from var(--status-alert) r g b / 0.4);
+  }
+
+  .badge-critical {
+    @apply text-status-danger border-status-danger/40;
+    background-color: rgba(from var(--status-danger) r g b / 0.2);
+  }
+  .badge-critical:hover {
+    background-color: rgba(from var(--status-danger) r g b / 0.4);
+  }
+
+  /* Sports */
+  .chip-sport-swim {
+    @apply text-sport-swim border-sport-swim/40;
+    background-color: rgba(from var(--sport-swim) r g b / 0.2);
+  }
+  .chip-sport-swim:hover {
+    background-color: rgba(from var(--sport-swim) r g b / 0.4);
+  }
+
+  .chip-sport-bike {
+    @apply text-sport-bike border-sport-bike/40;
+    background-color: rgba(from var(--sport-bike) r g b / 0.2);
+  }
+  .chip-sport-bike:hover {
+    background-color: rgba(from var(--sport-bike) r g b / 0.4);
+  }
+
+  .chip-sport-run {
+    @apply text-sport-run border-sport-run/40;
+    background-color: rgba(from var(--sport-run) r g b / 0.2);
+  }
+  .chip-sport-run:hover {
+    background-color: rgba(from var(--sport-run) r g b / 0.4);
+  }
+
+  /* Zones */
+  .chip-zone-z1 {
+    @apply text-zone-1 border-zone-1/40;
+    background-color: rgba(from var(--zone-1) r g b / 0.2);
+  }
+  .chip-zone-z1:hover {
+    background-color: rgba(from var(--zone-1) r g b / 0.4);
+  }
+
+  .chip-zone-z2 {
+    @apply text-zone-2 border-zone-2/40;
+    background-color: rgba(from var(--zone-2) r g b / 0.2);
+  }
+  .chip-zone-z2:hover {
+    background-color: rgba(from var(--zone-2) r g b / 0.4);
+  }
+
+  .chip-zone-z3 {
+    @apply text-zone-3 border-zone-3/40;
+    background-color: rgba(from var(--zone-3) r g b / 0.2);
+  }
+  .chip-zone-z3:hover {
+    background-color: rgba(from var(--zone-3) r g b / 0.4);
+  }
+
+  .chip-zone-z4 {
+    @apply text-zone-4 border-zone-4/40;
+    background-color: rgba(from var(--zone-4) r g b / 0.2);
+  }
+  .chip-zone-z4:hover {
+    background-color: rgba(from var(--zone-4) r g b / 0.4);
+  }
+
+  .chip-zone-z5 {
+    @apply text-zone-5 border-zone-5/40;
+    background-color: rgba(from var(--zone-5) r g b / 0.2);
+  }
+  .chip-zone-z5:hover {
+    background-color: rgba(from var(--zone-5) r g b / 0.4);
+  }
+
+  /* Calendar dots */
+  .calendar-dot {
+    @apply w-2 h-2 rounded-full border border-current;
+  }
+
+  /* Intensity bars */
+  .intensity-bar {
+    @apply w-full h-2 rounded-full bg-border;
+  }
+
+  .intensity-segment {
+    @apply inline-block h-full rounded-full;
+  }
+
+  .intensity-segment[data-zone="1"] {
+    @apply bg-zone-1;
+  }
+
+  .intensity-segment[data-zone="2"] {
+    @apply bg-zone-2;
+  }
+
+  .intensity-segment[data-zone="3"] {
+    @apply bg-zone-3;
+  }
+
+  .intensity-segment[data-zone="4"] {
+    @apply bg-zone-4;
+  }
+
+  .intensity-segment[data-zone="5"] {
+    @apply bg-zone-5;
+  }
+
+  /* Focus */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2;
+  }
+
+  /* Color utilities for Tailwind */
+  .text-brand { color: var(--brand); }
+  .bg-brand { background-color: var(--brand); }
+  .border-brand { border-color: var(--brand); }
+
+  .text-brand-hover { color: var(--brand-hover); }
+  .bg-brand-hover { background-color: var(--brand-hover); }
+  .border-brand-hover { border-color: var(--brand-hover); }
+
+  .text-brand-pressed { color: var(--brand-pressed); }
+  .bg-brand-pressed { background-color: var(--brand-pressed); }
+  .border-brand-pressed { border-color: var(--brand-pressed); }
+
+  .text-focus { color: var(--focus); }
+  .bg-focus { background-color: var(--focus); }
+  .border-focus { border-color: var(--focus); }
+
+  .text-sport-swim { color: var(--sport-swim); }
+  .bg-sport-swim { background-color: var(--sport-swim); }
+  .border-sport-swim { border-color: var(--sport-swim); }
+
+  .text-sport-bike { color: var(--sport-bike); }
+  .bg-sport-bike { background-color: var(--sport-bike); }
+  .border-sport-bike { border-color: var(--sport-bike); }
+
+  .text-sport-run { color: var(--sport-run); }
+  .bg-sport-run { background-color: var(--sport-run); }
+  .border-sport-run { border-color: var(--sport-run); }
+
+  .text-zone-1 { color: var(--zone-1); }
+  .bg-zone-1 { background-color: var(--zone-1); }
+  .border-zone-1 { border-color: var(--zone-1); }
+
+  .text-zone-2 { color: var(--zone-2); }
+  .bg-zone-2 { background-color: var(--zone-2); }
+  .border-zone-2 { border-color: var(--zone-2); }
+
+  .text-zone-3 { color: var(--zone-3); }
+  .bg-zone-3 { background-color: var(--zone-3); }
+  .border-zone-3 { border-color: var(--zone-3); }
+
+  .text-zone-4 { color: var(--zone-4); }
+  .bg-zone-4 { background-color: var(--zone-4); }
+  .border-zone-4 { border-color: var(--zone-4); }
+
+  .text-zone-5 { color: var(--zone-5); }
+  .bg-zone-5 { background-color: var(--zone-5); }
+  .border-zone-5 { border-color: var(--zone-5); }
+
+  .text-zone-5a { color: var(--zone-5a); }
+  .bg-zone-5a { background-color: var(--zone-5a); }
+  .border-zone-5a { border-color: var(--zone-5a); }
+
+  .text-zone-5b { color: var(--zone-5b); }
+  .bg-zone-5b { background-color: var(--zone-5b); }
+  .border-zone-5b { border-color: var(--zone-5b); }
+
+  .text-zone-5c { color: var(--zone-5c); }
+  .bg-zone-5c { background-color: var(--zone-5c); }
+  .border-zone-5c { border-color: var(--zone-5c); }
+
+  .text-status-info { color: var(--status-info); }
+  .bg-status-info { background-color: var(--status-info); }
+  .border-status-info { border-color: var(--status-info); }
+
+  .text-status-success { color: var(--status-success); }
+  .bg-status-success { background-color: var(--status-success); }
+  .border-status-success { border-color: var(--status-success); }
+
+  .text-status-caution { color: var(--status-caution); }
+  .bg-status-caution { background-color: var(--status-caution); }
+  .border-status-caution { border-color: var(--status-caution); }
+
+  .text-status-alert { color: var(--status-alert); }
+  .bg-status-alert { background-color: var(--status-alert); }
+  .border-status-alert { border-color: var(--status-alert); }
+
+  .text-status-danger { color: var(--status-danger); }
+  .bg-status-danger { background-color: var(--status-danger); }
+  .border-status-danger { border-color: var(--status-danger); }
+
+  .text-load-low { color: var(--load-low); }
+  .bg-load-low { background-color: var(--load-low); }
+  .border-load-low { border-color: var(--load-low); }
+
+  .text-load-med { color: var(--load-med); }
+  .bg-load-med { background-color: var(--load-med); }
+  .border-load-med { border-color: var(--load-med); }
+
+  .text-load-high { color: var(--load-high); }
+  .bg-load-high { background-color: var(--load-high); }
+  .border-load-high { border-color: var(--load-high); }
+
+  .text-bg { color: var(--bg); }
+  .bg-bg { background-color: var(--bg); }
+  .border-bg { border-color: var(--bg); }
+
+  .text-bg-elev { color: var(--bg-elev); }
+  .bg-bg-elev { background-color: var(--bg-elev); }
+  .border-bg-elev { border-color: var(--bg-elev); }
+
+  .text-bg-surface { color: var(--bg-surface); }
+  .bg-bg-surface { background-color: var(--bg-surface); }
+  .border-bg-surface { border-color: var(--bg-surface); }
+
+  .text-bg-raised { color: var(--bg-raised); }
+  .bg-bg-raised { background-color: var(--bg-raised); }
+  .border-bg-raised { border-color: var(--bg-raised); }
+
+  .text-bg-app { color: var(--bg-app); }
+  .bg-bg-app { background-color: var(--bg-app); }
+  .border-bg-app { border-color: var(--bg-app); }
+
+  .text-bg-weak { color: var(--bg-weak); }
+  .bg-bg-weak { background-color: var(--bg-weak); }
+  .border-bg-weak { border-color: var(--bg-weak); }
+
+  .text-bg-2 { color: var(--bg-2); }
+  .bg-bg-2 { background-color: var(--bg-2); }
+  .border-bg-2 { border-color: var(--bg-2); }
+
+  .text-text-primary { color: var(--text-primary); }
+  .text-text-secondary { color: var(--text-secondary); }
+  .text-text-tertiary { color: var(--text-tertiary); }
+  .text-text-quaternary { color: var(--text-quaternary); }
+  .text-text-dim { color: var(--text-dim); }
+
+  .text-text-1 { color: var(--text-1); }
+  .text-text-2 { color: var(--text-2); }
+  .text-text-3 { color: var(--text-3); }
+
+  .text-border { color: var(--border); }
+  .bg-border { background-color: var(--border); }
+  .border-border { border-color: var(--border); }
+
+  .text-border-weak { color: var(--border-weak); }
+  .bg-border-weak { background-color: var(--border-weak); }
+  .border-border-weak { border-color: var(--border-weak); }
+
+  .text-border-strong { color: var(--border-strong); }
+  .bg-border-strong { background-color: var(--border-strong); }
+  .border-border-strong { border-color: var(--border-strong); }
+
+  .text-border-1 { color: var(--border-1); }
+  .bg-border-1 { background-color: var(--border-1); }
+  .border-border-1 { border-color: var(--border-1); }
+
+  .text-border-2 { color: var(--border-2); }
+  .bg-border-2 { background-color: var(--border-2); }
+  .border-border-2 { border-color: var(--border-2); }
+
+  .text-border-3 { color: var(--border-3); }
+  .bg-border-3 { background-color: var(--border-3); }
+  .border-border-3 { border-color: var(--border-3); }
+
+  .text-border-4 { color: var(--border-4); }
+  .bg-border-4 { background-color: var(--border-4); }
+  .border-border-4 { border-color: var(--border-4); }
+
+  .text-border-5 { color: var(--border-5); }
+  .bg-border-5 { background-color: var(--border-5); }
+  .border-border-5 { border-color: var(--border-5); }
+
+  .text-border-6 { color: var(--border-6); }
+  .bg-border-6 { background-color: var(--border-6); }
+  .border-border-6 { border-color: var(--border-6); }
+
+  .text-border-7 { color: var(--border-7); }
+  .bg-border-7 { background-color: var(--border-7); }
+  .border-border-7 { border-color: var(--border-7); }
+
+  .text-border-8 { color: var(--border-8); }
+  .bg-border-8 { background-color: var(--border-8); }
+  .border-border-8 { border-color: var(--border-8); }
+
+  .text-border-9 { color: var(--border-9); }
+  .bg-border-9 { background-color: var(--border-9); }
+  .border-border-9 { border-color: var(--border-9); }
+
+  .text-border-10 { color: var(--border-10); }
+  .bg-border-10 { background-color: var(--border-10); }
+  .border-border-10 { border-color: var(--border-10); }
+
+  .text-border-11 { color: var(--border-11); }
+  .bg-border-11 { background-color: var(--border-11); }
+  .border-border-11 { border-color: var(--border-11); }
+
+  .text-border-12 { color: var(--border-12); }
+  .bg-border-12 { background-color: var(--border-12); }
+  .border-border-12 { border-color: var(--border-12); }
+
+  .text-border-13 { color: var(--border-13); }
+  .bg-border-13 { background-color: var(--border-13); }
+  .border-border-13 { border-color: var(--border-13); }
+
+  .text-border-14 { color: var(--border-14); }
+  .bg-border-14 { background-color: var(--border-14); }
+  .border-border-14 { border-color: var(--border-14); }
+
+  .text-border-15 { color: var(--border-15); }
+  .bg-border-15 { background-color: var(--border-15); }
+  .border-border-15 { border-color: var(--border-15); }
+
+  .text-border-16 { color: var(--border-16); }
+  .bg-border-16 { background-color: var(--border-16); }
+  .border-border-16 { border-color: var(--border-16); }
+
+  .text-border-17 { color: var(--border-17); }
+  .bg-border-17 { background-color: var(--border-17); }
+  .border-border-17 { border-color: var(--border-17); }
+
+  .text-border-18 { color: var(--border-18); }
+  .bg-border-18 { background-color: var(--border-18); }
+  .border-border-18 { border-color: var(--border-18); }
+
+  .text-border-19 { color: var(--border-19); }
+  .bg-border-19 { background-color: var(--border-19); }
+  .border-border-19 { border-color: var(--border-19); }
+
+  .text-border-20 { color: var(--border-20); }
+  .bg-border-20 { background-color: var(--border-20); }
+  .border-border-20 { border-color: var(--border-20); }
+
+  .text-border-21 { color: var(--border-21); }
+  .bg-border-21 { background-color: var(--border-21); }
+  .border-border-21 { border-color: var(--border-21); }
+
+  .text-border-22 { color: var(--border-22); }
+  .bg-border-22 { background-color: var(--border-22); }
+  .border-border-22 { border-color: var(--border-22); }
+
+  .text-border-23 { color: var(--border-23); }
+  .bg-border-23 { background-color: var(--border-23); }
+  .border-border-23 { border-color: var(--border-23); }
+
+  .text-border-24 { color: var(--border-24); }
+  .bg-border-24 { background-color: var(--border-24); }
+  .border-border-24 { border-color: var(--border-24); }
+
+  .text-border-25 { color: var(--border-25); }
+  .bg-border-25 { background-color: var(--border-25); }
+  .border-border-25 { border-color: var(--border-25); }
+
+  .text-border-26 { color: var(--border-26); }
+  .bg-border-26 { background-color: var(--border-26); }
+  .border-border-26 { border-color: var(--border-26); }
+
+  .text-border-27 { color: var(--border-27); }
+  .bg-border-27 { background-color: var(--border-27); }
+  .border-border-27 { border-color: var(--border-27); }
+
+  .text-border-28 { color: var(--border-28); }
+  .bg-border-28 { background-color: var(--border-28); }
+  .border-border-28 { border-color: var(--border-28); }
+
+  .text-border-29 { color: var(--border-29); }
+  .bg-border-29 { background-color: var(--border-29); }
+  .border-border-29 { border-color: var(--border-29); }
+
+  .text-border-30 { color: var(--border-30); }
+  .bg-border-30 { background-color: var(--border-30); }
+  .border-border-30 { border-color: var(--border-30); }
+
+  .text-border-31 { color: var(--border-31); }
+  .bg-border-31 { background-color: var(--border-31); }
+  .border-border-31 { border-color: var(--border-31); }
+
+  .text-border-32 { color: var(--border-32); }
+  .bg-border-32 { background-color: var(--border-32); }
+  .border-border-32 { border-color: var(--border-32); }
+
+  .text-border-33 { color: var(--border-33); }
+  .bg-border-33 { background-color: var(--border-33); }
+  .border-border-33 { border-color: var(--border-33); }
+
+  .text-border-34 { color: var(--border-34); }
+  .bg-border-34 { background-color: var(--border-34); }
+  .border-border-34 { border-color: var(--border-34); }
+
+  .text-border-35 { color: var(--border-35); }
+  .bg-border-35 { background-color: var(--border-35); }
+  .border-border-35 { border-color: var(--border-35); }
+
+  .text-border-36 { color: var(--border-36); }
+  .bg-border-36 { background-color: var(--border-36); }
+  .border-border-36 { border-color: var(--border-36); }
+
+  .text-border-37 { color: var(--border-37); }
+  .bg-border-37 { background-color: var(--border-37); }
+  .border-border-37 { border-color: var(--border-37); }
+
+  .text-border-38 { color: var(--border-38); }
+  .bg-border-38 { background-color: var(--border-38); }
+  .border-border-38 { border-color: var(--border-38); }
+
+  .text-border-39 { color: var(--border-39); }
+  .bg-border-39 { background-color: var(--border-39); }
+  .border-border-39 { border-color: var(--border-39); }
+
+  .text-border-40 { color: var(--border-40); }
+  .bg-border-40 { background-color: var(--border-40); }
+  .border-border-40 { border-color: var(--border-40); }
+
+  .text-border-41 { color: var(--border-41); }
+  .bg-border-41 { background-color: var(--border-41); }
+  .border-border-41 { border-color: var(--border-41); }
+
+  .text-border-42 { color: var(--border-42); }
+  .bg-border-42 { background-color: var(--border-42); }
+  .border-border-42 { border-color: var(--border-42); }
+
+  .text-border-43 { color: var(--border-43); }
+  .bg-border-43 { background-color: var(--border-43); }
+  .border-border-43 { border-color: var(--border-43); }
+
+  .text-border-44 { color: var(--border-44); }
+  .bg-border-44 { background-color: var(--border-44); }
+  .border-border-44 { border-color: var(--border-44); }
+
+  .text-border-45 { color: var(--border-45); }
+  .bg-border-45 { background-color: var(--border-45); }
+  .border-border-45 { border-color: var(--border-45); }
+
+  .text-border-46 { color: var(--border-46); }
+  .bg-border-46 { background-color: var(--border-46); }
+  .border-border-46 { border-color: var(--border-46); }
+
+  .text-border-47 { color: var(--border-47); }
+  .bg-border-47 { background-color: var(--border-47); }
+  .border-border-47 { border-color: var(--border-47); }
+
+  .text-border-48 { color: var(--border-48); }
+  .bg-border-48 { background-color: var(--border-48); }
+  .border-border-48 { border-color: var(--border-48); }
+
+  .text-border-49 { color: var(--border-49); }
+  .bg-border-49 { background-color: var(--border-49); }
+  .border-border-49 { border-color: var(--border-49); }
+
+  .text-border-50 { color: var(--border-50); }
+  .bg-border-50 { background-color: var(--border-50); }
+  .border-border-50 { border-color: var(--border-50); }
+
+  .text-border-51 { color: var(--border-51); }
+  .bg-border-51 { background-color: var(--border-51); }
+  .border-border-51 { border-color: var(--border-51); }
+
+  .text-border-52 { color: var(--border-52); }
+  .bg-border-52 { background-color: var(--border-52); }
+  .border-border-52 { border-color: var(--border-52); }
+
+  .text-border-53 { color: var(--border-53); }
+  .bg-border-53 { background-color: var(--border-53); }
+  .border-border-53 { border-color: var(--border-53); }
+
+  .text-border-54 { color: var(--border-54); }
+  .bg-border-54 { background-color: var(--border-54); }
+  .border-border-54 { border-color: var(--border-54); }
+
+  .text-border-55 { color: var(--border-55); }
+  .bg-border-55 { background-color: var(--border-55); }
+  .border-border-55 { border-color: var(--border-55); }
+
+  .text-border-56 { color: var(--border-56); }
+  .bg-border-56 { background-color: var(--border-56); }
+  .border-border-56 { border-color: var(--border-56); }
+
+  .text-border-57 { color: var(--border-57); }
+  .bg-border-57 { background-color: var(--border-57); }
+  .border-border-57 { border-color: var(--border-57); }
+
+  .text-border-58 { color: var(--border-58); }
+  .bg-border-58 { background-color: var(--border-58); }
+  .border-border-58 { border-color: var(--border-58); }
+
+  .text-border-59 { color: var(--border-59); }
+  .bg-border-59 { background-color: var(--border-59); }
+  .border-border-59 { border-color: var(--border-59); }
+
+  .text-border-60 { color: var(--border-60); }
+  .bg-border-60 { background-color: var(--border-60); }
+  .border-border-60 { border-color: var(--border-60); }
+
+  .text-border-61 { color: var(--border-61); }
+  .bg-border-61 { background-color: var(--border-61); }
+  .border-border-61 { border-color: var(--border-61); }
+
+  .text-border-62 { color: var(--border-62); }
+  .bg-border-62 { background-color: var(--border-62); }
+  .border-border-62 { border-color: var(--border-62); }
+
+  .text-border-63 { color: var(--border-63); }
+  .bg-border-63 { background-color: var(--border-63); }
+  .border-border-63 { border-color: var(--border-63); }
+
+  .text-border-64 { color: var(--border-64); }
+  .bg-border-64 { background-color: var(--border-64); }
+  .border-border-64 { border-color: var(--border-64); }
+
+  .text-border-65 { color: var(--border-65); }
+  .bg-border-65 { background-color: var(--border-65); }
+  .border-border-65 { border-color: var(--border-65); }
+
+  .text-border-66 { color: var(--border-66); }
+  .bg-border-66 { background-color: var(--border-66); }
+  .border-border-66 { border-color: var(--border-66); }
+
+  .text-border-67 { color: var(--border-67); }
+  .bg-border-67 { background-color: var(--border-67); }
+  .border-border-67 { border-color: var(--border-67); }
+
+  .text-border-68 { color: var(--border-68); }
+  .bg-border-68 { background-color: var(--border-68); }
+  .border-border-68 { border-color: var(--border-68); }
+
+  .text-border-69 { color: var(--border-69); }
+  .bg-border-69 { background-color: var(--border-69); }
+  .border-border-69 { border-color: var(--border-69); }
+
+  .text-border-70 { color: var(--border-70); }
+  .bg-border-70 { background-color: var(--border-70); }
+  .border-border-70 { border-color: var(--border-70); }
+
+  .text-border-71 { color: var(--border-71); }
+  .bg-border-71 { background-color: var(--border-71); }
+  .border-border-71 { border-color: var(--border-71); }
+
+  .text-border-72 { color: var(--border-72); }
+  .bg-border-72 { background-color: var(--border-72); }
+  .border-border-72 { border-color: var(--border-72); }
+
+  .text-border-73 { color: var(--border-73); }
+  .bg-border-73 { background-color: var(--border-73); }
+  .border-border-73 { border-color: var(--border-73); }
+
+  .text-border-74 { color: var(--border-74); }
+  .bg-border-74 { background-color: var(--border-74); }
+  .border-border-74 { border-color: var(--border-74); }
+
+  .text-border-75 { color: var(--border-75); }
+  .bg-border-75 { background-color: var(--border-75); }
+  .border-border-75 { border-color: var(--border-75); }
+
+  .text-border-76 { color: var(--border-76); }
+  .bg-border-76 { background-color: var(--border-76); }
+  .border-border-76 { border-color: var(--border-76); }
+
+  .text-border-77 { color: var(--border-77); }
+  .bg-border-77 { background-color: var(--border-77); }
+  .border-border-77 { border-color: var(--border-77); }
+
+  .text-border-78 { color: var(--border-78); }
+  .bg-border-78 { background-color: var(--border-78); }
+  .border-border-78 { border-color: var(--border-78); }
+
+  .text-border-79 { color: var(--border-79); }
+  .bg-border-79 { background-color: var(--border-79); }
+  .border-border-79 { border-color: var(--border-79); }
+
+  .text-border-80 { color: var(--border-80); }
+  .bg-border-80 { background-color: var(--border-80); }
+  .border-border-80 { border-color: var(--border-80); }
+
+  .text-border-81 { color: var(--border-81); }
+  .bg-border-81 { background-color: var(--border-81); }
+  .border-border-81 { border-color: var(--border-81); }
+
+  .text-border-82 { color: var(--border-82); }
+  .bg-border-82 { background-color: var(--border-82); }
+  .border-border-82 { border-color: var(--border-82); }
+
+  .text-border-83 { color: var(--border-83); }
+  .bg-border-83 { background-color: var(--border-83); }
+  .border-border-83 { border-color: var(--border-83); }
+
+  .text-border-84 { color: var(--border-84); }
+  .bg-border-84 { background-color: var(--border-84); }
+  .border-border-84 { border-color: var(--border-84); }
+
+  .text-border-85 { color: var(--border-85); }
+  .bg-border-85 { background-color: var(--border-85); }
+  .border-border-85 { border-color: var(--border-85); }
+
+  .text-border-86 { color: var(--border-86); }
+  .bg-border-86 { background-color: var(--border-86); }
+  .border-border-86 { border-color: var(--border-86); }
+
+  .text-border-87 { color: var(--border-87); }
+  .bg-border-87 { background-color: var(--border-87); }
+  .border-border-87 { border-color: var(--border-87); }
+
+  .text-border-88 { color: var(--border-88); }
+  .bg-border-88 { background-color: var(--border-88); }
+  .border-border-88 { border-color: var(--border-88); }
+
+  .text-border-89 { color: var(--border-89); }
+  .bg-border-89 { background-color: var(--border-89); }
+  .border-border-89 { border-color: var(--border-89); }
+
+  .text-border-90 { color: var(--border-90); }
+  .bg-border-90 { background-color: var(--border-90); }
+  .border-border-90 { border-color: var(--border-90); }
+
+  .text-border-91 { color: var(--border-91); }
+  .bg-border-91 { background-color: var(--border-91); }
+  .border-border-91 { border-color: var(--border-91); }
+
+  .text-border-92 { color: var(--border-92); }
+  .bg-border-92 { background-color: var(--border-92); }
+  .border-border-92 { border-color: var(--border-92); }
+
+  .text-border-93 { color: var(--border-93); }
+  .bg-border-93 { background-color: var(--border-93); }
+  .border-border-93 { border-color: var(--border-93); }
+
+  .text-border-94 { color: var(--border-94); }
+  .bg-border-94 { background-color: var(--border-94); }
+  .border-border-94 { border-color: var(--border-94); }
+
+  .text-border-95 { color: var(--border-95); }
+  .bg-border-95 { background-color: var(--border-95); }
+  .border-border-95 { border-color: var(--border-95); }
+
+  .text-border-96 { color: var(--border-96); }
+  .bg-border-96 { background-color: var(--border-96); }
+  .border-border-96 { border-color: var(--border-96); }
+
+  .text-border-97 { color: var(--border-97); }
+  .bg-border-97 { background-color: var(--border-97); }
+  .border-border-97 { border-color: var(--border-97); }
+
+  .text-border-98 { color: var(--border-98); }
+  .bg-border-98 { background-color: var(--border-98); }
+  .border-border-98 { border-color: var(--border-98); }
+
+  .text-border-99 { color: var(--border-99); }
+  .bg-border-99 { background-color: var(--border-99); }
+  .border-border-99 { border-color: var(--border-99); }
+
+  .text-border-100 { color: var(--border-100); }
+  .bg-border-100 { background-color: var(--border-100); }
+  .border-border-100 { border-color: var(--border-100); }
+
+  /* Alert/Warning strips */
+  .alert-strip {
+    @apply flex items-center justify-between w-full px-6 py-3 rounded-lg shadow-sm border-l-4 transition-all duration-200;
+  }
+
+  .alert-strip:hover {
+    background-color: rgba(245, 158, 11, 0.3); /* amber-500 at 30% opacity on hover */
+  }
+
+  .alert-strip-warning {
+    background-color: rgba(245, 158, 11, 0.2); /* amber-500 at 20% opacity */
+    border-left-color: rgb(245, 158, 11); /* amber-500 at full opacity */
+  }
+
+  .alert-strip-danger {
+    background-color: rgba(220, 38, 38, 0.2); /* red-600 at 20% opacity */
+    border-left-color: rgb(220, 38, 38); /* red-600 at full opacity */
+  }
+
+  .alert-strip-info {
+    background-color: rgba(56, 189, 248, 0.2); /* sky-400 at 20% opacity */
+    border-left-color: rgb(56, 189, 248); /* sky-400 at full opacity */
+  }
+
+  .alert-strip-success {
+    background-color: rgba(34, 197, 94, 0.2); /* green-500 at 20% opacity */
+    border-left-color: rgb(34, 197, 94); /* green-500 at full opacity */
+  }
+
+  /* Alert content */
+  .alert-content {
+    @apply flex items-center gap-3;
+  }
+
+  .alert-indicator {
+    @apply w-2 h-2 rounded-full animate-pulse;
+    background-color: rgb(245, 158, 11); /* amber-500 at full opacity */
+  }
+
+  .alert-message {
+    @apply text-sm font-medium;
+    color: rgb(254, 243, 199); /* amber-100 for good contrast */
+  }
+
+  .alert-actions {
+    @apply flex items-center gap-3;
+  }
+
+  .alert-button {
+    @apply p-1 rounded transition-colors;
+    background-color: rgba(245, 158, 11, 0.1); /* amber-500 at 10% opacity */
+  }
+
+  .alert-button:hover {
+    background-color: rgba(245, 158, 11, 0.2); /* amber-500 at 20% opacity on hover */
+  }
+
+  .alert-icon {
+    @apply w-4 h-4;
+    color: rgb(251, 191, 36); /* amber-400 for good contrast */
+  }
+
+  .alert-icon:hover {
+    color: rgb(254, 243, 199); /* amber-100 on hover */
+  }
+
+  .alert-counter {
+    @apply text-xs font-medium px-2 py-1 rounded;
+    background-color: rgba(245, 158, 11, 0.1); /* amber-500 at 10% opacity */
+    color: rgb(254, 243, 199); /* amber-100 for good contrast */
+  }
+
+  .alert-more {
+    @apply text-xs transition-colors px-2 py-1 rounded;
+    background-color: rgba(245, 158, 11, 0.1); /* amber-500 at 10% opacity */
+    color: rgb(251, 191, 36); /* amber-400 */
+  }
+
+  .alert-more:hover {
+    background-color: rgba(245, 158, 11, 0.2); /* amber-500 at 20% opacity on hover */
+    color: rgb(254, 243, 199); /* amber-100 on hover */
+  }
+
+  .alert-dismiss {
+    @apply text-xs transition-colors;
+    color: rgb(251, 191, 36); /* amber-400 */
+  }
+
+  .alert-dismiss:hover {
+    color: rgb(254, 243, 199); /* amber-100 on hover */
+  }
+
+  /* Specific color overrides for different alert types */
+  .alert-strip-danger .alert-indicator {
+    background-color: rgb(220, 38, 38); /* red-600 */
+  }
+
+  .alert-strip-danger .alert-message {
+    color: rgb(254, 226, 226); /* red-100 */
+  }
+
+  .alert-strip-danger .alert-icon {
+    color: rgb(248, 113, 113); /* red-400 */
+  }
+
+  .alert-strip-danger .alert-icon:hover {
+    color: rgb(254, 226, 226); /* red-100 */
+  }
+
+  .alert-strip-danger .alert-button {
+    background-color: rgba(220, 38, 38, 0.1);
+  }
+
+  .alert-strip-danger .alert-button:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+  }
+
+  .alert-strip-danger .alert-counter,
+  .alert-strip-danger .alert-more {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: rgb(254, 226, 226);
+  }
+
+  .alert-strip-danger .alert-more:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+  }
+
+  .alert-strip-danger .alert-dismiss {
+    color: rgb(248, 113, 113);
+  }
+
+  .alert-strip-danger .alert-dismiss:hover {
+    color: rgb(254, 226, 226);
+  }
+
+  .alert-strip-info .alert-indicator {
+    background-color: rgb(56, 189, 248); /* sky-400 */
+  }
+
+  .alert-strip-info .alert-message {
+    color: rgb(224, 242, 254); /* sky-100 */
+  }
+
+  .alert-strip-info .alert-icon {
+    color: rgb(125, 211, 252); /* sky-300 */
+  }
+
+  .alert-strip-info .alert-icon:hover {
+    color: rgb(224, 242, 254); /* sky-100 */
+  }
+
+  .alert-strip-info .alert-button {
+    background-color: rgba(56, 189, 248, 0.1);
+  }
+
+  .alert-strip-info .alert-button:hover {
+    background-color: rgba(56, 189, 248, 0.2);
+  }
+
+  .alert-strip-info .alert-counter,
+  .alert-strip-info .alert-more {
+    background-color: rgba(56, 189, 248, 0.1);
+    color: rgb(224, 242, 254);
+  }
+
+  .alert-strip-info .alert-more:hover {
+    background-color: rgba(56, 189, 248, 0.2);
+  }
+
+  .alert-strip-info .alert-dismiss {
+    color: rgb(125, 211, 252);
+  }
+
+  .alert-strip-info .alert-dismiss:hover {
+    color: rgb(224, 242, 254);
+  }
+
+  .alert-strip-success .alert-indicator {
+    background-color: rgb(34, 197, 94); /* green-500 */
+  }
+
+  .alert-strip-success .alert-message {
+    color: rgb(220, 252, 231); /* green-100 */
+  }
+
+  .alert-strip-success .alert-icon {
+    color: rgb(74, 222, 128); /* green-400 */
+  }
+
+  .alert-strip-success .alert-icon:hover {
+    color: rgb(220, 252, 231); /* green-100 */
+  }
+
+  .alert-strip-success .alert-button {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+
+  .alert-strip-success .alert-button:hover {
+    background-color: rgba(34, 197, 94, 0.2);
+  }
+
+  .alert-strip-success .alert-counter,
+  .alert-strip-success .alert-more {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: rgb(220, 252, 231);
+  }
+
+  .alert-strip-success .alert-more:hover {
+    background-color: rgba(34, 197, 94, 0.2);
+  }
+
+  .alert-strip-success .alert-dismiss {
+    color: rgb(74, 222, 128);
+  }
+
+  .alert-strip-success .alert-dismiss:hover {
+    color: rgb(220, 252, 231);
   }
 }

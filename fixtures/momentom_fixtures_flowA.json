@@ -1,0 +1,142 @@
+{
+  "readiness": {
+    "date": "2025-09-06",
+    "score": 62,
+    "band": "amber",
+    "drivers": [
+      {
+        "key": "hrv",
+        "z": -0.8,
+        "weight": 0.25,
+        "contribution": -8.0
+      },
+      {
+        "key": "sleep",
+        "z": -0.3,
+        "weight": 0.2,
+        "contribution": -3.0
+      },
+      {
+        "key": "rhr",
+        "z": 0.2,
+        "weight": 0.15,
+        "contribution": -2.0
+      },
+      {
+        "key": "prior_strain",
+        "z": 0.7,
+        "weight": 0.15,
+        "contribution": -5.0
+      }
+    ],
+    "flags": [
+      "monotony_high"
+    ],
+    "data_quality": {
+      "missing": [],
+      "clipped": false
+    }
+  },
+  "preview": {
+    "adaptation_id": "adp_123",
+    "plan_id": "pln_abc",
+    "scope": "today",
+    "impact_window": {
+      "start": "2025-09-06T00:00:00Z",
+      "end": "2025-09-06T23:59:59Z"
+    },
+    "reason_code": "low_readiness",
+    "triggers": [
+      "low_readiness",
+      "monotony_high"
+    ],
+    "changes": [
+      {
+        "op": "replace",
+        "path": "/sessions/ses_001/planned_zone_primary",
+        "from": "z4",
+        "to": "z3"
+      },
+      {
+        "op": "replace",
+        "path": "/sessions/ses_001/planned_duration_min",
+        "from": 75,
+        "to": 60
+      }
+    ],
+    "decision": "proposed",
+    "plan_version_before": 12,
+    "plan_version_after": null,
+    "rationale": {
+      "text": "HRV and sleep below baseline with high monotony; swap threshold to tempo and trim 20%.",
+      "driver_attribution": [
+        {
+          "key": "hrv",
+          "z": -0.8,
+          "weight": 0.25,
+          "contribution": -8.0
+        }
+      ],
+      "data_snapshot": {
+        "hrv_z": -0.8,
+        "sleep_z": -0.3,
+        "rhr_z": 0.2
+      }
+    }
+  },
+  "accept": {
+    "adaptation_id": "adp_123",
+    "plan_id": "pln_abc",
+    "scope": "today",
+    "impact_window": {
+      "start": "2025-09-06T00:00:00Z",
+      "end": "2025-09-06T23:59:59Z"
+    },
+    "reason_code": "low_readiness",
+    "triggers": [
+      "low_readiness",
+      "monotony_high"
+    ],
+    "changes": [
+      {
+        "op": "replace",
+        "path": "/sessions/ses_001/planned_zone_primary",
+        "from": "z4",
+        "to": "z3"
+      },
+      {
+        "op": "replace",
+        "path": "/sessions/ses_001/planned_duration_min",
+        "from": 75,
+        "to": 60
+      }
+    ],
+    "decision": "accepted",
+    "plan_version_before": 12,
+    "plan_version_after": 13,
+    "rationale": {
+      "text": "Accepted as proposed",
+      "driver_attribution": []
+    }
+  },
+  "feedback": {
+    "reflection_rpe": 6,
+    "reflection_mood": 4,
+    "notes": "Felt decent.",
+    "fuel_log_json": {
+      "items": [
+        {
+          "ts": "2025-09-06T10:15:00Z",
+          "type": "gel",
+          "carbs_g": 30
+        },
+        {
+          "ts": "2025-09-06T10:30:00Z",
+          "type": "drink",
+          "fluid_ml": 500,
+          "sodium_mg": 400
+        }
+      ]
+    }
+  }
+}

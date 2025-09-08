@@ -7,12 +7,13 @@ import {
   Send,
   Waves,
   Bike,
-  Footprints,
+  User,
   Check,
   Clock,
   Zap,
   MapPin,
   Heart,
+  X,
 } from "lucide-react"
 import { ZoneComparisonBars } from "@/components/training/zone-comparison-bars"
 import { IntensityBar } from "@/components/training/intensity-bar"
@@ -79,8 +80,8 @@ const thursdayBikeWorkout = {
   isCompleted: true,
   completedAt: "7:45 PM",
   compliance: {
-    duration: 95,
-    power: 65,
+    duration: 100,
+    power: 100,
   },
   tss: 285,
   actualZones: [
@@ -233,16 +234,75 @@ const runningWorkout = {
   },
 }
 
+const completedRunWorkout = {
+  title: "Long Run 10K",
+  sport: "run" as const,
+  stress: "Moderate Stress",
+  time: "7:00 AM",
+  duration: "60min",
+  isCompleted: true,
+  isMissed: false,
+  completedAt: "8:15 AM",
+  compliance: {
+    duration: 95,
+    pace: 92,
+  },
+  distance: "10.5 km",
+  pace: "5:45 /km",
+  load: 180,
+  actualZones: [
+    { zone: "Z1", planned: 10 * 60, actual: 10 * 60 + 30, color: "#22D3EE" },
+    { zone: "Z2", planned: 40 * 60, actual: 38 * 60 + 45, color: "#3B82F6" },
+    { zone: "Z3", planned: 0, actual: 5 * 60, color: "#8B5CF6" },
+    { zone: "Z4", planned: 0, actual: 0, color: "#EC4899" },
+    { zone: "Z5", planned: 0, actual: 0, color: "#EF4444" },
+  ],
+  actualHRZones: [
+    { zone: "Z1", planned: 10 * 60, actual: 10 * 60 + 15, color: "#22D3EE" },
+    { zone: "Z2", planned: 40 * 60, actual: 39 * 60 + 30, color: "#3B82F6" },
+    { zone: "Z3", planned: 0, actual: 0, color: "#8B5CF6" },
+    { zone: "Z4", planned: 0, actual: 0, color: "#EC4899" },
+    { zone: "Z5", planned: 0, actual: 0, color: "#EF4444" },
+  ],
+  segments: [
+    { label: "WU 10′ Z1", zone: "Z1" as const, minutes: 10 },
+    { label: "MS 40′ Z2", zone: "Z2" as const, minutes: 40 },
+    { label: "CD 10′ Z1", zone: "Z1" as const, minutes: 10 },
+  ],
+  phases: {
+    workout: [
+      "10 min easy warm-up jog in Z1",
+      "40 min steady aerobic run in Z2",
+      "10 min easy cool-down jog in Z1",
+    ],
+  },
+  sessionNote:
+    "Excellent execution of the long run. Maintained consistent pace throughout the aerobic portion. Felt strong and controlled.",
+  targets: {
+    pace: "5:45–6:00 /km",
+    hr: "140–155 bpm",
+    distance: "10.0 km",
+  },
+  workoutOverview:
+    "Aerobic base building session designed to improve endurance and fat oxidation. The steady pace in Zone 2 helps develop aerobic capacity.",
+  fuelingGuidelines: {
+    preworkout: "Light breakfast 2 hours before: banana with toast. Hydrate well.",
+    during: "For 60-minute session: water every 15-20 minutes. Consider electrolyte drink if hot conditions.",
+    postworkout:
+      "Recovery drink within 30 minutes. Follow with balanced meal within 2 hours.",
+  },
+}
+
 const sportIcons = {
   swim: Waves,
   bike: Bike,
-  run: Footprints,
+  run: User,
 }
 
 const sportColors = {
-  swim: "border-swim",
-  bike: "border-bike",
-  run: "border-run",
+  swim: "border-sport-swim",
+  bike: "border-sport-bike",
+  run: "border-sport-run",
 }
 
 const sportBackgrounds = {
@@ -295,6 +355,7 @@ export default function TrainingPage() {
     { sport: "swim" as const, active: activeSessionIndex === 0, completed: false },
     { sport: "bike" as const, active: activeSessionIndex === 1, completed: true },
     { sport: "run" as const, active: activeSessionIndex === 2, completed: false, missed: true },
+    { sport: "run" as const, active: activeSessionIndex === 3, completed: true, missed: false },
   ]
 
   const activeSession = sessions.find((s) => s.active)
@@ -303,13 +364,15 @@ export default function TrainingPage() {
       ? thursdaySwimWorkout
       : activeSession?.sport === "bike"
         ? thursdayBikeWorkout
-        : runningWorkout
+        : activeSessionIndex === 3
+          ? completedRunWorkout
+          : runningWorkout
 
   const getComplianceColor = (compliance: number) => {
-    if (compliance >= 85) return "teal-500"
-    if (compliance >= 70) return "yellow-500"
-    if (compliance >= 55) return "amber-500"
-    return "amber-700"
+    if (compliance >= 85) return "status-success"
+    if (compliance >= 70) return "status-caution"
+    if (compliance >= 55) return "status-alert"
+    return "status-danger"
   }
 
   const overallCompliance = currentWorkout.isCompleted
@@ -320,11 +383,8 @@ export default function TrainingPage() {
     setShowApply(false)
   }
 
-  const handleSessionClick = (sport: string) => {
-    const sessionIndex = sessions.findIndex((s) => s.sport === sport)
-    if (sessionIndex !== -1) {
-      setActiveSessionIndex(sessionIndex)
-    }
+  const handleSessionClick = (index: number) => {
+    setActiveSessionIndex(index)
   }
 
   const handleAddNote = () => {
@@ -385,13 +445,11 @@ export default function TrainingPage() {
             return (
               <button
                 key={index}
-                onClick={() => handleSessionClick(session.sport)}
+                onClick={() => handleSessionClick(index)}
                 className={cn(
                   "w-8 h-8 rounded-lg border-2 flex items-center justify-center text-sm transition-colors relative",
                   session.active
-                    ? session.missed
-                      ? "border-red-500 bg-bg-2 text-red-500"
-                      : `${sportColors[session.sport]} bg-bg-2`
+                    ? `${sportColors[session.sport]} bg-bg-2`
                     : "border-border-1 text-text-3 hover:text-text-2",
                 )}
               >
@@ -399,11 +457,21 @@ export default function TrainingPage() {
                 {session.completed && (
                   <div
                     className={cn(
-                      "absolute -top-1 -right-1 w-3 h-3 rounded-full border flex items-center justify-center bg-bg-app",
-                      `border-${getComplianceColor(overallCompliance)} text-${getComplianceColor(overallCompliance)}`,
+                      "absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 flex items-center justify-center bg-bg-app shadow-lg",
+                      session.missed
+                        ? "border-status-danger bg-status-danger text-white"
+                        : session.compliance && session.compliance.duration >= 85
+                          ? "border-status-success bg-status-success text-white"
+                          : session.compliance && session.compliance.duration < 85
+                            ? "border-status-caution bg-status-caution text-white"
+                            : "border-status-success bg-status-success text-white"
                     )}
                   >
-                    <Check className="w-2 h-2" />
+                    {session.missed ? (
+                      <X className="w-2.5 h-2.5" />
+                    ) : (
+                      <Check className="w-2.5 h-2.5" />
+                    )}
                   </div>
                 )}
               </button>
@@ -415,11 +483,13 @@ export default function TrainingPage() {
       {/* Main workout card */}
       <div
         className={cn(
-          "bg-bg-surface border border-border-weak rounded-lg overflow-hidden",
-          currentWorkout.isCompleted
-            ? `border-${getComplianceColor(overallCompliance)}`
-            : currentWorkout.isMissed
-              ? "border-red-500"
+          "bg-bg-surface border rounded-lg overflow-hidden",
+          currentWorkout.isMissed
+            ? "border-status-danger"
+            : currentWorkout.isCompleted
+              ? overallCompliance >= 85
+                ? "border-status-success"
+                : "border-status-caution"
               : "border-border-weak",
         )}
       >
@@ -430,23 +500,15 @@ export default function TrainingPage() {
               <div
                 className={cn(
                   "p-3 rounded-lg border-2 transition-colors",
-                  currentWorkout.isCompleted
-                    ? `border-${getComplianceColor(overallCompliance)} text-${getComplianceColor(overallCompliance)} bg-bg-raised`
-                    : currentWorkout.isMissed
-                      ? "border-red-500 text-red-500 bg-red-500/10"
-                      : (currentWorkout.sport === "swim" && "bg-swim/10 border-swim text-swim") ||
-                        (currentWorkout.sport === "bike" && "bg-bike/10 border-bike text-bike") ||
-                        (currentWorkout.sport === "run" && "bg-run/10 border-run text-run"),
+                  currentWorkout.sport === "swim" && "bg-sport-swim/10 border-sport-swim text-sport-swim",
+                  currentWorkout.sport === "bike" && "bg-sport-bike/10 border-sport-bike text-sport-bike",
+                  currentWorkout.sport === "run" && "bg-sport-run/10 border-sport-run text-sport-run",
                 )}
               >
-                {currentWorkout.isCompleted ? (
-                  <Check className="w-6 h-6" />
-                ) : (
-                  (() => {
-                    const IconComponent = sportIcons[currentWorkout.sport]
-                    return <IconComponent className="w-6 h-6" />
-                  })()
-                )}
+                {(() => {
+                  const IconComponent = sportIcons[currentWorkout.sport]
+                  return <IconComponent className="w-6 h-6" />
+                })()}
               </div>
               <div>
                 <h2 className="text-text-1 text-xl font-semibold">{currentWorkout.title}</h2>
@@ -460,14 +522,14 @@ export default function TrainingPage() {
                   </span>
                   <div className="flex items-center gap-2">
                     {currentWorkout.isCompleted && currentWorkout.tss && (
-                      <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded font-medium">
+                      <span className="badge badge-critical">
                         {currentWorkout.load || currentWorkout.tss}
                       </span>
                     )}
                     {!currentWorkout.isCompleted && (
-                      <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded font-medium">285</span>
+                      <span className="badge badge-critical">285</span>
                     )}
-                    <span className="px-2 py-1 bg-bg-raised border border-border-weak text-text-2 text-xs rounded">
+                    <span className="badge">
                       {currentWorkout.isCompleted ? "Completed" : currentWorkout.isMissed ? "Missed" : "Threshold"}
                     </span>
                   </div>
@@ -475,7 +537,7 @@ export default function TrainingPage() {
               </div>
             </div>
             {!currentWorkout.isCompleted && (
-              <button className="p-2 bg-bg-raised border border-border-weak rounded-lg hover:bg-bg-surface transition-colors">
+              <button className="btn focus-ring">
                 <Send className="w-4 h-4 text-text-2" />
               </button>
             )}
@@ -507,12 +569,12 @@ export default function TrainingPage() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs text-teal-500">95%</span>
+                          <span className="text-xs text-status-success">95%</span>
                         </div>
                         <div className="relative h-2 bg-gray-600/30 rounded overflow-hidden">
                           <div className="absolute inset-0 bg-gray-600/10 rounded" />
                           <div
-                            className="relative h-full transition-all duration-500 bg-teal-500 rounded"
+                            className="relative h-full transition-all duration-500 bg-status-success rounded"
                             style={{ width: "95%" }}
                           />
                         </div>
@@ -537,12 +599,12 @@ export default function TrainingPage() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs text-amber-500">65%</span>
+                          <span className="text-xs text-status-caution">65%</span>
                         </div>
                         <div className="relative h-2 bg-gray-600/30 rounded overflow-hidden">
                           <div className="absolute inset-0 bg-gray-600/10 rounded" />
                           <div
-                            className="relative h-full transition-all duration-500 bg-amber-500 rounded"
+                            className="relative h-full transition-all duration-500 bg-status-caution rounded"
                             style={{ width: "65%" }}
                           />
                         </div>
@@ -637,17 +699,17 @@ export default function TrainingPage() {
           {!currentWorkout.isCompleted && showApply && (
             <div className="px-6 pb-6">
               <div className="flex items-center justify-between p-4 bg-bg-2 rounded-lg border border-border-1">
-                <div className="flex items-center gap-2 text-red-400">
-                  <div className="w-2 h-2 rounded-full bg-red-400" />
+                <div className="flex items-center gap-2 text-status-danger">
+                  <div className="w-2 h-2 rounded-full bg-status-danger" />
                   <span className="text-sm">Capacity suggests downgrade</span>
                 </div>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1 text-sm text-text-2 hover:text-text-1 transition-colors">
+                  <button className="btn text-sm">
                     Preview change
                   </button>
                   <button
                     onClick={handleApplyChange}
-                    className="px-3 py-1 text-sm bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors"
+                    className="btn btn-primary text-sm"
                   >
                     Apply change
                   </button>
@@ -702,13 +764,13 @@ export default function TrainingPage() {
 
                           {/* Quick action buttons */}
                           <div className="flex flex-wrap gap-2">
-                            <span className="px-3 py-1 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full text-xs font-medium">
+                            <span className="chip chip-zone-z4">
                               60-90g carbs/h
                             </span>
-                            <span className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full text-xs font-medium">
+                            <span className="chip chip-zone-z2">
                               500-800ml fluid/h
                             </span>
-                            <span className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full text-xs font-medium">
+                            <span className="chip chip-zone-z3">
                               300-700mg sodium/h
                             </span>
                           </div>
@@ -791,7 +853,7 @@ export default function TrainingPage() {
                         <tr className="border-b border-border-1">
                           <td className="py-3 text-text-1 text-sm">
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-[#22D3EE]" />
+                              <div className="w-3 h-3 rounded-full bg-zone-1" />
                               Z1
                             </div>
                           </td>
@@ -812,7 +874,7 @@ export default function TrainingPage() {
                         <tr className="border-b border-border-1">
                           <td className="py-3 text-text-1 text-sm">
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-[#3B82F6]" />
+                              <div className="w-3 h-3 rounded-full bg-zone-2" />
                               Z2
                             </div>
                           </td>
@@ -833,7 +895,7 @@ export default function TrainingPage() {
                         <tr className="border-b border-border-1">
                           <td className="py-3 text-text-1 text-sm">
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-[#8B5CF6]" />
+                              <div className="w-3 h-3 rounded-full bg-zone-3" />
                               Z3
                             </div>
                           </td>
@@ -858,7 +920,7 @@ export default function TrainingPage() {
                         <tr className="border-b border-border-1">
                           <td className="py-3 text-text-1 text-sm">
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-[#EC4899]" />
+                              <div className="w-3 h-3 rounded-full bg-zone-4" />
                               Z4
                             </div>
                           </td>
@@ -883,7 +945,7 @@ export default function TrainingPage() {
                         <tr>
                           <td className="py-3 text-text-1 text-sm">
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-[#EF4444]" />
+                              <div className="w-3 h-3 rounded-full bg-zone-5" />
                               Z5
                             </div>
                           </td>
@@ -922,7 +984,7 @@ export default function TrainingPage() {
                     )}
                   >
                     Performance
-                    {activeTab === "graphs" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />}
+                    {activeTab === "graphs" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-status-success" />}
                   </button>
                   <button
                     onClick={() => setActiveTab("splits")}
@@ -932,7 +994,7 @@ export default function TrainingPage() {
                     )}
                   >
                     Splits
-                    {activeTab === "splits" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />}
+                    {activeTab === "splits" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-status-success" />}
                   </button>
                   <button
                     onClick={() => setActiveTab("stats")}
@@ -942,7 +1004,7 @@ export default function TrainingPage() {
                     )}
                   >
                     Stats
-                    {activeTab === "stats" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />}
+                    {activeTab === "stats" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-status-success" />}
                   </button>
                   <button
                     onClick={() => setActiveTab("notes")}
@@ -952,7 +1014,7 @@ export default function TrainingPage() {
                     )}
                   >
                     Reflection
-                    {activeTab === "notes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />}
+                    {activeTab === "notes" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-status-success" />}
                   </button>
                 </div>
               </div>
@@ -984,7 +1046,7 @@ export default function TrainingPage() {
                           className={cn(
                             "px-3 py-2 text-sm rounded-lg transition-colors",
                             sessionNotesTab === `note-${index}`
-                              ? "bg-teal-500/20 text-teal-400 border border-teal-500/30"
+                              ? "bg-zone-1/20 text-zone-1 border border-zone-1/30"
                               : "bg-bg-2 text-text-2 hover:text-text-1 border border-border-1",
                           )}
                         >
@@ -998,7 +1060,7 @@ export default function TrainingPage() {
                           className={cn(
                             "px-3 py-2 text-sm rounded-lg transition-colors",
                             sessionNotesTab === reflection.id
-                              ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                              ? "bg-zone-3/20 text-zone-3 border border-zone-3/30"
                               : "bg-bg-2 text-text-2 hover:text-text-1 border border-border-1",
                           )}
                         >
@@ -1043,7 +1105,7 @@ export default function TrainingPage() {
                                 {reflection.rpe && (
                                   <div>
                                     <span className="text-text-2 text-sm font-medium">RPE: </span>
-                                    <span className="inline-flex items-center justify-center w-6 h-6 bg-purple-500 text-white text-xs rounded-full font-medium">
+                                    <span className="inline-flex items-center justify-center w-6 h-6 text-zone-3 text-xs rounded-full font-medium border border-zone-3/40" style={{ backgroundColor: 'rgba(var(--zone-3) r g b / 0.2)' }}>
                                       {reflection.rpe}
                                     </span>
                                   </div>
@@ -1084,7 +1146,7 @@ export default function TrainingPage() {
                         <div className="flex gap-3">
                           <button
                             onClick={() => setShowReflectionForm(true)}
-                            className="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-colors font-medium"
+                            className="btn btn-primary text-sm"
                           >
                             Add Reflection
                           </button>
@@ -1107,8 +1169,8 @@ export default function TrainingPage() {
                                   className={cn(
                                     "w-8 h-8 rounded-full border-2 text-sm font-medium transition-colors",
                                     reflectionData.rpe === rpe
-                                      ? "border-purple-500 bg-purple-500 text-white"
-                                      : "border-border-weak text-text-2 hover:border-purple-500 hover:text-purple-500",
+                                      ? "border-zone-3 bg-zone-3 text-white"
+                                      : "border-border-weak text-text-2 hover:border-zone-3 hover:text-zone-3",
                                   )}
                                 >
                                   {rpe}
@@ -1128,8 +1190,8 @@ export default function TrainingPage() {
                                   className={cn(
                                     "px-4 py-2 rounded-lg border text-sm font-medium transition-colors",
                                     reflectionData.feeling === feeling
-                                      ? "border-purple-500 bg-purple-500 text-white"
-                                      : "border-border-weak text-text-2 hover:border-purple-500 hover:text-purple-500",
+                                      ? "border-zone-3 bg-zone-3 text-white"
+                                      : "border-border-weak text-text-2 hover:border-zone-3 hover:text-zone-3",
                                   )}
                                 >
                                   {feeling}
@@ -1145,7 +1207,7 @@ export default function TrainingPage() {
                               value={reflectionData.notes}
                               onChange={(e) => setReflectionData((prev) => ({ ...prev, notes: e.target.value }))}
                               placeholder="How did the workout go? Any observations..."
-                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 resize-none focus:outline-none focus:border-purple-500"
+                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 resize-none focus:outline-none focus:border-zone-3"
                               rows={3}
                             />
                           </div>
@@ -1157,7 +1219,7 @@ export default function TrainingPage() {
                               value={reflectionData.issues}
                               onChange={(e) => setReflectionData((prev) => ({ ...prev, issues: e.target.value }))}
                               placeholder="Any problems, equipment issues, or concerns..."
-                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 resize-none focus:outline-none focus:border-purple-500"
+                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 resize-none focus:outline-none focus:border-zone-3"
                               rows={2}
                             />
                           </div>
@@ -1170,7 +1232,7 @@ export default function TrainingPage() {
                               value={reflectionData.actualFuel}
                               onChange={(e) => setReflectionData((prev) => ({ ...prev, actualFuel: e.target.value }))}
                               placeholder="e.g., 2 gels, 500ml sports drink..."
-                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-purple-500"
+                              className="w-full p-3 bg-bg-2 border border-border-1 rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-zone-3"
                             />
                           </div>
 
@@ -1178,13 +1240,13 @@ export default function TrainingPage() {
                           <div className="flex gap-3 pt-2">
                             <button
                               onClick={handleSaveReflection}
-                              className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
+                              className="btn btn-primary"
                             >
                               Save Reflection
                             </button>
                             <button
                               onClick={() => setShowReflectionForm(false)}
-                              className="px-4 py-2 bg-bg-2 border border-border-1 rounded-lg hover:bg-bg-raised transition-colors"
+                              className="btn"
                             >
                               Cancel
                             </button>
@@ -1201,13 +1263,13 @@ export default function TrainingPage() {
                           value={newNote}
                           onChange={(e) => setNewNote(e.target.value)}
                           placeholder="Add your thoughts about this workout..."
-                          className="flex-1 bg-bg-2 border border-border-1 rounded-lg px-3 py-2 text-text-1 text-sm placeholder:text-text-3 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500"
+                          className="flex-1 bg-bg-2 border border-border-1 rounded-lg px-3 py-2 text-text-1 text-sm placeholder:text-text-3 resize-none focus:outline-none focus:ring-2 focus:ring-zone-1/50 focus:border-zone-1"
                           rows={3}
                         />
                         <button
                           onClick={handleAddNote}
                           disabled={!newNote.trim()}
-                          className="px-4 py-2 bg-teal-500 text-white text-sm rounded-lg hover:bg-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed self-start"
+                          className="btn btn-primary text-sm disabled:opacity-50 disabled:cursor-not-allowed self-start"
                         >
                           Add Note
                         </button>

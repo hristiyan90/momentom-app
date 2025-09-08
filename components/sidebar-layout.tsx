@@ -76,10 +76,10 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
         <div className={`p-6 border-b border-border-weak ${isCollapsed ? "px-4" : ""}`}>
           {isCollapsed ? (
             <div className="w-8 h-8 bg-swim rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">M</span>
+              <span className="text-white font-bold text-sm">E</span>
             </div>
           ) : (
-            <h1 className="text-xl font-semibold text-text-1">Momentom</h1>
+            <h1 className="text-xl font-semibold text-text-1">Endurance</h1>
           )}
         </div>
 

@@ -1,0 +1,727 @@
+openapi: 3.1.0
+info:
+  title: Momentom API (MVP)
+  version: 1.0.1
+  description: >
+    Thin, explainable loop: ingest → readiness → adapt → explain → write-back.
+    Contracts match UI Integration Spec (fields/states), Metrics & Fuelling, Field Spec, and AI/ML Display.
+servers:
+  - url: https://api.momentom.app/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: Readiness
+  - name: Metrics & Load
+  - name: Plan & Calendar
+  - name: Sessions
+  - name: Adaptations
+  - name: Fuel
+  - name: Races
+  - name: Progress & PRs
+  - name: Coach
+  - name: Preferences
+  - name: Integrations
+  - name: Blockers
+  - name: Alerts
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  headers:
+    Idempotency-Key:
+      description: UUID to ensure idempotent mutation
+      schema: { type: string, format: uuid }
+    X-Client-Timezone:
+      description: IANA timezone for localised computations
+      schema: { type: string }
+    Warning:
+      description: RFC 9111 Warning header; used to indicate partial data in 206 responses
+      schema: { type: string }
+
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    Start:
+      name: start
+      in: query
+      schema: { type: string, format: date-time }
+    End:
+      name: end
+      in: query
+      schema: { type: string, format: date-time }
+    Sport:
+      name: sport
+      in: query
+      schema: { type: string, enum: [swim, bike, run, strength, mobility] }
+
+  schemas:
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          required: [code, message, request_id]
+          properties:
+            code:
+              type: string
+              enum:
+                - VALIDATION_ERROR
+                - NOT_FOUND
+                - CONFLICT
+                - RATE_LIMITED
+                - INTEGRATION_DISCONNECTED
+                - PARTIAL_DATA
+                - UNPROCESSABLE_DEPENDENCY
+                - ADAPTATION_NOT_APPLICABLE
+            message: { type: string }
+            details: { type: object, additionalProperties: true }
+            retry_after: { type: string, description: "ISO-8601 duration or seconds" }
+            fallback_hint: { type: string, enum: [skeleton, partial, cached] }
+            request_id: { type: string }
+
+    ReadinessDriver:
+      type: object
+      properties:
+        key: { type: string, enum: [hrv, rhr, sleep, soreness, mood, prior_strain, context] }
+        z: { type: number, description: "z-score vs athlete baseline" }
+        weight: { type: number }
+        contribution: { type: number, description: "points +/- to composite" }
+
+    Readiness:
+      type: object
+      required: [date, score, band]
+      properties:
+        date: { type: string, format: date }
+        score: { type: integer, minimum: 0, maximum: 100 }
+        band: { type: string, enum: [green, amber, red] }
+        drivers: { type: array, items: { $ref: '#/components/schemas/ReadinessDriver' } }
+        flags:
+          type: array
+          items: { type: string, enum: [monotony_high, ramp_high, illness] }
+        data_quality:
+          type: object
+          properties:
+            missing: { type: array, items: { type: string } }
+            clipped: { type: boolean }
+
+    LoadPoint:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        day_load: { type: number }
+        ctl: { type: number }
+        atl: { type: number }
+        form: { type: number }
+        monotony: { type: number }
+        ramp_rate_pct: { type: number }
+
+    MetricsSeriesResponse:
+      type: object
+      properties:
+        series: { type: array, items: { $ref: '#/components/schemas/LoadPoint' } }
+        next_cursor: { type: string, nullable: true }
+        data_quality:
+          type: object
+          properties:
+            flags:
+              type: array
+              items: { type: string, enum: [partial_data] }
+
+    PlanSummary:
+      type: object
+      properties:
+        plan_id: { type: string, format: uuid }
+        version: { type: integer }
+        status: { type: string, enum: [active, archived, draft] }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        blocks:
+          type: array
+          items:
+            type: object
+            properties:
+              block_id: { type: string, format: uuid }
+              phase: { type: string, enum: [base, build, peak, taper] }
+              week_index: { type: integer }
+              focus: { type: string, enum: [base, push, recovery, taper] }
+              start_date: { type: string, format: date }
+              end_date: { type: string, format: date }
+              planned_hours: { type: number }
+
+    SessionStructureSegment:
+      type: object
+      required: [type]
+      properties:
+        type: { type: string, enum: [warmup, steady, interval, recovery, cooldown, drill, rest] }
+        target_metric: { type: string, enum: [power, hr, pace, rpe, cadence, speed, swim_pace], nullable: true }
+        target_range:
+          type: object
+          nullable: true
+          properties:
+            min: { type: number }
+            max: { type: number }
+            unit: { type: string }
+        duration:
+          oneOf:
+            - type: object
+              properties:
+                duration_min: { type: integer }
+            - type: object
+              properties:
+                distance_m: { type: integer }
+
+    Session:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        plan_id: { type: string, format: uuid }
+        block_id: { type: string, format: uuid, nullable: true }
+        athlete_id: { type: string, format: uuid }
+        date: { type: string, format: date }
+        start_time: { type: string, nullable: true }
+        sport: { type: string, enum: [swim, bike, run, strength, mobility] }
+        title: { type: string }
+        priority: { type: string, enum: [key, supporting, recovery], nullable: true }
+        race_week: { type: boolean, nullable: true }
+        structure_json:
+          type: object
+          properties:
+            segments:
+              type: array
+              items: { $ref: '#/components/schemas/SessionStructureSegment' }
+        planned_duration_min: { type: integer }
+        planned_load: { type: number }
+        planned_zone_primary: { type: string, nullable: true, enum: [z1, z2, z3, z4, z5] }
+        status: { type: string, enum: [planned, completed, missed, partial] }
+        actual_duration_min: { type: integer, nullable: true }
+        actual_load: { type: number, nullable: true }
+        reflection_rpe: { type: integer, minimum: 0, maximum: 10, nullable: true }
+        reflection_mood: { type: integer, minimum: 1, maximum: 5, nullable: true }
+        fuel_log_json: { type: object, nullable: true }
+        fuel_adherence_pct: { type: number, nullable: true }
+        explainability_id: { type: string, nullable: true }
+        etag: { type: string }
+
+    FuelGuidance:
+      type: object
+      properties:
+        session_id: { type: string, format: uuid }
+        weight_kg: { type: number, nullable: true }
+        pre:
+          type: object
+          properties:
+            carb_g_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            fluid_ml_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+        during:
+          type: object
+          properties:
+            carb_g_per_h:   { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            fluid_l_per_h:  { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            sodium_mg_per_h:{ type: array, items: { type: integer }, minItems: 2, maxItems: 2 }
+        post:
+          type: object
+          properties:
+            carb_g_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            protein_g:     { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            fluid_replacement_pct: { type: integer }
+        modifiers:
+          type: object
+          properties:
+            heat: { type: boolean }
+            altitude: { type: boolean }
+            fasted_variant: { type: boolean }
+
+    DiffChange:
+      type: object
+      properties:
+        op: { type: string, enum: [add, remove, replace] }  # nit: drop 'move'; express moves as replace on path with from/to
+        path: { type: string, description: "JSON Pointer to field being changed" }
+        from: {}
+        to: {}
+
+    Adaptation:
+      type: object
+      properties:
+        adaptation_id: { type: string, format: uuid }
+        plan_id: { type: string, format: uuid }
+        scope: { type: string, enum: [today, next_72h, week] }
+        impact_window:
+          type: object
+          properties:
+            start: { type: string, format: date-time }
+            end: { type: string, format: date-time }
+        reason_code:
+          type: string
+          enum: [low_readiness, missed_session, monotony_high, ramp_high, illness]
+        triggers: { type: array, items: { type: string, enum: [low_readiness, missed_session, monotony_high, ramp_high, illness] } }
+        changes:
+          type: array
+          items: { $ref: '#/components/schemas/DiffChange' }
+        decision: { type: string, enum: [proposed, accepted, modified, rejected] }
+        plan_version_before: { type: integer, nullable: true }
+        plan_version_after: { type: integer, nullable: true }
+        rationale:
+          type: object
+          properties:
+            text: { type: string }
+            driver_attribution:
+              type: array
+              items: { $ref: '#/components/schemas/ReadinessDriver' }
+            data_snapshot: { type: object, additionalProperties: true }
+
+    CoachMessage:
+      type: object
+      properties:
+        message_id: { type: string, format: uuid }
+        input:
+          type: object
+          properties:
+            prompt: { type: string }
+            chips: { type: array, items: { type: string } }
+            context:
+              type: object
+              properties:
+                session_id: { type: string, nullable: true }
+                date: { type: string, format: date, nullable: true }
+        output:
+          type: object
+          properties:
+            reply: { type: string }
+            reasons: { type: array, items: { type: string } }
+            references: { type: array, items: { type: string } }
+            explainability_id: { type: string }
+
+paths:
+
+  /readiness:
+    get:
+      tags: [Readiness]
+      summary: Get daily readiness (composite + drivers + flags + data quality)
+      parameters:
+        - name: date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+        '206':
+          description: Partial data available
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+        '424':
+          description: Integration disconnected
+          content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } }
+        '425':
+          description: Upstream ingest incomplete (UNPROCESSABLE_DEPENDENCY)
+          content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } }
+
+  /metrics/ctl-atl-form:
+    get:
+      tags: [Metrics & Load]
+      summary: CTL/ATL/Form, monotony, ramp (time-series)
+      parameters: [ { $ref: '#/components/parameters/Start' }, { $ref: '#/components/parameters/End' }, { $ref: '#/components/parameters/Limit' }, { $ref: '#/components/parameters/Cursor' } ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MetricsSeriesResponse' }
+        '206':
+          description: Partial series; UI should render with partial badge
+          headers:
+            Warning:
+              $ref: '#/components/headers/Warning'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MetricsSeriesResponse' }
+
+  /plan:
+    get:
+      tags: [Plan & Calendar]
+      summary: Active plan summary (blocks & focus)
+      responses:
+        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/PlanSummary' } } } }
+
+  /sessions:
+    get:
+      tags: [Sessions]
+      summary: List sessions
+      parameters:
+        - { $ref: '#/components/parameters/Start' }
+        - { $ref: '#/components/parameters/End' }
+        - { $ref: '#/components/parameters/Sport' }
+        - name: status
+          in: query
+          schema: { type: string, enum: [planned, completed, missed, partial] }
+        - name: block_id
+          in: query
+          schema: { type: string }
+        - name: priority
+          in: query
+          schema: { type: string, enum: [key, supporting, recovery] }
+        - name: race_week
+          in: query
+          schema: { type: boolean }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/Session' } }
+                  next_cursor: { type: string, nullable: true }
+
+  /session/{id}:
+    get:
+      tags: [Sessions]
+      summary: Session detail
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      responses:
+        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } } }
+    patch:
+      tags: [Sessions]
+      summary: Update planned session (time, title, structure, etc.)
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, additionalProperties: true } } }
+      responses:
+        '200': { description: Updated; headers: { ETag: { schema: { type: string } } } }
+        '409': { description: Version conflict; content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+
+  /session/{id}/feedback:
+    post:
+      tags: [Sessions]
+      summary: Write reflection (RPE, mood, notes, fuel intake)
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reflection_rpe: { type: integer, minimum: 0, maximum: 10 }
+                reflection_mood: { type: integer, minimum: 1, maximum: 5 }
+                notes: { type: string }
+                fuel_log_json: { type: object }
+      responses:
+        '201': { description: Recorded }
+
+  /fuel/session/{id}:
+    get:
+      tags: [Fuel]
+      summary: Fuel recommendations for a session (pre/during/post + modifiers)
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      responses:
+        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/FuelGuidance' } } } }
+
+  /fuel/session/{id}/intake:
+    post:
+      tags: [Fuel]
+      summary: Log actual intake; returns computed adherence and per-bucket summary
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ts: { type: string, format: date-time }
+                      type: { type: string, enum: [gel, drink, food, salt, caffeine] }
+                      carbs_g: { type: number, nullable: true }
+                      fluid_ml: { type: number, nullable: true }
+                      sodium_mg: { type: number, nullable: true }
+                      caffeine_mg: { type: number, nullable: true }
+      responses:
+        '201':
+          description: Logged with adherence
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adherence_pct: { type: number }
+                  buckets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        time: { type: string }
+                        carbs_g: { type: number }
+                        fluid_ml: { type: number }
+                        sodium_mg: { type: number }
+
+  /adaptations/preview:
+    post:
+      tags: [Adaptations]
+      summary: Compute adaptation preview (no write)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date: { type: string, format: date }
+                scope: { type: string, enum: [today, next_72h, week] }
+      responses:
+        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/Adaptation' } } } }
+
+  /adaptations/{id}/decision:
+    post:
+      tags: [Adaptations]
+      summary: Accept/modify/reject adaptation and persist diffs
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision: { type: string, enum: [accepted, modified, rejected] }
+                modified_changes: { type: array, items: { $ref: '#/components/schemas/DiffChange' }, nullable: true }
+      responses:
+        '200':
+          description: Persisted; plan version bump included
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Adaptation' }
+
+  /races:
+    get:
+      tags: [Races]
+      summary: List races
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        race_id: { type: string }
+                        name: { type: string }
+                        date: { type: string, format: date }
+                        priority: { type: string, enum: [A, B, C] }
+                        location: { type: string }
+
+  /race/{id}:
+    get:
+      tags: [Races]
+      summary: Race detail (includes predictions)
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  race_id: { type: string }
+                  name: { type: string }
+                  date: { type: string, format: date }
+                  priority: { type: string, enum: [A, B, C] }
+                  splits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sport: { type: string, enum: [swim, bike, run] }
+                        predicted_time_sec: { type: integer }
+                        target_zone: { type: string }
+                  model_version: { type: string }
+                  confidence: { type: number, minimum: 0, maximum: 1, nullable: true }
+    patch:
+      tags: [Races]
+      summary: Update race plan fields
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses: { '200': { description: Updated } }
+
+  /metrics/prs:
+    get:
+      tags: [Progress & PRs]
+      summary: Personal records shelf
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pr_id: { type: string }
+                        sport: { type: string }
+                        label: { type: string }
+                        value: {}
+                        unit: { type: string }
+                        date_achieved: { type: string, format: date }
+                        shelf_group: { type: string }
+
+  /coach/messages:
+    post:
+      tags: [Coach]
+      summary: Coach Tom — context-aware Q&A (grounded)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CoachMessage' } } }
+      responses:
+        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/CoachMessage' } } } }
+
+  /preferences:
+    get:
+      tags: [Preferences]
+      summary: Get preferences
+      responses:
+        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+    patch:
+      tags: [Preferences]
+      summary: Update preferences (ETag required)
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses:
+        '200': { description: Updated; headers: { ETag: { schema: { type: string } } } }
+        '412': { description: Precondition failed (If-Match) }
+
+  /integrations:
+    get:
+      tags: [Integrations]
+      summary: Integration statuses
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        provider: { type: string, enum: [garmin, strava, apple_health, polar, coros] }
+                        status: { type: string, enum: [connected, disconnected, error] }
+                        last_sync_at: { type: string, nullable: true }
+
+  /alerts:
+    get:
+      tags: [Alerts]
+      summary: Alerts list
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        alert_id: { type: string }
+                        type: { type: string, enum: [heat, illness, sync_error, plan_adaptation, race_week] }
+                        message: { type: string }
+                        severity: { type: string, enum: [info, warning, critical] }
+                        start_at: { type: string }
+                        end_at: { type: string, nullable: true }
+                        dismissed: { type: boolean }
+    patch:
+      tags: [Alerts]
+      summary: Dismiss alert
+      parameters: [ { name: alert_id, in: query, required: true, schema: { type: string } } ]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { dismissed: { type: boolean } } } } }
+      responses: { '200': { description: Updated } }
+
+  /blockers:
+    post:
+      tags: [Blockers]
+      summary: Create life blocker (supports recurrence)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, type, start, end]
+              properties:
+                title: { type: string }
+                type: { type: string, enum: [travel, work, family, other] }
+                start: { type: string, format: date-time }
+                end: { type: string, format: date-time }
+                recurrence_rrule: { type: string, nullable: true }
+                plan_impact: { type: string, enum: [move_sessions, reduce_volume, pause] }
+      responses:
+        '201': { description: Created }
+    get:
+      tags: [Blockers]
+      summary: List blockers
+      parameters: [ { $ref: '#/components/parameters/Start' }, { $ref: '#/components/parameters/End' } ]
+      responses:
+        '200': { content: { application/json: { schema: { type: object, properties: { items: { type: array, items: { type: object, additionalProperties: true } } } } } } }
+  /blockers/{id}:
+    patch:
+      tags: [Blockers]
+      summary: Update blocker
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses: { '200': { description: Updated } }
+
+  /thresholds:
+    get:
+      tags: [Preferences]
+      summary: Thresholds (raw)
+      responses:
+        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+    patch:
+      tags: [Preferences]
+      summary: Update thresholds (partial)
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      responses: { '200': { description: Updated } }
+
+  /zones:
+    get:
+      tags: [Preferences]
+      summary: Derived zones (from thresholds)
+      responses:
+        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+
+  /zones/tests:
+    post:
+      tags: [Preferences]
+      summary: Start zone/threshold test (stub for future)
+      requestBody: { required: false }
+      responses:
+        '202': { description: Accepted (stub) }

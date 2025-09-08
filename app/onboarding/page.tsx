@@ -20,6 +20,8 @@ import {
   Clock,
   CalendarDays,
   X,
+  ChevronRight,
+  ChevronDown,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -295,7 +297,33 @@ export default function OnboardingPage() {
     setHasAttemptedNext(true)
 
     if (currentStep < ONBOARDING_STEPS.length) {
-      if (isStepValid || currentStep === 0) {
+      // Special validation for metrics step (step 5)
+      if (currentStep === 5) {
+        // Validate thresholds for metrics step
+        const thresholdErrors: Record<string, string> = {}
+        const showThresholds = data.thresholds.estimateForMe
+        
+        if (showThresholds) {
+          if (data.metrics.swimMetric === "pace" && !data.thresholds.css) thresholdErrors.css = "Critical Swim Speed is required"
+          if (data.metrics.bikeMetric === "power" && !data.thresholds.ftp) thresholdErrors.ftp = "Functional Threshold Power is required"
+          if (
+            (data.metrics.swimMetric === "hr" || data.metrics.bikeMetric === "hr" || data.metrics.runMetric === "hr") &&
+            !data.thresholds.lthr
+          ) {
+            thresholdErrors.lthr = "Lactate Threshold Heart Rate is required"
+          }
+          if (data.metrics.runMetric === "pace" && !data.thresholds.ltp) thresholdErrors.ltp = "Lactate Threshold Pace is required"
+        }
+        
+        const hasThresholdErrors = Object.keys(thresholdErrors).length > 0
+        const isMetricsStepValid = isStepValid && !hasThresholdErrors
+        
+        if (isMetricsStepValid) {
+          setCurrentStep(currentStep + 1)
+          setIsStepValid(false) // Reset validation for next step
+          setHasAttemptedNext(false)
+        }
+      } else if (isStepValid || currentStep === 0) {
         // Welcome step doesn't need validation
         setCurrentStep(currentStep + 1)
         setIsStepValid(false) // Reset validation for next step
@@ -533,7 +561,7 @@ export default function OnboardingPage() {
       )}
 
       {editModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-surface rounded-lg border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -550,12 +578,12 @@ export default function OnboardingPage() {
 
               <div className="space-y-6">
                 {/* Sport Selection */}
-                {/* <div>
+                <div>
                   <label className="block text-sm font-medium text-text-primary mb-3">Sport</label>
                   <div className="flex gap-3">
                     {[
                       { value: "triathlon", label: "Triathlon", icons: [Waves, Bike, Footprints] },
-                      { value: "cycling", label: "Cycling", icons: [Bike] },
+                      { value: "swim", label: "Swimming", icons: [Waves] },
                       { value: "running", label: "Running", icons: [Footprints] },
                     ].map((sport) => (
                       <button
@@ -578,7 +606,7 @@ export default function OnboardingPage() {
                       </button>
                     ))}
                   </div>
-                </div> */}
+                </div>
 
                 {editFormData.type === "upcoming" ? (
                   <>
@@ -621,61 +649,59 @@ export default function OnboardingPage() {
                     </div>
 
                     {/* Race Type */}
-                    {/* {editFormData.sport && (
-                      <div>
-                        <label className="block text-sm font-medium text-text-primary mb-3">Race Type</label>
-                        <div className="flex flex-wrap gap-3">
-                          {editFormData.sport === "triathlon" &&
-                            ["Sprint", "Olympic", "Ironman 70.3", "Ironman", "T100"].map((type) => (
-                              <button
-                                key={type}
-                                type="button"
-                                onClick={() => setEditFormData({ ...editFormData, raceType: type })}
-                                className={cn(
-                                  "px-4 py-2 rounded-xl border-2 transition-all duration-200",
-                                  editFormData.raceType === type
-                                    ? "border-brand bg-brand/10 text-brand"
-                                    : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
-                                )}
-                              >
-                                {type}
-                              </button>
-                            ))}
-                          {editFormData.sport === "cycling" &&
-                            ["5K", "10K", "Half Marathon", "Marathon", "Ultra"].map((type) => (
-                              <button
-                                key={type}
-                                type="button"
-                                onClick={() => setEditFormData({ ...editFormData, raceType: type })}
-                                className={cn(
-                                  "px-4 py-2 rounded-xl border-2 transition-all duration-200",
-                                  editFormData.raceType === type
-                                    ? "border-brand bg-brand/10 text-brand"
-                                    : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
-                                )}
-                              >
-                                {type}
-                              </button>
-                            ))}
-                          {editFormData.sport === "running" &&
-                            ["Criterium", "Road Race", "Time Trial", "Gran Fondo", "Stage Race"].map((type) => (
-                              <button
-                                key={type}
-                                type="button"
-                                onClick={() => setEditFormData({ ...editFormData, raceType: type })}
-                                className={cn(
-                                  "px-4 py-2 rounded-xl border-2 transition-all duration-200",
-                                  editFormData.raceType === type
-                                    ? "border-brand bg-brand/10 text-brand"
-                                    : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
-                                )}
-                              >
-                                {type}
-                              </button>
-                            ))}
-                        </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-primary mb-3">Race Type</label>
+                      <div className="flex flex-wrap gap-3">
+                        {editFormData.sport === "triathlon" &&
+                          ["Sprint", "Olympic", "Ironman 70.3", "Ironman", "T100"].map((type) => (
+                            <button
+                              key={type}
+                              type="button"
+                              onClick={() => setEditFormData({ ...editFormData, raceType: type })}
+                              className={cn(
+                                "px-4 py-2 rounded-xl border-2 transition-all duration-200",
+                                editFormData.raceType === type
+                                  ? "border-brand bg-brand/10 text-brand"
+                                  : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
+                              )}
+                            >
+                              {type}
+                            </button>
+                          ))}
+                        {editFormData.sport === "cycling" &&
+                          ["5K", "10K", "Half Marathon", "Marathon", "Ultra"].map((type) => (
+                            <button
+                              key={type}
+                              type="button"
+                              onClick={() => setEditFormData({ ...editFormData, raceType: type })}
+                              className={cn(
+                                "px-4 py-2 rounded-xl border-2 transition-all duration-200",
+                                editFormData.raceType === type
+                                  ? "border-brand bg-brand/10 text-brand"
+                                  : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
+                              )}
+                            >
+                              {type}
+                            </button>
+                          ))}
+                        {editFormData.sport === "running" &&
+                          ["Criterium", "Road Race", "Time Trial", "Gran Fondo", "Stage Race"].map((type) => (
+                            <button
+                              key={type}
+                              type="button"
+                              onClick={() => setEditFormData({ ...editFormData, raceType: type })}
+                              className={cn(
+                                "px-4 py-2 rounded-xl border-2 transition-all duration-200",
+                                editFormData.raceType === type
+                                  ? "border-brand bg-brand/10 text-brand"
+                                  : "border-border hover:border-border-strong text-text-secondary hover:text-text-primary",
+                              )}
+                            >
+                              {type}
+                            </button>
+                          ))}
                       </div>
-                    )} */}
+                    </div>
 
                     <div>
                       <label className="block text-sm font-medium text-text-primary mb-3">Triathlon Distance</label>
@@ -2204,7 +2230,7 @@ export default function OnboardingPage() {
     hasAttemptedNext,
   }: PrimaryMetricsStepProps) {
     const [errors, setErrors] = useState<Record<string, string>>({})
-    const [showThresholds, setShowThresholds] = useState(false)
+    const showThresholds = thresholds.estimateForMe
 
     const validateStep = useCallback(() => {
       const newErrors: Record<string, string> = {}
@@ -2213,6 +2239,25 @@ export default function OnboardingPage() {
       if (!metrics.bikeMetric) newErrors.bikeMetric = "Please select a biking metric"
       if (!metrics.runMetric) newErrors.runMetric = "Please select a running metric"
 
+      setErrors(newErrors)
+      const isValid = Object.keys(newErrors).length === 0
+      setIsValid(isValid)
+      return isValid
+    }, [
+      metrics.swimMetric,
+      metrics.bikeMetric,
+      metrics.runMetric,
+      setIsValid,
+    ])
+
+    useEffect(() => {
+      validateStep()
+    }, [validateStep])
+
+    // Separate validation for threshold fields that doesn't cause re-renders during typing
+    const validateThresholds = useCallback(() => {
+      const newErrors: Record<string, string> = {}
+      
       if (showThresholds) {
         if (metrics.swimMetric === "pace" && !thresholds.css) newErrors.css = "Critical Swim Speed is required"
         if (metrics.bikeMetric === "power" && !thresholds.ftp) newErrors.ftp = "Functional Threshold Power is required"
@@ -2224,26 +2269,9 @@ export default function OnboardingPage() {
         }
         if (metrics.runMetric === "pace" && !thresholds.ltp) newErrors.ltp = "Lactate Threshold Pace is required"
       }
-
-      setErrors(newErrors)
-      const isValid = Object.keys(newErrors).length === 0
-      setIsValid(isValid)
-      return isValid
-    }, [
-      metrics.swimMetric,
-      metrics.bikeMetric,
-      metrics.runMetric,
-      showThresholds,
-      thresholds.css,
-      thresholds.ftp,
-      thresholds.lthr,
-      thresholds.ltp,
-      setIsValid,
-    ])
-
-    useEffect(() => {
-      validateStep()
-    }, [validateStep])
+      
+      return newErrors
+    }, [showThresholds, metrics.swimMetric, metrics.bikeMetric, metrics.runMetric, thresholds.css, thresholds.ftp, thresholds.lthr, thresholds.ltp])
 
     const swimOptions = [
       { value: "pace", label: "Pace", icon: Clock, recommended: true },
@@ -2275,6 +2303,27 @@ export default function OnboardingPage() {
     const hasPowerSelected =
       metrics.swimMetric === "power" || metrics.bikeMetric === "power" || metrics.runMetric === "power"
 
+    // Get threshold errors for display
+    const getThresholdErrors = () => {
+      const thresholdErrors: Record<string, string> = {}
+      
+      if (showThresholds) {
+        if (metrics.swimMetric === "pace" && !thresholds.css) thresholdErrors.css = "Critical Swim Speed is required"
+        if (metrics.bikeMetric === "power" && !thresholds.ftp) thresholdErrors.ftp = "Functional Threshold Power is required"
+        if (
+          (metrics.swimMetric === "hr" || metrics.bikeMetric === "hr" || metrics.runMetric === "hr") &&
+          !thresholds.lthr
+        ) {
+          thresholdErrors.lthr = "Lactate Threshold Heart Rate is required"
+        }
+        if (metrics.runMetric === "pace" && !thresholds.ltp) thresholdErrors.ltp = "Lactate Threshold Pace is required"
+      }
+      
+      return thresholdErrors
+    }
+
+    const thresholdErrors = getThresholdErrors()
+
     const renderThresholdField = (discipline: "swim" | "bike" | "run", selectedMetric: string) => {
       if (!showThresholds) return null
 
@@ -2299,14 +2348,14 @@ export default function OnboardingPage() {
               className="w-full px-4 py-3 rounded-lg border-2 transition-all duration-200"
               style={{
                 backgroundColor: "var(--bg-surface)",
-                borderColor: hasAttemptedNext && errors.css ? "#DC2626" : "var(--border-weak)",
+                borderColor: hasAttemptedNext && thresholdErrors.css ? "#DC2626" : "var(--border-weak)",
                 color: "var(--text-primary)",
               }}
             />
-            {hasAttemptedNext && errors.css && (
+            {hasAttemptedNext && thresholdErrors.css && (
               <p className="text-sm flex items-center gap-2 mt-2" style={{ color: "#DC2626" }}>
                 <AlertCircle className="w-4 h-4" />
-                {errors.css}
+                {thresholdErrors.css}
               </p>
             )}
           </div>
@@ -2335,7 +2384,7 @@ export default function OnboardingPage() {
                 className="flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200"
                 style={{
                   backgroundColor: "var(--bg-surface)",
-                  borderColor: hasAttemptedNext && errors.ftp ? "#DC2626" : "var(--border-weak)",
+                  borderColor: hasAttemptedNext && thresholdErrors.ftp ? "#DC2626" : "var(--border-weak)",
                   color: "var(--text-primary)",
                 }}
               />
@@ -2343,10 +2392,10 @@ export default function OnboardingPage() {
                 watts
               </span>
             </div>
-            {hasAttemptedNext && errors.ftp && (
+            {hasAttemptedNext && thresholdErrors.ftp && (
               <p className="text-sm flex items-center gap-2 mt-2" style={{ color: "#DC2626" }}>
                 <AlertCircle className="w-4 h-4" />
-                {errors.ftp}
+                {thresholdErrors.ftp}
               </p>
             )}
           </div>
@@ -2375,7 +2424,7 @@ export default function OnboardingPage() {
                 className="flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200"
                 style={{
                   backgroundColor: "var(--bg-surface)",
-                  borderColor: hasAttemptedNext && errors.ltp ? "#DC2626" : "var(--border-weak)",
+                  borderColor: hasAttemptedNext && thresholdErrors.ltp ? "#DC2626" : "var(--border-weak)",
                   color: "var(--text-primary)",
                 }}
               />
@@ -2383,10 +2432,10 @@ export default function OnboardingPage() {
                 per km
               </span>
             </div>
-            {hasAttemptedNext && errors.ltp && (
+            {hasAttemptedNext && thresholdErrors.ltp && (
               <p className="text-sm flex items-center gap-2 mt-2" style={{ color: "#DC2626" }}>
                 <AlertCircle className="w-4 h-4" />
-                {errors.ltp}
+                {thresholdErrors.ltp}
               </p>
             )}
           </div>
@@ -2418,7 +2467,7 @@ export default function OnboardingPage() {
                 will be established during the initial weeks of training through testing protocols.
               </p>
               <button
-                onClick={() => setShowThresholds(!showThresholds)}
+                onClick={() => updateData({ thresholds: { ...thresholds, estimateForMe: !thresholds.estimateForMe } })}
                 className="flex items-center gap-3 p-3 rounded-lg border-2 transition-all duration-200"
                 style={{
                   backgroundColor: showThresholds ? "rgba(var(--brand-rgb), 0.1)" : "var(--bg-surface)",
@@ -2625,7 +2674,7 @@ export default function OnboardingPage() {
                   className="flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200"
                   style={{
                     backgroundColor: "var(--bg-surface)",
-                    borderColor: hasAttemptedNext && errors.lthr ? "#DC2626" : "var(--border-weak)",
+                    borderColor: hasAttemptedNext && thresholdErrors.lthr ? "#DC2626" : "var(--border-weak)",
                     color: "var(--text-primary)",
                   }}
                 />
@@ -2633,10 +2682,10 @@ export default function OnboardingPage() {
                   bpm
                 </span>
               </div>
-              {hasAttemptedNext && errors.lthr && (
+              {hasAttemptedNext && thresholdErrors.lthr && (
                 <p className="text-sm flex items-center gap-2 mt-2" style={{ color: "#DC2626" }}>
                   <AlertCircle className="w-4 h-4" />
-                  {errors.lthr}
+                  {thresholdErrors.lthr}
                 </p>
               )}
             </div>

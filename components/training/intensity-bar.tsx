@@ -22,11 +22,11 @@ interface IntensityBarProps {
 }
 
 const zoneColors = {
-  Z1: "var(--zone-1)", // Cyan
-  Z2: "var(--zone-2)", // Blue
-  Z3: "var(--zone-3)", // Indigo
-  Z4: "var(--zone-4)", // Purple
-  Z5: "var(--zone-5)", // Pink
+  Z1: "#22D3EE", // Cyan
+  Z2: "#3B82F6", // Blue
+  Z3: "#8B5CF6", // Indigo
+  Z4: "#EC4899", // Purple
+  Z5: "#EF4444", // Pink
 }
 
 const zoneHeights = {
@@ -155,14 +155,14 @@ export function IntensityBar({ segments, compact = false, className, isCompleted
             className="transition-all duration-200 hover:brightness-110"
             style={{
               width: `${lowIntensityPercent}%`,
-              backgroundColor: "var(--zone-2)",
+              backgroundColor: "#3B82F6",
             }}
           />
           <div
             className="transition-all duration-200 hover:brightness-110"
             style={{
               width: `${highIntensityPercent}%`,
-              backgroundColor: "var(--zone-5)",
+              backgroundColor: "#EF4444",
             }}
           />
 
@@ -170,11 +170,11 @@ export function IntensityBar({ segments, compact = false, className, isCompleted
             <div className="font-medium mb-1 text-white">Intensity Distribution</div>
             <div className="flex items-center gap-2 text-xs">
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--zone-2)" }}></div>
+                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#3B82F6" }}></div>
                 <span className="text-gray-100">Low Intensity: {lowIntensityPercent}%</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--zone-5)" }}></div>
+                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "#EF4444" }}></div>
                 <span className="text-gray-100">High Intensity: {highIntensityPercent}%</span>
               </div>
             </div>

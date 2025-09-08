@@ -220,7 +220,7 @@ function AddRaceModal({ onAddRace }: { onAddRace: (race: Partial<Race>) => void 
 
   const sportOptions = [
     { value: "triathlon", label: "Triathlon", icon: [Waves, Bike, Footprints] },
-    { value: "cycling", label: "Cycling", icon: [Bike] },
+    { value: "swim", label: "Swimming", icon: [Waves] },
     { value: "running", label: "Running", icon: [Footprints] },
   ]
 

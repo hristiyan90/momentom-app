@@ -17,7 +17,7 @@ export function FuelingBlock({ title = "Fueling Guidelines", keyLine, chips, foo
 
       <div className="flex flex-wrap gap-2">
         {chips.map((chip, index) => (
-          <span key={index} className="px-2 py-1 bg-bg-2 text-text-2 text-xs rounded-md border border-border-1">
+          <span key={index} className="chip">
             {chip}
           </span>
         ))}
