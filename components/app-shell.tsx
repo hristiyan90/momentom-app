@@ -31,7 +31,7 @@ export function AppShell({ children }: AppShellProps) {
       <div className="w-64 bg-bg-surface border-r border-border-weak flex flex-col">
         {/* Logo/Brand */}
         <div className="p-6 border-b border-border-weak">
-          <h1 className="text-xl font-semibold text-text-1">Momentom</h1>
+          <h1 className="text-xl font-semibold text-text-1">Endurance</h1>
         </div>
 
         {/* Navigation */}

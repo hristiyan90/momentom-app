@@ -54,24 +54,26 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       // Use original changes for accepted decision
       const finalChanges = prev.changes;
       
-      await writeDecision({
+      const { plan_version_after } = await writeDecision({
         adaptation_id: prev.adaptation_id,
         athlete_id: athleteId,
         plan_id: prev.plan_id,
         decision,
         final_changes: finalChanges,
         plan_version_before: prev.plan_version_before,
-        rationale_text: `Accepted: ${prev.rationale_text}`,
-        driver_attribution: prev.driver_attribution || [],
+        rationale_text: `Accepted: ${prev.rationale.text}`,
+        driver_attribution: prev.rationale.driver_attribution || [],
         explainability_id
       });
 
-      return withSecurityHeaders(NextResponse.json({ 
-        success: true, 
-        decision, 
-        changes_applied: finalChanges.length,
-        request_id: request_id
-      }, { 
+      // Update the adaptation object with the decision
+      const updatedAdaptation = {
+        ...prev,
+        decision: 'accepted' as const,
+        plan_version_after: plan_version_after
+      };
+
+      return withSecurityHeaders(NextResponse.json(updatedAdaptation, { 
         status: 200,
         headers: {
           'X-Explainability-Id': explainability_id,
@@ -136,25 +138,26 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         // Use clamped changes (either original or adjusted)
         const finalChanges = clampedChanges;
         
-        await writeDecision({
+        const { plan_version_after } = await writeDecision({
           adaptation_id: prev.adaptation_id,
           athlete_id: athleteId,
           plan_id: prev.plan_id,
           decision,
           final_changes: finalChanges,
           plan_version_before: prev.plan_version_before,
-          rationale_text: `Modified: ${prev.rationale_text}`,
-          driver_attribution: prev.driver_attribution || [],
+          rationale_text: `Modified: ${prev.rationale.text}`,
+          driver_attribution: prev.rationale.driver_attribution || [],
           explainability_id
         });
 
-        return withSecurityHeaders(NextResponse.json({ 
-          success: true, 
-          decision, 
-          changes_applied: finalChanges.length,
-          guard_applied: metrics.clamped,
-          request_id: request_id
-        }, { 
+        // Update the adaptation object with the decision
+        const updatedAdaptation = {
+          ...prev,
+          decision: 'modified' as const,
+          plan_version_after: plan_version_after
+        };
+
+        return withSecurityHeaders(NextResponse.json(updatedAdaptation, { 
           status: 200,
           headers: {
             'X-Explainability-Id': explainability_id,
@@ -174,25 +177,26 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         // Fall back to original changes if guard fails
         const finalChanges = prev.changes;
         
-        await writeDecision({
+        const { plan_version_after } = await writeDecision({
           adaptation_id: prev.adaptation_id,
           athlete_id: athleteId,
           plan_id: prev.plan_id,
           decision,
           final_changes: finalChanges,
           plan_version_before: prev.plan_version_before,
-          rationale_text: `Modified (guard failed): ${prev.rationale_text}`,
-          driver_attribution: prev.driver_attribution || [],
+          rationale_text: `Modified (guard failed): ${prev.rationale.text}`,
+          driver_attribution: prev.rationale.driver_attribution || [],
           explainability_id
         });
 
-        return withSecurityHeaders(NextResponse.json({ 
-          success: true, 
-          decision, 
-          changes_applied: finalChanges.length,
-          guard_applied: false,
-          request_id: request_id
-        }, { 
+        // Update the adaptation object with the decision
+        const updatedAdaptation = {
+          ...prev,
+          decision: 'modified' as const,
+          plan_version_after: plan_version_after
+        };
+
+        return withSecurityHeaders(NextResponse.json(updatedAdaptation, { 
           status: 200,
           headers: {
             'X-Explainability-Id': explainability_id,
@@ -203,24 +207,26 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     if (decision === 'rejected') {
-      await writeDecision({
+      const { plan_version_after } = await writeDecision({
         adaptation_id: prev.adaptation_id,
         athlete_id: athleteId,
         plan_id: prev.plan_id,
         decision,
         final_changes: [],
         plan_version_before: prev.plan_version_before,
-        rationale_text: `Rejected: ${prev.rationale_text}`,
-        driver_attribution: prev.driver_attribution || [],
+        rationale_text: `Rejected: ${prev.rationale.text}`,
+        driver_attribution: prev.rationale.driver_attribution || [],
         explainability_id
       });
 
-      return withSecurityHeaders(NextResponse.json({ 
-        success: true, 
-        decision, 
-        changes_applied: 0,
-        request_id: request_id
-      }, { 
+      // Update the adaptation object with the decision
+      const updatedAdaptation = {
+        ...prev,
+        decision: 'rejected' as const,
+        plan_version_after: plan_version_after
+      };
+
+      return withSecurityHeaders(NextResponse.json(updatedAdaptation, { 
         status: 200,
         headers: {
           'X-Explainability-Id': explainability_id,

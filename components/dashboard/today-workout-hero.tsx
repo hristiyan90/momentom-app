@@ -14,8 +14,9 @@ import {
   Copy,
   X,
   Coffee,
+  User,
 } from "lucide-react"
-import { Waves, Bike, Footprints } from "lucide-react"
+import { Waves, Bike } from "lucide-react"
 import { IntensityBar } from "@/components/training/intensity-bar"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
@@ -76,19 +77,19 @@ export function TodayWorkoutHero({
   const sportIcons = {
     swim: Waves,
     bike: Bike,
-    run: Footprints,
+    run: User,
   }
 
   const sportColors = {
     swim: "border-swim",
     bike: "border-bike",
-    run: "border-purple-500",
+    run: "border-sport-run",
   }
 
   const sportAccentColors = {
     swim: "text-swim",
     bike: "text-bike",
-    run: "text-purple-500",
+    run: "text-sport-run",
   }
 
   if (!workouts || workouts.length === 0 || !Array.isArray(workouts)) {
@@ -120,7 +121,7 @@ export function TodayWorkoutHero({
     )
   }
 
-  const SportIcon = sportIcons[currentWorkout.sport] || Footprints
+  const SportIcon = sportIcons[currentWorkout.sport] || User
 
   const getComplianceColor = (workout: any) => {
     if (!workout?.completed) return ""
@@ -195,12 +196,12 @@ export function TodayWorkoutHero({
 
   const QuickCalcDrawer = () => (
     <div className="fixed inset-0 z-50 flex">
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowQuickCalc(false)} />
-      <div className="ml-auto w-96 bg-bg-surface h-full shadow-2xl animate-in slide-in-from-right duration-300 border-l-2 border-cyan-500/50">
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowQuickCalc(false)} />
+      <div className="ml-auto w-96 bg-bg-surface h-full shadow-2xl animate-in slide-in-from-right duration-300 border-l-2 border-brand/50 relative z-10">
         <div className="p-6 border-b border-border-weak bg-bg-raised">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-text-1 flex items-center gap-2">
-              <Calculator className="w-5 h-5 text-cyan-400" />
+              <Calculator className="w-5 h-5 text-brand" />
               Quick Fueling Calculator
             </h3>
             <button
@@ -222,7 +223,7 @@ export function TodayWorkoutHero({
                 value={calcInputs.weight}
                 onChange={(e) => setCalcInputs((prev) => ({ ...prev, weight: e.target.value }))}
                 placeholder="70"
-                className="w-full p-4 bg-bg-app border-2 border-border-weak rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/20 transition-all hover:border-border-strong"
+                className="w-full p-4 bg-bg-app border-2 border-border-weak rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/20 transition-all hover:border-border-strong"
                 autoFocus
               />
             </div>
@@ -234,7 +235,7 @@ export function TodayWorkoutHero({
                 value={calcInputs.duration}
                 onChange={(e) => setCalcInputs((prev) => ({ ...prev, duration: e.target.value }))}
                 placeholder="90"
-                className="w-full p-4 bg-bg-app border-2 border-border-weak rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/20 transition-all hover:border-border-strong"
+                className="w-full p-4 bg-bg-app border-2 border-border-weak rounded-lg text-text-1 placeholder-text-3 focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/20 transition-all hover:border-border-strong"
               />
             </div>
           </div>
@@ -242,7 +243,7 @@ export function TodayWorkoutHero({
           {/* Outputs */}
           <div className="space-y-4">
             <h4 className="text-text-1 font-semibold flex items-center gap-2">
-              <Zap className="w-4 h-4 text-cyan-400" />
+              <Zap className="w-4 h-4 text-brand" />
               Recommended Intake
             </h4>
 
@@ -250,21 +251,21 @@ export function TodayWorkoutHero({
               const calc = calculateFueling()
               return (
                 <div className="space-y-3">
-                  <div className="p-4 bg-orange-600 border-2 border-orange-500 rounded-lg shadow-sm">
+                  <div className="p-4 bg-status-caution/20 border border-status-caution/40 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="text-white font-medium">Carbohydrates</span>
                       <span className="text-white font-bold text-lg">{calc.carbsPerHour}g/h</span>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-blue-600 border-2 border-blue-500 rounded-lg shadow-sm">
+                  <div className="p-4 bg-sport-swim/20 border border-sport-swim/40 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="text-white font-medium">Fluids</span>
                       <span className="text-white font-bold text-lg">{calc.fluidPerHour}L/h</span>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-purple-600 border-2 border-purple-500 rounded-lg shadow-sm">
+                  <div className="p-4 bg-sport-run/20 border border-sport-run/40 rounded-lg">
                     <div className="flex justify-between items-center">
                       <span className="text-white font-medium">Sodium</span>
                       <span className="text-white font-bold text-lg">{calc.sodiumPerHour}mg/h</span>
@@ -306,7 +307,7 @@ export function TodayWorkoutHero({
 
   const CoachTomPanel = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCoachTomPanel(false)} />
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowCoachTomPanel(false)} />
       <div className="relative bg-bg-surface border border-border-weak rounded-lg shadow-xl max-w-md w-full mx-4">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -365,7 +366,7 @@ export function TodayWorkoutHero({
             {workouts.map((workout, index) => {
               if (!workout || !workout.sport) return null
 
-              const IconComponent = sportIcons[workout.sport] || Footprints
+              const IconComponent = sportIcons[workout.sport] || User
               const complianceColor = getComplianceColor(workout)
               return (
                 <button
@@ -373,12 +374,8 @@ export function TodayWorkoutHero({
                   onClick={() => setActiveWorkoutIndex(index)}
                   className={cn(
                     "w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-colors relative",
-                    index === safeActiveIndex // Use safeActiveIndex instead of activeWorkoutIndex
-                      ? workout.missed
-                        ? "border-red-500 bg-bg-2 text-red-500"
-                        : workout.sport === "run"
-                          ? "border-purple-500 bg-bg-2 text-purple-500"
-                          : `${sportColors[workout.sport] || "border-border-1"} bg-bg-2`
+                    index === safeActiveIndex
+                      ? `${sportColors[workout.sport] || "border-border-1"} bg-bg-2 ${sportAccentColors[workout.sport] || "text-text-1"}`
                       : "border-border-1 text-text-3 hover:text-text-2",
                   )}
                 >
@@ -386,13 +383,19 @@ export function TodayWorkoutHero({
                   {workout.completed && (
                     <div
                       className={cn(
-                        "absolute -top-1 -right-1 w-3 h-3 rounded-full border flex items-center justify-center bg-bg-app",
-                        complianceColor
-                          ? `border-${complianceColor} text-${complianceColor}`
-                          : "border-teal-500 text-teal-500",
+                        "absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 flex items-center justify-center bg-bg-app shadow-lg",
+                        workout.missed
+                          ? "border-status-danger bg-status-danger text-white"
+                          : workout.completed
+                            ? "border-status-success bg-status-success text-white"
+                            : "border-status-caution bg-status-caution text-white"
                       )}
                     >
-                      <Check className="w-2 h-2" />
+                      {workout.missed ? (
+                        <X className="w-2.5 h-2.5" />
+                      ) : (
+                        <Check className="w-2.5 h-2.5" />
+                      )}
                     </div>
                   )}
                 </button>
@@ -403,7 +406,7 @@ export function TodayWorkoutHero({
 
         {/* Readiness Banner */}
         {readinessLow && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div className="mb-6 p-4 bg-status-danger/10 border border-status-danger/20 rounded-lg">
             <div className="flex items-center justify-between">
               <span className="text-red-400 text-sm">Capacity suggests adaptation</span>
               <div className="flex gap-2">
@@ -441,11 +444,11 @@ export function TodayWorkoutHero({
             <div
               className={cn(
                 "p-3 rounded-lg border-2 transition-colors relative",
-                currentWorkout.sport === "swim" && "bg-swim/10 border-swim text-swim",
-                currentWorkout.sport === "bike" && !currentWorkout.completed && "bg-bike/10 border-bike text-bike",
-                currentWorkout.sport === "bike" && currentWorkout.completed && "bg-bike/10 border-amber-500 text-bike",
-                currentWorkout.sport === "run" && "bg-purple-500/10 border-purple-500 text-purple-500",
-                currentWorkout.missed && "bg-red-500/10 border-red-500 text-red-500",
+                currentWorkout.sport === "swim" && "bg-sport-swim/10 border-sport-swim text-sport-swim",
+                currentWorkout.sport === "bike" && !currentWorkout.completed && "bg-sport-bike/10 border-sport-bike text-sport-bike",
+                currentWorkout.sport === "bike" && currentWorkout.completed && "bg-sport-bike/10 border-amber-500 text-sport-bike",
+                currentWorkout.sport === "run" && "bg-sport-run/10 border-sport-run text-sport-run",
+                currentWorkout.missed && "bg-status-danger/10 border-status-danger text-status-danger",
               )}
             >
               <SportIcon className="w-6 h-6" />
@@ -462,7 +465,7 @@ export function TodayWorkoutHero({
                   {currentWorkout.completed ? currentWorkout.time || "0:00" : currentWorkout.duration || "0:00"}
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-1 bg-red-500/40 text-red-200 border border-red-500/50 text-xs rounded font-medium">
+                  <span className="px-2 py-1 bg-status-danger/40 text-status-danger/80 border border-status-danger/50 text-xs rounded font-medium">
                     {currentWorkout.load || 0}
                   </span>
                   <span className="px-2 py-1 bg-bg-raised border border-border-weak text-text-2 text-xs rounded">
@@ -470,15 +473,6 @@ export function TodayWorkoutHero({
                   </span>
                 </div>
               </div>
-              {!currentWorkout.completed && currentWorkout.fueling && currentWorkout.fueling.length > 0 && (
-                <div className="flex items-center gap-2 mt-2">
-                  {currentWorkout.fueling.map((fuel, index) => (
-                    <span key={index} className="px-2 py-1 bg-orange-600 text-white text-xs rounded font-medium">
-                      {fuel}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -492,7 +486,7 @@ export function TodayWorkoutHero({
           <div className="mb-6 p-6 bg-bg-raised rounded-lg border border-border-weak">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-text-1 font-semibold flex items-center gap-2">
-                <Coffee className="w-5 h-5 text-orange-500" />
+                <Coffee className="w-5 h-5 text-sport-bike" />
                 Today's Fuelling Strategy
               </h4>
               <button
@@ -505,24 +499,24 @@ export function TodayWorkoutHero({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="p-4 bg-green-600 rounded-lg border border-green-700">
+              <div className="p-4 bg-bg-surface/50 rounded-lg hover:bg-bg-surface/70 transition-colors" style={{ borderColor: 'rgba(31, 41, 55, 0.4)' }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="w-3 h-3 bg-text-secondary rounded-full"></div>
                   <span className="text-white text-sm font-semibold">Pre-Workout</span>
                 </div>
-                <p className="text-green-100 text-sm">
+                <p className="text-white/90 text-sm">
                   1–4 g/kg carbs
                   <br />
                   5–10 mL/kg fluid
                 </p>
               </div>
 
-              <div className="p-4 bg-blue-600 rounded-lg border border-blue-700">
+              <div className="p-4 bg-bg-surface/50 rounded-lg hover:bg-bg-surface/70 transition-colors" style={{ borderColor: 'rgba(31, 41, 55, 0.4)' }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="w-3 h-3 bg-text-secondary rounded-full"></div>
                   <span className="text-white text-sm font-semibold">During Workout</span>
                 </div>
-                <p className="text-blue-100 text-sm">
+                <p className="text-white/90 text-sm">
                   30–90 g/h carbs
                   <br />
                   0.4–0.8 L/h fluid
@@ -531,12 +525,12 @@ export function TodayWorkoutHero({
                 </p>
               </div>
 
-              <div className="p-4 bg-purple-600 rounded-lg border border-purple-700">
+              <div className="p-4 bg-bg-surface/50 rounded-lg hover:bg-bg-surface/70 transition-colors" style={{ borderColor: 'rgba(31, 41, 55, 0.4)' }}>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="w-3 h-3 bg-text-secondary rounded-full"></div>
                   <span className="text-white text-sm font-semibold">Post-Workout</span>
                 </div>
-                <p className="text-purple-100 text-sm">
+                <p className="text-white/90 text-sm">
                   1–1.2 g/kg carbs
                   <br />
                   20–40 g protein
@@ -631,12 +625,12 @@ export function TodayWorkoutHero({
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-teal-500">95%</span>
+                        <span className="text-xs text-status-success">95%</span>
                       </div>
                       <div className="relative h-2 bg-gray-600/30 rounded overflow-hidden">
                         <div className="absolute inset-0 bg-gray-600/10 rounded" />
                         <div
-                          className="relative h-full transition-all duration-500 bg-teal-500 rounded"
+                          className="relative h-full transition-all duration-500 bg-status-success rounded"
                           style={{ width: "95%" }}
                         />
                       </div>
@@ -678,12 +672,12 @@ export function TodayWorkoutHero({
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-amber-500">87%</span>
+                        <span className="text-xs text-status-caution">87%</span>
                       </div>
                       <div className="relative h-2 bg-gray-600/30 rounded overflow-hidden">
                         <div className="absolute inset-0 bg-gray-600/10 rounded" />
                         <div
-                          className="relative h-full transition-all duration-500 bg-amber-500 rounded"
+                          className="relative h-full transition-all duration-500 bg-status-caution rounded"
                           style={{ width: "87%" }}
                         />
                       </div>
@@ -702,17 +696,17 @@ export function TodayWorkoutHero({
                       <div className="text-xs text-text-3">Planned</div>
                     </div>
                     <div className="text-left">
-                      <div className="text-sm font-semibold text-green-400">92 TSS</div>
+                      <div className="text-sm font-semibold text-status-success">92 TSS</div>
                       <div className="text-xs text-text-3">Actual</div>
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-green-500">108%</span>
+                        <span className="text-xs text-status-success">108%</span>
                       </div>
                       <div className="relative h-2 bg-gray-600/30 rounded overflow-hidden">
                         <div className="absolute inset-0 bg-gray-600/10 rounded" />
                         <div
-                          className="relative h-full transition-all duration-500 bg-green-500 rounded"
+                          className="relative h-full transition-all duration-500 bg-status-success rounded"
                           style={{ width: "100%" }}
                         />
                       </div>
@@ -768,7 +762,7 @@ export function TodayWorkoutHero({
                   {!showReflectionForm && (
                     <button
                       onClick={() => setShowReflectionForm(true)}
-                      className="px-3 py-1 text-sm bg-swim text-white rounded hover:bg-swim/90 transition-colors"
+                      className="btn btn-primary text-sm"
                     >
                       Add Reflection
                     </button>
@@ -790,7 +784,7 @@ export function TodayWorkoutHero({
                             className={cn(
                               "w-8 h-8 rounded-full border-2 text-sm font-medium transition-colors",
                               reflectionData.rpe === rpe
-                                ? "border-swim bg-swim text-white"
+                                ? "border-sport-swim bg-sport-swim text-white"
                                 : "border-border-weak text-text-2 hover:border-swim hover:text-swim",
                             )}
                           >
@@ -811,7 +805,7 @@ export function TodayWorkoutHero({
                             className={cn(
                               "px-4 py-2 rounded-lg border text-sm font-medium transition-colors",
                               reflectionData.feeling === feeling
-                                ? "border-swim bg-swim text-white"
+                                ? "border-sport-swim bg-sport-swim text-white"
                                 : "border-border-weak text-text-2 hover:border-swim hover:text-swim",
                             )}
                           >
@@ -864,7 +858,7 @@ export function TodayWorkoutHero({
                           // Handle save reflection
                           setShowReflectionForm(false)
                         }}
-                        className="px-4 py-2 bg-swim text-white rounded-lg hover:bg-swim/90 transition-colors font-medium"
+                        className="btn btn-primary"
                       >
                         Save Reflection
                       </button>
@@ -883,15 +877,15 @@ export function TodayWorkoutHero({
         ) : (
           <div className="mt-6 pt-4 border-t border-border-weak">
             <div className="flex gap-3 justify-center">
-              <button className="flex items-center gap-2 px-6 py-2 bg-swim text-bg-app rounded-lg hover:bg-swim/90 transition-colors font-medium">
+              <button className="btn btn-primary flex items-center gap-2">
                 <Play className="w-4 h-4" />
                 Start
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-bg-raised border border-border-weak rounded-lg hover:bg-bg-surface transition-colors">
+              <button className="btn flex items-center gap-2">
                 <Send className="w-4 h-4" />
                 Push to Device
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 bg-bg-raised border border-border-weak rounded-lg hover:bg-bg-surface transition-colors">
+              <button className="btn flex items-center gap-2">
                 <Edit className="w-4 h-4" />
                 Edit/Swap
               </button>

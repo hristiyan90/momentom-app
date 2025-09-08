@@ -1,7 +1,7 @@
 "use client"
 
 import { X, ExternalLink, Play, Edit, Send, ChevronDown, ChevronRight, Clock, Zap, Heart } from "lucide-react"
-import { Waves, Bike, Footprints, Dumbbell } from "lucide-react"
+import { Waves, Bike, Footprints } from "lucide-react"
 import type { DayAggregate } from "./MonthCell"
 import { IntensityBar } from "@/components/training/intensity-bar"
 import { useState } from "react"
@@ -17,22 +17,21 @@ const sportIcons = {
   swim: Waves,
   bike: Bike,
   run: Footprints,
-  strength: Dumbbell,
 }
 
 const sportColors = {
-  swim: "text-swim border-swim bg-swim/10",
-  bike: "text-bike border-bike bg-bike/10",
-  run: "text-purple-500 border-purple-500 bg-purple-500/10",
-  strength: "text-gray-400 border-gray-400 bg-gray-400/10",
+  swim: "chip chip-sport-swim",
+  bike: "chip chip-sport-bike",
+  run: "chip chip-sport-run",
+  strength: "chip text-gray-400 border-gray-400 bg-gray-400/10",
 }
 
 const intensityColors = {
-  recovery: "bg-green-600 text-white",
-  endurance: "bg-blue-600 text-white",
-  tempo: "bg-yellow-600 text-white",
-  threshold: "bg-orange-600 text-white",
-  vo2: "bg-red-600 text-white",
+  recovery: "badge badge-good",
+  endurance: "badge badge-info",
+  tempo: "badge badge-ok",
+  threshold: "badge badge-low",
+  vo2: "badge badge-critical",
 }
 
 export function CalendarSidebar({ date, dayData, onClose }: CalendarSidebarProps) {
@@ -116,18 +115,18 @@ export function CalendarSidebar({ date, dayData, onClose }: CalendarSidebarProps
                         {session.intensity}
                       </span>
                       {session.load && (
-                        <span className="px-2 py-0.5 bg-red-600 text-white text-xs rounded font-medium">
+                        <span className="badge badge-critical">
                           {session.load}
                         </span>
                       )}
                       {isCompleted && (
                         <span
-                          className={`px-2 py-0.5 rounded text-xs font-medium ${
+                          className={`badge ${
                             isMissed
-                              ? "bg-red-600 text-white"
+                              ? "badge-critical"
                               : session.compliance >= 85
-                                ? "bg-green-600 text-white"
-                                : "bg-yellow-600 text-white"
+                                ? "badge-good"
+                                : "badge-ok"
                           }`}
                         >
                           {isMissed ? "Missed" : session.compliance >= 85 ? "Completed" : "Partial"}

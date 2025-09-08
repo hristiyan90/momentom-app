@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { DayPopover } from "./DayPopover"
-import { Waves, Bike, Footprints, Dumbbell, AlertTriangle, Plane, Briefcase, Users, MoreHorizontal } from "lucide-react"
+import { Waves, Bike, User, Dumbbell, AlertTriangle, Plane, Briefcase, Users, MoreHorizontal } from "lucide-react"
 
 type Intensity = "recovery" | "endurance" | "tempo" | "threshold" | "vo2"
 type Sport = "swim" | "bike" | "run" | "strength"
@@ -61,7 +61,16 @@ interface MonthCellProps {
     description?: string
   }
   onLifeBlockerClick?: (date: Date) => void
-  onRaceClick?: (date: Date) => void
+  onRaceClick?: (race: {
+    id: string
+    name: string
+    type: "A" | "B" | "C"
+    date: Date
+    location: string
+    distance: string
+    discipline: "triathlon" | "swim" | "bike" | "run"
+    description?: string
+  }) => void
   raceDetails?: {
     id: string
     name: string
@@ -85,36 +94,36 @@ const sportColors = {
 const sportIcons = {
   swim: Waves,
   bike: Bike,
-  run: Footprints,
+  run: User,
   strength: Dumbbell,
 }
 
 const loadColors = {
-  low: "bg-green-500",
-  moderate: "bg-yellow-500",
-  high: "bg-orange-500",
-  extreme: "bg-red-500",
+  low: "bg-load-low",
+  moderate: "bg-load-elevated",
+  high: "bg-load-high",
+  extreme: "bg-load-extreme",
 }
 
 const intensityColors = {
-  recovery: "bg-teal-500",
-  endurance: "bg-blue-500",
-  tempo: "bg-purple-500",
-  threshold: "bg-pink-500",
-  vo2: "bg-red-500",
+  recovery: "bg-status-success",
+  endurance: "bg-status-info",
+  tempo: "bg-status-caution",
+  threshold: "bg-status-alert",
+  vo2: "bg-status-danger",
 }
 
 const macroPhaseColors = {
-  base: "rgba(100, 116, 139, 0.1)", // #64748B with 10% opacity
-  build: "rgba(251, 146, 60, 0.1)", // #FB923C with 10% opacity
-  peak: "rgba(220, 38, 38, 0.1)", // #DC2626 with 10% opacity
-  taper: "rgba(250, 204, 21, 0.1)", // #FACC15 with 10% opacity
+  base: "rgba(46, 139, 87, 0.1)", // 10% opacity of phase-base
+  build: "rgba(255, 165, 0, 0.1)", // 10% opacity of phase-build
+  peak: "rgba(220, 20, 60, 0.1)", // 10% opacity of phase-peak
+  taper: "rgba(32, 178, 170, 0.1)", // 10% opacity of phase-taper
 }
 
 const raceTypeColors = {
-  A: "bg-red-500",
-  B: "bg-amber-500",
-  C: "bg-blue-500",
+  A: "bg-race-a",
+  B: "bg-race-b",
+  C: "bg-race-c",
 }
 
 const blockerTypeLabels = {
@@ -179,9 +188,9 @@ const getComplianceColor = (session: SessionLite, isPast: boolean) => {
   const compliance = session.load ? (session.load > 50 ? 90 : 70) : 0
   const isMissed = !session.load || session.load === 0
 
-  if (isMissed) return "border-l-red-500"
-  if (compliance < 85) return "border-l-yellow-500"
-  return "border-l-green-500"
+  if (isMissed) return "border-l-status-danger"
+  if (compliance < 85) return "border-l-status-caution"
+  return "border-l-status-success"
 }
 
 const getIconAndDotColor = (session: SessionLite, isPast: boolean) => {
@@ -199,9 +208,9 @@ const getIconAndDotColor = (session: SessionLite, isPast: boolean) => {
   const compliance = session.load ? (session.load > 50 ? 90 : 70) : 0
   const isMissed = !session.load || session.load === 0
 
-  if (isMissed) return "text-red-500"
-  if (compliance < 85) return "text-yellow-500"
-  return "text-green-500"
+  if (isMissed) return "text-status-danger"
+  if (compliance < 85) return "text-status-caution"
+  return "text-status-success"
 }
 
 const getDisciplineName = (sport: Sport): string => {
@@ -234,7 +243,7 @@ const formatDuration = (minutes: number): string => {
   return `${hours}h${remainingMinutes.toString().padStart(2, "0")}min`
 }
 
-const getOverlayStyle = (props: MonthCellProps) => {
+const getOverlayStyle = (props: { isLifeBlocker?: boolean; isDragSelection?: boolean; isSelectedRange?: boolean }) => {
   if (props.isLifeBlocker) {
     return { backgroundColor: "rgba(107, 114, 128, 0.7)" } // Gray overlay for life blockers
   }
@@ -245,10 +254,10 @@ const getOverlayStyle = (props: MonthCellProps) => {
 }
 
 const macroPhaseLineColors = {
-  base: "#64748B",
-  build: "#FB923C",
-  peak: "#DC2626",
-  taper: "#FACC15",
+  base: "var(--phase-base)",
+  build: "var(--phase-build)",
+  peak: "var(--phase-peak)",
+  taper: "var(--phase-taper)",
 }
 
 export function MonthCell({
@@ -319,8 +328,8 @@ export function MonthCell({
 
   const handleRaceClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (onRaceClick) {
-      onRaceClick(date)
+    if (onRaceClick && raceDetails) {
+      onRaceClick(raceDetails)
     }
   }
 
@@ -389,10 +398,15 @@ export function MonthCell({
             {isToday && <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>}
             {raceType && (
               <div
-                className={`w-4 h-4 ${raceTypeColors[raceType]} text-white text-xs font-bold rounded flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity`}
+                className="px-2 py-1 text-xs font-medium rounded border cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ 
+                  backgroundColor: `rgba(from var(--race-${raceType.toLowerCase()}) r g b / 0.2)`, 
+                  borderColor: `var(--race-${raceType.toLowerCase()})`, 
+                  color: `var(--race-${raceType.toLowerCase()})` 
+                }}
                 onClick={handleRaceClick}
               >
-                {raceType}
+                {raceType} Race
               </div>
             )}
           </div>
@@ -453,7 +467,7 @@ export function MonthCell({
                         {Array.from({ length: intensityDots }).map((_, dotIndex) => (
                           <div
                             key={dotIndex}
-                            className={`w-1.5 h-1.5 rounded-full ${iconColor.replace("text-", "bg-")}`}
+                            className={`calendar-dot ${iconColor.replace("text-", "bg-")}`}
                           />
                         ))}
                       </div>

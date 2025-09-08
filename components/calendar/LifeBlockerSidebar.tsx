@@ -91,7 +91,7 @@ export function LifeBlockerSidebar({
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
 
       <div className="ml-auto w-96 bg-bg-app border-l border-border-weak h-full flex flex-col relative z-10 shadow-2xl animate-in slide-in-from-right duration-300">
         {/* Header */}

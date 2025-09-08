@@ -88,7 +88,7 @@ export function WorkoutGraph({ className }: WorkoutGraphProps) {
             onClick={() => toggleMetric("power")}
             className={`flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded transition-colors ${
               visibleMetrics.power
-                ? "bg-teal-500/10 text-teal-400 border border-teal-500/20"
+                ? "bg-zone-1/10 text-zone-1 border border-zone-1/20"
                 : "text-text-3 hover:text-text-2"
             }`}
           >
@@ -99,7 +99,7 @@ export function WorkoutGraph({ className }: WorkoutGraphProps) {
             onClick={() => toggleMetric("heartRate")}
             className={`flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded transition-colors ${
               visibleMetrics.heartRate
-                ? "bg-pink-500/10 text-pink-400 border border-pink-500/20"
+                ? "bg-zone-4/10 text-zone-4 border border-zone-4/20"
                 : "text-text-3 hover:text-text-2"
             }`}
           >
@@ -110,7 +110,7 @@ export function WorkoutGraph({ className }: WorkoutGraphProps) {
             onClick={() => toggleMetric("cadence")}
             className={`flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded transition-colors ${
               visibleMetrics.cadence
-                ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
+                ? "bg-zone-3/10 text-zone-3 border border-zone-3/20"
                 : "text-text-3 hover:text-text-2"
             }`}
           >
@@ -121,7 +121,7 @@ export function WorkoutGraph({ className }: WorkoutGraphProps) {
             onClick={() => toggleMetric("speed")}
             className={`flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded transition-colors ${
               visibleMetrics.speed
-                ? "bg-orange-500/10 text-orange-400 border border-orange-500/20"
+                ? "bg-zone-2/10 text-zone-2 border border-zone-2/20"
                 : "text-text-3 hover:text-text-2"
             }`}
           >
@@ -176,19 +176,19 @@ export function WorkoutGraph({ className }: WorkoutGraphProps) {
           <div className="absolute bottom-6 left-4 flex gap-4 text-xs">
             {visibleMetrics.power && (
               <div className="flex items-center gap-2">
-                <div className="w-3 h-0.5 bg-teal-400"></div>
+                <div className="w-3 h-0.5 bg-zone-1"></div>
                 <span className="text-text-3">Power</span>
               </div>
             )}
             {visibleMetrics.heartRate && (
               <div className="flex items-center gap-2">
-                <div className="w-3 h-0.5 bg-pink-400"></div>
+                <div className="w-3 h-0.5 bg-zone-4"></div>
                 <span className="text-text-3">Heart Rate</span>
               </div>
             )}
             {visibleMetrics.cadence && (
               <div className="flex items-center gap-2">
-                <div className="w-3 h-0.5 bg-purple-400"></div>
+                <div className="w-3 h-0.5 bg-zone-3"></div>
                 <span className="text-text-3">Cadence</span>
               </div>
             )}

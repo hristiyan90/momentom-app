@@ -28,7 +28,6 @@ const sportIcons = {
   swim: Waves,
   bike: Bike,
   run: Footprints,
-  hr: Heart,
 }
 
 const sportColors = {
@@ -39,11 +38,11 @@ const sportColors = {
 }
 
 const defaultZoneColors = [
-  "var(--zone-1)", // Z1 - Cyan
-  "var(--zone-2)", // Z2 - Blue
-  "var(--zone-3)", // Z3 - Indigo
-  "var(--zone-4)", // Z4 - Purple
-  "var(--zone-5)", // Z5 - Pink
+  "#22D3EE", // Z1 - Cyan
+  "#3B82F6", // Z2 - Blue
+  "#8B5CF6", // Z3 - Indigo
+  "#EC4899", // Z4 - Purple
+  "#EF4444", // Z5 - Pink
 ]
 
 const mockZoneData: Record<string, ZoneData> = {

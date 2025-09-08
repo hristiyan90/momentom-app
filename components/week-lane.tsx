@@ -1,8 +1,8 @@
 "use client"
 import { InlineDrawer } from "./inline-drawer"
 import { IntensityBar } from "./training/intensity-bar"
-import { useState } from "react"
-import { Play, Edit, X, Waves, Bike, Footprints, Clock, Zap, Heart } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Play, Edit, X, ChevronLeft, Waves, Bike, Footprints, Clock, Zap, Heart } from "lucide-react"
 
 interface WeekSession {
   id: string
@@ -217,33 +217,44 @@ const formatDuration = (duration: string): string => {
   }
 }
 
+const getIntensityDots = (intensity: number) => {
+  const intensityLevels = {
+    1: 1, // recovery
+    2: 1, // endurance  
+    3: 2, // tempo
+    4: 3, // threshold
+    5: 3, // vo2
+  }
+  return intensityLevels[intensity as keyof typeof intensityLevels] || 1
+}
+
 const getWorkoutType = (intensity: number): { label: string; color: string } => {
-  if (intensity <= 2) return { label: "Recovery", color: "bg-emerald-600/50 text-emerald-100" }
-  if (intensity === 3) return { label: "Endurance", color: "bg-blue-600/50 text-blue-100" }
-  if (intensity === 4) return { label: "Tempo", color: "bg-yellow-600/50 text-yellow-100" }
-  return { label: "VO2max", color: "bg-red-600/50 text-red-100" }
+  if (intensity <= 2) return { label: "Recovery", color: "badge badge-good" }
+  if (intensity === 3) return { label: "Endurance", color: "badge badge-info" }
+  if (intensity === 4) return { label: "Tempo", color: "badge badge-ok" }
+  return { label: "VO2max", color: "badge badge-critical" }
 }
 
 const getStatusBadge = (session: WeekSession) => {
   if (session.missed) {
-    return { label: "Missed", color: "bg-red-600/50 text-red-100" }
+    return { label: "Missed", color: "badge badge-critical" }
   }
   if (session.completed) {
     if (session.compliance && session.compliance < 85) {
-      return { label: "Completed", color: "bg-yellow-600/50 text-yellow-100" }
+      return { label: "Completed", color: "badge badge-ok" }
     }
-    return { label: "Completed", color: "bg-emerald-600/50 text-emerald-100" }
+    return { label: "Completed", color: "badge badge-good" }
   }
   return null
 }
 
 const getSessionCardColor = (session: WeekSession): string => {
-  if (session.missed) return "border-red-500/30 bg-red-500/5"
+  if (session.missed) return "border-status-danger/30 bg-status-danger/5"
   if (session.completed) {
     if (session.compliance && session.compliance < 85) {
-      return "border-yellow-500/30 bg-yellow-500/5"
+      return "border-status-caution/30 bg-status-caution/5"
     }
-    return "border-emerald-500/30 bg-emerald-500/5"
+    return "border-status-success/30 bg-status-success/5"
   }
   return "border-border-weak bg-bg-raised"
 }
@@ -297,9 +308,313 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
     window.location.href = `/training?session=${session.id}`
   }
 
+  const SwapSessionDrawer = () => {
+    if (!selectedSessionForSwap) return null
+
+    const drawerRef = useRef<HTMLDivElement>(null)
+
+    // Handle keyboard navigation and focus management
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setSwapDrawerOpen(false)
+          setSelectedSessionForSwap(null)
+        }
+      }
+
+      // Focus the drawer when it opens
+      if (drawerRef.current) {
+        drawerRef.current.focus()
+      }
+
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }, [])
+
+    const swapOptions = [
+      {
+        id: "rest",
+        title: "Rest Day",
+        description: "Take a complete rest day",
+        icon: "😴",
+        duration: "0:00",
+        intensity: 0,
+        sport: "rest" as const,
+      },
+      {
+        id: "recovery-swim",
+        title: "Easy Recovery Swim",
+        description: "Low intensity technique work",
+        icon: "🏊",
+        duration: "0:45",
+        intensity: 1,
+        sport: "swim" as const,
+      },
+      {
+        id: "recovery-bike",
+        title: "Easy Recovery Ride",
+        description: "Light spinning to promote recovery",
+        icon: "🚴",
+        duration: "1:00",
+        intensity: 1,
+        sport: "bike" as const,
+      },
+      {
+        id: "recovery-run",
+        title: "Easy Recovery Run",
+        description: "Gentle jog to maintain fitness",
+        icon: "🏃",
+        duration: "0:30",
+        intensity: 1,
+        sport: "run" as const,
+      },
+      {
+        id: "endurance-swim",
+        title: "Endurance Swim",
+        description: "Steady aerobic swimming",
+        icon: "🏊",
+        duration: "1:15",
+        intensity: 2,
+        sport: "swim" as const,
+      },
+      {
+        id: "endurance-bike",
+        title: "Endurance Ride",
+        description: "Steady aerobic cycling",
+        icon: "🚴",
+        duration: "1:30",
+        intensity: 2,
+        sport: "bike" as const,
+      },
+      {
+        id: "endurance-run",
+        title: "Endurance Run",
+        description: "Steady aerobic running",
+        icon: "🏃",
+        duration: "1:00",
+        intensity: 2,
+        sport: "run" as const,
+      },
+      {
+        id: "tempo-swim",
+        title: "Tempo Swim",
+        description: "Moderate intensity intervals",
+        icon: "🏊",
+        duration: "1:00",
+        intensity: 3,
+        sport: "swim" as const,
+      },
+      {
+        id: "tempo-bike",
+        title: "Tempo Ride",
+        description: "Moderate intensity intervals",
+        icon: "🚴",
+        duration: "1:15",
+        intensity: 3,
+        sport: "bike" as const,
+      },
+      {
+        id: "tempo-run",
+        title: "Tempo Run",
+        description: "Moderate intensity intervals",
+        icon: "🏃",
+        duration: "0:45",
+        intensity: 3,
+        sport: "run" as const,
+      },
+    ]
+
+    const handleSwapConfirm = (option: typeof swapOptions[0]) => {
+      console.log("Session swapped:", {
+        from: selectedSessionForSwap,
+        to: option,
+        timestamp: new Date().toISOString(),
+      })
+      setSwapDrawerOpen(false)
+      setSelectedSessionForSwap(null)
+    }
+
+    return (
+      <div className="fixed inset-0 z-50">
+        {/* Backdrop */}
+        <div 
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300"
+          onClick={() => setSwapDrawerOpen(false)}
+        />
+        
+        {/* Side Drawer */}
+        <div 
+          ref={drawerRef}
+          className="fixed inset-y-0 right-0 w-96 bg-bg-surface border-l border-border-weak shadow-xl z-50 overflow-y-auto transform transition-transform duration-300 ease-out focus:outline-none animate-in slide-in-from-right"
+          tabIndex={-1}
+        >
+          {/* Header */}
+          <div className="sticky top-0 bg-bg-surface border-b border-border-weak p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setSwapDrawerOpen(false)}
+                  className="p-1 hover:bg-bg-raised rounded-lg transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5 text-text-2" />
+                </button>
+                <div>
+                  <h3 className="text-lg font-semibold text-text-1">Swap Session</h3>
+                  <p className="text-sm text-text-2 mt-1">
+                    Replace "{selectedSessionForSwap.title}" with an alternative
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSwapDrawerOpen(false)}
+                className="p-2 hover:bg-bg-raised rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-text-2" />
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            <div className="space-y-6">
+              {/* Current session info */}
+              <div className="p-4 bg-bg-raised rounded-lg border border-border-weak">
+                <div className="text-sm text-text-2 mb-2">Replacing current session:</div>
+                <div className="flex items-center gap-3">
+                  {selectedSessionForSwap.sport === "swim" && <Waves className="w-5 h-5 text-sport-swim" />}
+                  {selectedSessionForSwap.sport === "bike" && <Bike className="w-5 h-5 text-sport-bike" />}
+                  {selectedSessionForSwap.sport === "run" && <Footprints className="w-5 h-5 text-sport-run" />}
+                  <div>
+                    <div className="font-medium text-text-1">{selectedSessionForSwap.title}</div>
+                    <div className="text-sm text-text-2">{formatDuration(selectedSessionForSwap.duration)}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Loading state */}
+              <div className="p-4 bg-bg-raised rounded-lg border border-border-weak">
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-brand border-t-transparent"></div>
+                  <span className="text-sm text-text-2">Loading alternative workouts...</span>
+                </div>
+              </div>
+
+              {/* Swap options */}
+              <div className="space-y-4">
+                <h4 className="text-text-1 font-medium">Alternative workouts for {selectedSessionForSwap.title}</h4>
+                <div className="space-y-3">
+                  {swapOptions.map((option) => {
+                    const workoutType = getWorkoutType(option.intensity)
+                    const isRest = option.sport === "rest"
+                    const Icon = isRest ? Heart : (
+                      option.sport === "swim" ? Waves :
+                      option.sport === "bike" ? Bike : Footprints
+                    )
+                    const disciplineName = isRest ? "Rest" : (
+                      option.sport === "swim" ? "Swim" :
+                      option.sport === "bike" ? "Bike" : "Run"
+                    )
+                    const intensityDots = isRest ? 0 : getIntensityDots(option.intensity)
+                    const formattedDuration = formatDuration(option.duration)
+                    
+                    return (
+                      <div
+                        key={option.id}
+                        className="p-4 bg-bg-raised rounded-lg border border-border-weak hover:border-brand/30 transition-colors"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <Icon className={`w-5 h-5 ${isRest ? "text-gray-400" : `text-sport-${option.sport}`}`} />
+                            <div>
+                              <h5 className="font-medium text-text-1">{option.title}</h5>
+                              <div className="text-sm text-text-2">{formattedDuration}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            {Array.from({ length: 5 }).map((_, dotIndex) => (
+                              <div
+                                key={dotIndex}
+                                className={`w-2 h-2 rounded-full ${
+                                  dotIndex < intensityDots 
+                                    ? `bg-sport-${option.sport}` 
+                                    : "bg-gray-600"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-text-2 mb-4">{option.description}</p>
+                        <button
+                          onClick={() => handleSwapConfirm(option)}
+                          className="w-full btn btn-primary-outline"
+                        >
+                          Select This Workout
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Additional options */}
+              <div className="pt-4 border-t border-border-weak">
+                <div className="space-y-3">
+                  <h4 className="text-text-1 font-medium">Other Options</h4>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-bg-raised rounded-lg border border-border-weak hover:border-brand/30 transition-colors">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-5 h-5 bg-purple-500 rounded flex items-center justify-center">
+                          <span className="text-white text-xs">⚙</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-text-1">Custom Session</h5>
+                          <div className="text-sm text-text-2">Create a custom workout</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          console.log("Custom session requested")
+                          setSwapDrawerOpen(false)
+                        }}
+                        className="w-full btn btn-primary-outline"
+                      >
+                        Create Custom Workout
+                      </button>
+                    </div>
+                    
+                    <div className="p-4 bg-bg-raised rounded-lg border border-border-weak hover:border-brand/30 transition-colors">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center">
+                          <span className="text-white text-xs">📅</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-text-1">Move Session</h5>
+                          <div className="text-sm text-text-2">Reschedule to another day</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          console.log("Move session requested")
+                          setSwapDrawerOpen(false)
+                        }}
+                        className="w-full btn btn-primary-outline"
+                      >
+                        Move to Another Day
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const AdaptationModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAdaptationModal(false)} />
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowAdaptationModal(false)} />
       <div className="relative bg-bg-surface border border-border-weak rounded-lg shadow-xl max-w-md w-full mx-4">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -430,7 +745,7 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                           <div className="flex">
                             <div
                               className={`w-1 rounded-l-lg ${
-                                session.sport === "swim" ? "bg-swim" : session.sport === "bike" ? "bg-bike" : "bg-run"
+                                session.sport === "swim" ? "bg-sport-swim" : session.sport === "bike" ? "bg-sport-bike" : "bg-sport-run"
                               }`}
                             />
 
@@ -438,9 +753,9 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                               <div className="flex items-center gap-3 flex-1 min-w-0">
                                 {/* Sport icon */}
                                 <div className="flex-shrink-0">
-                                  {session.sport === "swim" && <Waves className="w-4 h-4 text-swim" />}
-                                  {session.sport === "bike" && <Bike className="w-4 h-4 text-bike" />}
-                                  {session.sport === "run" && <Footprints className="w-4 h-4 text-run" />}
+                                  {session.sport === "swim" && <Waves className="w-4 h-4 text-sport-swim" />}
+                                  {session.sport === "bike" && <Bike className="w-4 h-4 text-sport-bike" />}
+                                  {session.sport === "run" && <Footprints className="w-4 h-4 text-sport-run" />}
                                 </div>
 
                                 {/* Session title */}
@@ -699,7 +1014,7 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                                   { label: "WU 10′ Z1", zone: "Z1" as const, minutes: 10 },
                                   {
                                     label: `MS ${Math.round(Number.parseInt(session.duration) * 0.6)}′ Z${session.intensity}`,
-                                    zone: `Z${session.intensity}` as const,
+                                    zone: `Z${session.intensity}` as "Z1" | "Z2" | "Z3" | "Z4" | "Z5",
                                     minutes: Math.round(Number.parseInt(session.duration) * 0.6),
                                   },
                                   { label: "CD 10′ Z1", zone: "Z1" as const, minutes: 10 },
@@ -784,14 +1099,14 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                                 <>
                                   <button
                                     onClick={() => handleViewSession(session)}
-                                    className="flex items-center gap-2 px-6 py-2 bg-swim text-bg-app rounded-lg hover:bg-swim/90 transition-colors font-medium"
+                                    className="btn btn-primary flex items-center gap-2"
                                   >
                                     <Play className="w-4 h-4" />
                                     View Session
                                   </button>
                                   <button
                                     onClick={() => handleSwapSession(session)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-bg-surface border border-border-weak rounded-lg hover:bg-bg-raised transition-colors"
+                                    className="btn flex items-center gap-2"
                                   >
                                     <Edit className="w-4 h-4" />
                                     Swap Session
@@ -800,7 +1115,7 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                               ) : (
                                 <button
                                   onClick={() => handleViewSession(session)}
-                                  className="px-6 py-2 bg-success/20 text-success rounded-lg font-medium"
+                                  className="btn btn-primary"
                                 >
                                   View Completed Session
                                 </button>
@@ -819,6 +1134,8 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
       })}
 
       {showAdaptationModal && <AdaptationModal />}
+      {swapDrawerOpen && <SwapSessionDrawer />}
     </div>
   )
 }
+

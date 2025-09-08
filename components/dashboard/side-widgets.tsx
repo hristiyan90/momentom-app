@@ -375,7 +375,7 @@ export function SideWidgets({
         <h3 className="text-text-1 font-medium mb-4">Constraints</h3>
         <div className="space-y-2 mb-4">
           {constraints.map((constraint, index) => (
-            <span key={index} className="inline-block px-2 py-1 bg-yellow-600 text-white text-xs rounded mr-2 mb-2">
+            <span key={index} className="inline-block badge badge-ok mr-2 mb-2">
               {constraint}
             </span>
           ))}
@@ -419,7 +419,7 @@ export function SideWidgets({
             <div className="text-text-2 text-xs mb-1">{currentRace.date}</div>
             <div className="text-text-2 text-xs mb-2">{currentRace.location}</div>
             <div className="mt-3">
-              <span className="px-2 py-1 bg-green-600 text-white text-xs rounded">{currentRace.distance}</span>
+              <span className="badge badge-good">{currentRace.distance}</span>
             </div>
 
             <div className="mt-4 pt-4 border-t border-border-weak">

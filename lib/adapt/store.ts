@@ -97,20 +97,20 @@ export async function fetchBlockers(athleteId: string, startISO: string, endISO:
 function dbRowToAdaptation(row: any): Adaptation {
   return {
     adaptation_id: row.adaptation_id,
-    athlete_id: row.athlete_id,
     plan_id: row.plan_id,
     scope: row.scope,
-    impact_start: row.impact_start,
-    impact_end: row.impact_end,
+    impact_window: { start: row.impact_start, end: row.impact_end },
     reason_code: row.reason_code,
-    triggers: row.triggers || [],
-    changes: row.changes_json || [],
+    triggers: row.triggers ?? [],
+    changes: row.changes_json ?? [],
+    decision: 'proposed',
     plan_version_before: row.plan_version_before,
-    rationale_text: row.rationale_text,
-    driver_attribution: row.driver_attribution,
-    data_snapshot: row.data_snapshot,
-    explainability_id: row.explainability_id,
-    created_at: row.created_at
+    plan_version_after: null,
+    rationale: {
+      text: row.rationale_text,
+      driver_attribution: row.driver_attribution ?? [],
+      data_snapshot: row.data_snapshot ?? {}
+    }
   };
 }
 
@@ -127,11 +127,10 @@ function adaptationToDbRow(adaptation: Adaptation, additionalFields: any = {}) {
     triggers: adaptation.triggers,
     changes_json: adaptation.changes,
     plan_version_before: adaptation.plan_version_before,
-    rationale_text: adaptation.rationale_text,
-    driver_attribution: adaptation.driver_attribution,
-    data_snapshot: adaptation.data_snapshot,
+    rationale_text: adaptation.rationale.text,
+    driver_attribution: adaptation.rationale.driver_attribution,
+    data_snapshot: adaptation.rationale.data_snapshot,
     explainability_id: adaptation.explainability_id,
-    created_at: adaptation.created_at,
     ...additionalFields
   };
 }
@@ -355,12 +354,12 @@ export async function writeDecision(input: {
       athlete_id: input.athlete_id,
       plan_id: input.plan_id,
       decision: input.decision,
-      final_changes: input.final_changes,
+      changes_json: input.final_changes,
       plan_version_before: input.plan_version_before,
+      plan_version_after: input.decision === 'rejected' ? null : input.plan_version_before + 1,
       rationale_text: input.rationale_text,
       driver_attribution: input.driver_attribution,
-      explainability_id: input.explainability_id,
-      created_at: new Date().toISOString()
+      explainability_id: input.explainability_id
     })
     .select('*')
     .single();
@@ -372,6 +371,51 @@ export async function writeDecision(input: {
 
   console.log('✅ Decision written successfully:', data.id);
   
-  // For now, return null for plan_version_after since we're not updating the plan
-  return { plan_version_after: null };
+  return { plan_version_after: data.plan_version_after };
+}
+
+export async function bumpPlanVersion(planId: string): Promise<number> {
+  const supabase = createSupabaseAdmin();
+  
+  console.log('📈 Bumping plan version:', planId);
+  
+  // First get the current version
+  const { data: currentData, error: fetchError } = await supabase
+    .from('plan')
+    .select('version')
+    .eq('plan_id', planId)
+    .single();
+
+  if (fetchError) {
+    console.error('❌ Plan fetch error:', fetchError);
+    throw new Error(`Failed to fetch plan: ${fetchError.message}`);
+  }
+
+  if (!currentData) {
+    console.error('❌ No plan found');
+    throw new Error('No plan found');
+  }
+
+  const newVersion = currentData.version + 1;
+
+  // Update to the new version
+  const { data, error } = await supabase
+    .from('plan')
+    .update({ version: newVersion })
+    .eq('plan_id', planId)
+    .select('version')
+    .single();
+
+  if (error) {
+    console.error('❌ Plan version bump error:', error);
+    throw new Error(`Failed to bump plan version: ${error.message}`);
+  }
+
+  if (!data) {
+    console.error('❌ No data returned from plan version bump');
+    throw new Error('No data returned from plan version bump');
+  }
+
+  console.log('✅ Plan version bumped to:', data.version);
+  return data.version;
 }

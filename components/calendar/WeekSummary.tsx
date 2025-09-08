@@ -11,26 +11,20 @@ interface WeekSummaryProps {
 }
 
 const sportColors = {
-  swim: "bg-teal-500",
-  bike: "bg-orange-500",
-  run: "bg-purple-500",
+  swim: "bg-sport-swim",
+  bike: "bg-sport-bike",
+  run: "bg-sport-run",
   strength: "bg-gray-500",
 }
 
 const intensityColors = {
-  recovery: "bg-green-500",
-  endurance: "bg-blue-500",
-  tempo: "bg-yellow-500",
-  threshold: "bg-orange-500",
-  vo2: "bg-red-500",
+  recovery: "bg-status-success",
+  endurance: "bg-status-info",
+  tempo: "bg-status-caution",
+  threshold: "bg-status-alert",
+  vo2: "bg-status-danger",
 }
 
-const phaseColors = {
-  Base: "#64748B",
-  Build: "#FB923C",
-  Peak: "#DC2626",
-  Taper: "#FACC15",
-}
 
 export function WeekSummary({ loadBySport, intensityMix, planned, completed }: WeekSummaryProps) {
   const [showPhaseDetails, setShowPhaseDetails] = useState(false)
@@ -167,7 +161,7 @@ export function WeekSummary({ loadBySport, intensityMix, planned, completed }: W
         <div
           className="flex items-center gap-3 p-3 rounded-lg border border-border-weak cursor-pointer hover:bg-bg-raised transition-colors"
           style={{
-            borderLeftColor: phaseColors[currentPhase.name as keyof typeof phaseColors],
+            borderLeftColor: `var(--phase-${currentPhase.name.toLowerCase()})`,
             borderLeftWidth: "4px",
           }}
           onMouseEnter={() => setShowPhaseDetails(true)}
@@ -181,7 +175,7 @@ export function WeekSummary({ loadBySport, intensityMix, planned, completed }: W
           </div>
           <div
             className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: phaseColors[currentPhase.name as keyof typeof phaseColors] }}
+            style={{ backgroundColor: `var(--phase-${currentPhase.name.toLowerCase()})` }}
           />
         </div>
 
@@ -191,7 +185,7 @@ export function WeekSummary({ loadBySport, intensityMix, planned, completed }: W
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: phaseColors[currentPhase.name as keyof typeof phaseColors] }}
+                  style={{ backgroundColor: `var(--phase-${currentPhase.name.toLowerCase()})` }}
                 />
                 <span className="font-medium text-text-1">{currentPhase.name} Phase</span>
               </div>

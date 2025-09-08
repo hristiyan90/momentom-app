@@ -142,7 +142,7 @@ export function WeeklySummary({ weekData }: WeeklySummaryProps) {
             </div>
             <div className="flex w-full h-1 rounded-full overflow-hidden mb-2">
               {Object.entries(stubData.intensityMix.zones).map(([zone, minutes], i) => {
-                const zoneColors = ["var(--zone-1)", "var(--zone-2)", "var(--zone-3)", "var(--zone-4)", "var(--zone-5)"]
+                const zoneColors = ["#22D3EE", "#3B82F6", "#8B5CF6", "#EC4899", "#EF4444"]
                 const width = (minutes / totalMinutes) * 100
                 return <div key={zone} style={{ backgroundColor: zoneColors[i], width: `${width}%` }} />
               })}
@@ -157,11 +157,11 @@ export function WeeklySummary({ weekData }: WeeklySummaryProps) {
               <div className="flex w-full h-1 rounded-full overflow-hidden mb-3">
                 {Object.entries(stubData.intensityMix.zones).map(([zone, minutes], i) => {
                   const zoneColors = [
-                    "var(--zone-1)",
-                    "var(--zone-2)",
-                    "var(--zone-3)",
-                    "var(--zone-4)",
-                    "var(--zone-5)",
+                    "#22D3EE",
+                    "#3B82F6",
+                    "#8B5CF6",
+                    "#EC4899",
+                    "#EF4444",
                   ]
                   const width = (minutes / totalMinutes) * 100
                   return <div key={zone} style={{ backgroundColor: zoneColors[i], width: `${width}%` }} />

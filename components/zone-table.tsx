@@ -23,13 +23,13 @@ const sportColors = {
 }
 
 const zoneColors = {
-  Z1: "bg-emerald-600/50 text-emerald-100",
-  Z2: "bg-blue-600/50 text-blue-100",
-  Z3: "bg-yellow-600/50 text-yellow-100",
-  Z4: "bg-orange-600/50 text-orange-100",
-  Z5a: "bg-red-600/50 text-red-100",
-  Z5b: "bg-red-700/60 text-red-100",
-  Z5c: "bg-red-800/70 text-red-100",
+  Z1: "bg-zone-1/50 text-zone-1/90",
+  Z2: "bg-zone-2/50 text-zone-2/90",
+  Z3: "bg-zone-3/50 text-zone-3/90",
+  Z4: "bg-zone-4/50 text-zone-4/90",
+  Z5a: "bg-zone-5/50 text-zone-5/90",
+  Z5b: "bg-zone-5/60 text-zone-5/90",
+  Z5c: "bg-zone-5/70 text-zone-5/90",
 }
 
 export function ZoneTable({ sport, threshold, zones }: ZoneTableProps) {

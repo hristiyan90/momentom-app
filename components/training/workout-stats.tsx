@@ -229,9 +229,9 @@ export function WorkoutStats({ className }: WorkoutStatsProps) {
             <h4 className="text-text-1 font-medium mb-3 flex items-center gap-2">
               Power
               <div className="flex gap-1 ml-auto">
-                <button className="px-2 py-1 text-xs bg-blue-600 text-white rounded">Watts</button>
-                <button className="px-2 py-1 text-xs bg-bg-2 text-text-2 rounded">W/kg</button>
-                <button className="px-2 py-1 text-xs bg-bg-2 text-text-2 rounded">Zones</button>
+                <button className="chip chip-sport-swim">Watts</button>
+                <button className="chip">W/kg</button>
+                <button className="chip">Zones</button>
               </div>
             </h4>
             <div className="space-y-2">
@@ -365,8 +365,8 @@ export function WorkoutStats({ className }: WorkoutStatsProps) {
               Pace/Speed
               <Info className="w-3 h-3 text-text-2" />
               <div className="flex gap-1 ml-auto">
-                <button className="px-2 py-1 text-xs bg-bg-2 text-text-2 rounded">Pace</button>
-                <button className="px-2 py-1 text-xs bg-blue-600 text-white rounded">Speed</button>
+                <button className="chip">Pace</button>
+                <button className="chip chip-sport-swim">Speed</button>
               </div>
             </h4>
             <div className="space-y-2">

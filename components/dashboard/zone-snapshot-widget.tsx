@@ -60,8 +60,8 @@ const statusColors = {
 }
 
 const SportIcon = ({ sport }: { sport: "swim" | "bike" | "run" | "hr" }) => {
-  const iconProps = { className: "w-4 h-4", style: { color: sportColors[sport] } }
-
+  const iconProps = { className: "w-4 h-4" }
+  
   switch (sport) {
     case "swim":
       return <Waves {...iconProps} />
@@ -71,6 +71,8 @@ const SportIcon = ({ sport }: { sport: "swim" | "bike" | "run" | "hr" }) => {
       return <Footprints {...iconProps} />
     case "hr":
       return <Heart {...iconProps} />
+    default:
+      return <Footprints {...iconProps} />
   }
 }
 
