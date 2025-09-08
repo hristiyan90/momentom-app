@@ -1,0 +1,119 @@
+{
+  "session": {
+    "session_id": "ses_777",
+    "date": "2025-09-07",
+    "sport": "bike",
+    "title": "Long ride + pickups",
+    "structure_json": {
+      "segments": [
+        {
+          "type": "warmup",
+          "duration": {
+            "duration_min": 15
+          }
+        },
+        {
+          "type": "steady",
+          "target_metric": "power",
+          "target_range": {
+            "min": 180,
+            "max": 210,
+            "unit": "W"
+          },
+          "duration": {
+            "duration_min": 120
+          }
+        },
+        {
+          "type": "interval",
+          "target_metric": "power",
+          "target_range": {
+            "min": 260,
+            "max": 280,
+            "unit": "W"
+          },
+          "duration": {
+            "duration_min": 10
+          }
+        },
+        {
+          "type": "cooldown",
+          "duration": {
+            "duration_min": 10
+          }
+        }
+      ]
+    },
+    "planned_duration_min": 165,
+    "planned_load": 210,
+    "planned_zone_primary": "z2",
+    "status": "planned"
+  },
+  "fuel": {
+    "session_id": "ses_777",
+    "weight_kg": 75,
+    "pre": {
+      "carb_g_per_kg": [
+        1.0,
+        2.0
+      ],
+      "fluid_ml_per_kg": [
+        5,
+        10
+      ]
+    },
+    "during": {
+      "carb_g_per_h": [
+        60,
+        90
+      ],
+      "fluid_l_per_h": [
+        0.4,
+        0.8
+      ],
+      "sodium_mg_per_h": [
+        300,
+        800
+      ]
+    },
+    "post": {
+      "carb_g_per_kg": [
+        1.0,
+        1.2
+      ],
+      "protein_g": [
+        20,
+        40
+      ],
+      "fluid_replacement_pct": 150
+    },
+    "modifiers": {
+      "heat": true,
+      "altitude": false,
+      "fasted_variant": false
+    }
+  },
+  "intake_response": {
+    "adherence_pct": 86.7,
+    "buckets": [
+      {
+        "time": "00:30",
+        "carbs_g": 30,
+        "fluid_ml": 350,
+        "sodium_mg": 300
+      },
+      {
+        "time": "01:00",
+        "carbs_g": 35,
+        "fluid_ml": 400,
+        "sodium_mg": 350
+      },
+      {
+        "time": "01:30",
+        "carbs_g": 30,
+        "fluid_ml": 450,
+        "sodium_mg": 400
+      }
+    ]
+  }
+}

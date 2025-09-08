@@ -1,0 +1,15 @@
+{
+  "error": {
+    "code": "UNPROCESSABLE_DEPENDENCY",
+    "message": "Readiness pending: overnight ingest incomplete.",
+    "details": {
+      "waiting_on": [
+        "hrv",
+        "sleep"
+      ]
+    },
+    "retry_after": "PT5M",
+    "fallback_hint": "partial",
+    "request_id": "req_9f8e7d"
+  }
+}

@@ -1065,16 +1065,14 @@ function PrimaryMetricsStep({ updateData, setIsValid, hasAttemptedNext, data }: 
   const metricOptions = {
     swim: [
       { value: "pace", label: "Pace", description: "Time per 100m" },
-      { value: "distance", label: "Distance", description: "Total meters" },
     ],
     bike: [
       { value: "power", label: "Power", description: "Watts output" },
-      { value: "speed", label: "Speed", description: "Average km/h" },
       { value: "heart-rate", label: "Heart Rate", description: "Average BPM" },
     ],
     run: [
       { value: "pace", label: "Pace", description: "Time per km" },
-      { value: "speed", label: "Speed", description: "Average km/h" },
+      { value: "power", label: "Power", description: "Watts output" },
       { value: "heart-rate", label: "Heart Rate", description: "Average BPM" },
     ],
   }
@@ -1116,7 +1114,7 @@ function PrimaryMetricsStep({ updateData, setIsValid, hasAttemptedNext, data }: 
                 <Waves className="w-5 h-5 text-blue-500" />
                 <Label className="text-text-primary font-medium">Swimming</Label>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {metricOptions.swim.map((option) => (
                   <button
                     key={option.value}
@@ -1142,7 +1140,7 @@ function PrimaryMetricsStep({ updateData, setIsValid, hasAttemptedNext, data }: 
                 <Bike className="w-5 h-5 text-orange-500" />
                 <Label className="text-text-primary font-medium">Cycling</Label>
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {metricOptions.bike.map((option) => (
                   <button
                     key={option.value}

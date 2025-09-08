@@ -11,12 +11,11 @@ import {
   CheckCircle,
   Waves,
   Bike,
-  Footprints,
-  Heart,
   ChevronDown,
   ChevronRight,
   Calendar,
   Clock,
+  Footprints,
 } from "lucide-react"
 
 interface Zone {
@@ -45,44 +44,44 @@ export default function ZonesPage() {
       threshold: 75,
       unit: "CSS (s/100m)",
       zones: [
-        { id: "1", name: "Z1 Recovery", min: 0, max: 65, color: "#06b6d4", description: "Active recovery pace" },
-        { id: "2", name: "Z2 Aerobic", min: 65, max: 75, color: "#3b82f6", description: "Aerobic base building" },
-        { id: "3", name: "Z3 Tempo", min: 75, max: 85, color: "#8b5cf6", description: "Tempo/threshold pace" },
-        { id: "4", name: "Z4 Threshold", min: 85, max: 95, color: "#a855f7", description: "Lactate threshold" },
-        { id: "5", name: "Z5 VO2Max", min: 95, max: 110, color: "#ec4899", description: "VO2 max intervals" },
+        { id: "1", name: "Z1 Recovery", min: 0, max: 65, color: "#22D3EE", description: "Active recovery pace" },
+        { id: "2", name: "Z2 Aerobic", min: 65, max: 75, color: "#3B82F6", description: "Aerobic base building" },
+        { id: "3", name: "Z3 Tempo", min: 75, max: 85, color: "#8B5CF6", description: "Tempo/threshold pace" },
+        { id: "4", name: "Z4 Threshold", min: 85, max: 95, color: "#EC4899", description: "Lactate threshold" },
+        { id: "5", name: "Z5 VO2Max", min: 95, max: 110, color: "#EF4444", description: "VO2 max intervals" },
       ],
     },
     bike: {
       threshold: 285,
       unit: "FTP (watts)",
       zones: [
-        { id: "1", name: "Z1 Recovery", min: 0, max: 55, color: "#06b6d4", description: "Active recovery" },
-        { id: "2", name: "Z2 Endurance", min: 55, max: 75, color: "#3b82f6", description: "Aerobic base" },
-        { id: "3", name: "Z3 Tempo", min: 75, max: 90, color: "#8b5cf6", description: "Tempo efforts" },
-        { id: "4", name: "Z4 Threshold", min: 90, max: 105, color: "#a855f7", description: "Lactate threshold" },
-        { id: "5", name: "Z5 VO2Max", min: 105, max: 120, color: "#ec4899", description: "VO2 max power" },
+        { id: "1", name: "Z1 Recovery", min: 0, max: 55, color: "#22D3EE", description: "Active recovery" },
+        { id: "2", name: "Z2 Endurance", min: 55, max: 75, color: "#3B82F6", description: "Aerobic base" },
+        { id: "3", name: "Z3 Tempo", min: 75, max: 90, color: "#8B5CF6", description: "Tempo efforts" },
+        { id: "4", name: "Z4 Threshold", min: 90, max: 105, color: "#EC4899", description: "Lactate threshold" },
+        { id: "5", name: "Z5 VO2Max", min: 105, max: 120, color: "#EF4444", description: "VO2 max power" },
       ],
     },
     run: {
       threshold: 255,
       unit: "Threshold (s/km)",
       zones: [
-        { id: "1", name: "Z1 Recovery", min: 0, max: 85, color: "#06b6d4", description: "Easy recovery runs" },
-        { id: "2", name: "Z2 Aerobic", min: 85, max: 95, color: "#3b82f6", description: "Aerobic base pace" },
-        { id: "3", name: "Z3 Tempo", min: 95, max: 100, color: "#8b5cf6", description: "Tempo run pace" },
-        { id: "4", name: "Z4 Threshold", min: 100, max: 110, color: "#a855f7", description: "Lactate threshold" },
-        { id: "5", name: "Z5 VO2Max", min: 110, max: 125, color: "#ec4899", description: "VO2 max intervals" },
+        { id: "1", name: "Z1 Recovery", min: 0, max: 85, color: "#22D3EE", description: "Easy recovery runs" },
+        { id: "2", name: "Z2 Aerobic", min: 85, max: 95, color: "#3B82F6", description: "Aerobic base pace" },
+        { id: "3", name: "Z3 Tempo", min: 95, max: 100, color: "#8B5CF6", description: "Tempo run pace" },
+        { id: "4", name: "Z4 Threshold", min: 100, max: 110, color: "#EC4899", description: "Lactate threshold" },
+        { id: "5", name: "Z5 VO2Max", min: 110, max: 125, color: "#EF4444", description: "VO2 max intervals" },
       ],
     },
     hr: {
       threshold: 175,
       unit: "LTHR (bpm)",
       zones: [
-        { id: "1", name: "Z1 Recovery", min: 0, max: 68, color: "#06b6d4", description: "Active recovery HR" },
-        { id: "2", name: "Z2 Aerobic", min: 68, max: 83, color: "#3b82f6", description: "Aerobic base HR" },
-        { id: "3", name: "Z3 Tempo", min: 83, max: 94, color: "#8b5cf6", description: "Tempo HR range" },
-        { id: "4", name: "Z4 Threshold", min: 94, max: 105, color: "#a855f7", description: "Lactate threshold HR" },
-        { id: "5", name: "Z5 VO2Max", min: 105, max: 120, color: "#ec4899", description: "VO2 max HR" },
+        { id: "1", name: "Z1 Recovery", min: 0, max: 68, color: "#22D3EE", description: "Active recovery HR" },
+        { id: "2", name: "Z2 Aerobic", min: 68, max: 83, color: "#3B82F6", description: "Aerobic base HR" },
+        { id: "3", name: "Z3 Tempo", min: 83, max: 94, color: "#8B5CF6", description: "Tempo HR range" },
+        { id: "4", name: "Z4 Threshold", min: 94, max: 105, color: "#EC4899", description: "Lactate threshold HR" },
+        { id: "5", name: "Z5 VO2Max", min: 105, max: 120, color: "#EF4444", description: "VO2 max HR" },
       ],
     },
   })
@@ -91,7 +90,7 @@ export default function ZonesPage() {
     { id: "swim" as const, label: "Swim", icon: Waves, color: "text-cyan-400" },
     { id: "bike" as const, label: "Bike", icon: Bike, color: "text-orange-400" },
     { id: "run" as const, label: "Run", icon: Footprints, color: "text-green-400" },
-    { id: "hr" as const, label: "Heart Rate", icon: Heart, color: "text-red-400" },
+    { id: "hr" as const, label: "Heart Rate", icon: Footprints, color: "text-red-400" },
   ]
 
   const currentData = zonesData[activeTab]

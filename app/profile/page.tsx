@@ -736,7 +736,7 @@ export default function ProfilePage() {
 
       {showTestDrawer && (
         <div className="fixed inset-0 z-50 flex">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setShowTestDrawer(false)} />
+          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowTestDrawer(false)} />
           <div className="ml-auto w-96 bg-bg-app h-full shadow-xl animate-in slide-in-from-right duration-300">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">

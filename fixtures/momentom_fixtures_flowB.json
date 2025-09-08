@@ -1,0 +1,61 @@
+{
+  "blocker": {
+    "title": "Commute week",
+    "type": "travel",
+    "start": "2025-09-09T00:00:00Z",
+    "end": "2025-09-13T23:59:59Z",
+    "recurrence_rrule": "FREQ=WEEKLY;COUNT=4",
+    "plan_impact": "move_sessions"
+  },
+  "preview": {
+    "adaptation_id": "adp_456",
+    "plan_id": "pln_abc",
+    "scope": "next_72h",
+    "impact_window": {
+      "start": "2025-09-09T00:00:00Z",
+      "end": "2025-09-12T00:00:00Z"
+    },
+    "reason_code": "missed_session",
+    "triggers": [
+      "missed_session"
+    ],
+    "changes": [
+      {
+        "op": "replace",
+        "path": "/sessions/ses_020/date",
+        "from": "2025-09-10",
+        "to": "2025-09-12"
+      },
+      {
+        "op": "replace",
+        "path": "/sessions/ses_020/planned_duration_min",
+        "from": 90,
+        "to": 75
+      }
+    ],
+    "decision": "proposed",
+    "plan_version_before": 13,
+    "plan_version_after": null,
+    "rationale": {
+      "text": "Travel window detected; moved key ride and trimmed volume."
+    }
+  },
+  "plan": {
+    "plan_id": "pln_abc",
+    "version": 14,
+    "status": "active",
+    "start_date": "2025-06-16",
+    "end_date": "2025-10-05",
+    "blocks": [
+      {
+        "block_id": "blk_3",
+        "phase": "build",
+        "week_index": 10,
+        "focus": "push",
+        "start_date": "2025-09-09",
+        "end_date": "2025-09-15",
+        "planned_hours": 12.5
+      }
+    ]
+  }
+}

@@ -33,6 +33,17 @@ interface Race {
   description?: string
 }
 
+// Add a deterministic random number generator
+const deterministicRandom = (seed: string): number => {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  return Math.abs(hash) / 2147483647 // Normalize to 0-1
+}
+
 export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("month")
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -285,10 +296,11 @@ export default function CalendarPage() {
       const intensities = ["recovery", "endurance", "tempo", "threshold", "vo2"] as const
 
       for (let i = 0; i < sessionCount; i++) {
-        const sport = sports[Math.floor(Math.random() * sports.length)]
-        const intensity = intensities[Math.floor(Math.random() * intensities.length)]
-        const minutes =
-          sport === "strength" ? Math.floor(Math.random() * 60) + 30 : Math.floor(Math.random() * 120) + 45
+        const sport = sports[Math.floor(deterministicRandom(`${date.toISOString()}-sport-${i}`) * sports.length)]
+        const intensity = intensities[Math.floor(deterministicRandom(`${date.toISOString()}-intensity-${i}`) * intensities.length)]
+        const minutes = sport === "strength" 
+          ? Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 60) + 30 
+          : Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 120) + 45
 
         sessions.push({
           id: `${date.toISOString()}-${i}`,
@@ -297,7 +309,7 @@ export default function CalendarPage() {
           title: `${sport.charAt(0).toUpperCase() + sport.slice(1)} Session`,
           minutes,
           intensity,
-          load: Math.floor(Math.random() * 150) + 50,
+          load: Math.floor(deterministicRandom(`${date.toISOString()}-load-${i}`) * 150) + 50,
         })
 
         bySportMinutes[sport] = (bySportMinutes[sport] || 0) + minutes
@@ -331,49 +343,11 @@ export default function CalendarPage() {
     completed: 5,
   }
 
-  const getRaceForDate = (date: Date): Race | null => {
-    const races: Race[] = [
-      {
-        id: "race-1",
-        date: new Date(currentYear, currentMonth, 8),
-        type: "C",
-        name: "Local Sprint Triathlon",
-        location: "City Park Lake",
-        distance: "750m swim, 20km bike, 5km run",
-        discipline: "triathlon",
-        description: "A great tune-up race to test your current fitness and race tactics.",
-      },
-      {
-        id: "race-2",
-        date: new Date(currentYear, currentMonth, 22),
-        type: "B",
-        name: "Olympic Distance Championship",
-        location: "Riverside Sports Complex",
-        distance: "1.5km swim, 40km bike, 10km run",
-        discipline: "triathlon",
-        description: "Regional championship race with competitive field. Good preparation for A race.",
-      },
-      {
-        id: "race-3",
-        date: new Date(currentYear, currentMonth + 1, 15),
-        type: "A",
-        name: "Ironman 70.3 Regional",
-        location: "Coastal Resort",
-        distance: "1.9km swim, 90km bike, 21.1km run",
-        discipline: "triathlon",
-        description: "Your main goal race for the season. All training has been building toward this event.",
-      },
-    ]
+  // Race data is now handled by MonthGrid component
 
-    return races.find((race) => race.date.toDateString() === date.toDateString()) || null
-  }
-
-  const handleRaceClick = (date: Date) => {
-    const race = getRaceForDate(date)
-    if (race) {
-      setSelectedRace(race)
-      setRaceDetailsSidebarOpen(true)
-    }
+  const handleRaceClick = (race: Race) => {
+    setSelectedRace(race)
+    setRaceDetailsSidebarOpen(true)
   }
 
   const handleRaceDetailsSidebarClose = () => {
@@ -436,13 +410,13 @@ export default function CalendarPage() {
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => handleWeekChange("prev")}
-                  className="px-3 py-2 bg-bg-surface border border-border-weak text-text-2 text-sm rounded-lg hover:bg-bg-raised transition-colors duration-150"
+                  className="btn focus-ring"
                 >
                   Previous Week
                 </button>
                 <button
                   onClick={() => handleWeekChange("next")}
-                  className="px-3 py-2 bg-bg-surface border border-border-weak text-text-2 text-sm rounded-lg hover:bg-bg-raised transition-colors duration-150"
+                  className="btn focus-ring"
                 >
                   Next Week
                 </button>
@@ -474,7 +448,7 @@ export default function CalendarPage() {
           dateRange={selectedDateRange}
           onClose={handleLifeBlockerSidebarClose}
           onSave={handleLifeBlockerCreate}
-          existingBlocker={editingBlocker}
+          existingBlocker={editingBlocker || undefined}
           onUpdate={handleLifeBlockerUpdate}
           onDelete={handleLifeBlockerDelete}
         />
