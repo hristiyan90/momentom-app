@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ruleEngineDeterministic, computeImpactWindow } from '@/lib/adapt/rules';
-import { fetchPlanSummary, fetchSessionsInWindow, fetchReadiness, fetchDailyLoadWindow, fetchBlockers, getCachedPreviewWithIdempotency, putPreviewCache, isValidUUID } from '@/lib/adapt/store';
+import { fetchPlanSummary, fetchSessionsInWindow, fetchReadiness, fetchDailyLoadWindow, fetchBlockers, getCachedPreviewWithIdempotency, putPreviewCache, isValidUUID, MissingReadinessError } from '@/lib/adapt/store';
 import { makeExplainabilityId, traceInfo } from '@/lib/obs/trace';
 import { getAthleteIdFromAuth, createSupabaseAdmin } from '@/lib/supabase/server';
 import { withSecurityHeaders } from '@/lib/http/headers';
@@ -75,23 +75,28 @@ export async function POST(req: NextRequest) {
       try {
         readiness = await fetchReadiness(athleteId, date);
       } catch (error) {
-        if (error instanceof Error && error.message.includes('MISSING_READINESS')) {
-          const retrySec = 300; // 5 minutes
-          
-          console.log('🚫 Readiness missing and required, returning 424');
-          
-          // Emit trace for missing readiness
-          traceInfo(explainability_id, 'readiness_missing', {
-            scope, 
-            strictMode, 
-            allowMissing, 
-            retry_after_sec: retrySec,
-            request_id
-          });
-          
-          console.log('🚫 Returning 424 - readiness required but missing');
-          
-          // Return 424 UNPROCESSABLE_DEPENDENCY with contract-accurate body
+        if (error instanceof MissingReadinessError) {
+          // Check if bypass is allowed
+          if (allowMissing) {
+            console.log('✅ Readiness missing but bypass allowed, continuing...');
+            readiness = null; // Continue without readiness
+          } else {
+            const retrySec = 300; // 5 minutes
+            
+            console.log('🚫 Readiness missing and required, returning 424');
+            
+            // Emit trace for missing readiness
+            traceInfo(explainability_id, 'readiness_missing', {
+              scope, 
+              strictMode, 
+              allowMissing, 
+              retry_after_sec: retrySec,
+              request_id
+            });
+            
+            console.log('🚫 Returning 424 - readiness required but missing');
+            
+            // Return 424 UNPROCESSABLE_DEPENDENCY with contract-accurate body
           return withSecurityHeaders(NextResponse.json({
             error: {
               code: "UNPROCESSABLE_DEPENDENCY",
@@ -109,6 +114,7 @@ export async function POST(req: NextRequest) {
               'X-Request-Id': request_id
             }
           }), { noStore: true });
+          }
         }
         
         // Non-missing errors or allowed-missing cases fall through

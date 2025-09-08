@@ -34,16 +34,29 @@ export async function fetchPlanSummary(athleteId: string): Promise<{ plan_id: st
 export async function fetchSessionsInWindow(athleteId: string, startISO: string, endISO: string): Promise<Session[]> {
   console.log('📅 Fetching sessions in window:', { startISO, endISO });
   
-  // Return mock session data
+  // Return mock session data with proper schema
   return [
     {
       session_id: 'ses_001',
-      planned_date: '2025-09-06',
-      planned_duration_min: 60,
-      planned_intensity: 'moderate',
+      date: '2025-09-06',
       sport: 'run',
       title: 'Easy Run',
-      description: 'Recovery run at easy pace'
+      planned_duration_min: 60,
+      planned_load: 45,
+      planned_zone_primary: 'z2',
+      status: 'planned',
+      priority: 'key'
+    },
+    {
+      session_id: 'ses_002',
+      date: '2025-09-07',
+      sport: 'bike',
+      title: 'Bike Ride',
+      planned_duration_min: 90,
+      planned_load: 60,
+      planned_zone_primary: 'z3',
+      status: 'planned',
+      priority: 'supporting'
     }
   ];
 }

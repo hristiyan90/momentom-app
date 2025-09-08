@@ -27,7 +27,7 @@ export function withSecurityHeaders(
   // Core security headers
   res.headers.set('Content-Type', 'application/json; charset=utf-8');
   res.headers.set('X-Content-Type-Options', 'nosniff');
-  res.headers.set('Referrer-Policy', 'no-referrer');
+  res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
 
   // Vary headers for proper caching

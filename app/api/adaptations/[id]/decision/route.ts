@@ -48,7 +48,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       }
     }), { noStore: true });
 
-    const { decision } = await req.json() as { decision: 'accepted' | 'modified' | 'rejected' };
+    const { decision, modified_changes = [] } = await req.json() as { 
+      decision: 'accepted' | 'modified' | 'rejected'; 
+      modified_changes?: DiffChange[] 
+    };
 
     if (decision === 'accepted') {
       // Use original changes for accepted decision
@@ -88,15 +91,15 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       
       try {
         // Fetch sessions and plan for guard validation
-        const sessions = await fetchSessionsInWindow(athleteId, prev.impact_start, prev.impact_end);
+        const sessions = await fetchSessionsInWindow(athleteId, prev.impact_window.start, prev.impact_window.end);
         const plan = await fetchPlanSummary(athleteId);
         
         // Apply volume guard to the changes
         const guardResult = applyWeeklyVolumeGuard({
           sessions,
-          changes: prev.changes,
+          changes: modified_changes,
           plan,
-          date: prev.impact_start.split('T')[0]
+          date: prev.impact_window.start.split('T')[0]
         });
         
         const { clampedChanges, metrics, violates } = guardResult;
