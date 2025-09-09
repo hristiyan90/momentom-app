@@ -112,6 +112,9 @@ export async function getSessions(
   athleteId: string, 
   params: { start?: string; end?: string; sport?: string; cursor?: string; limit?: number } = {}
 ) {
+  // Clamp limit between 1 and 50, default to 20
+  const pageLimit = Math.max(1, Math.min(50, Number.isFinite(params?.limit as number) ? (params!.limit as number) : 20));
+  
   const supabase = serverClient();
   
   try {
@@ -141,9 +144,8 @@ export async function getSessions(
       }
     }
 
-    // Apply limit (default to 20 if not specified)
-    const limit = params.limit || 20;
-    query = query.limit(limit + 1); // Get one extra to determine if there are more results
+    // Apply limit (get one extra to determine if there are more results)
+    query = query.limit(pageLimit + 1);
 
     // Order by date (ascending) then by session_id (ascending) for consistent pagination
     query = query.order('date', { ascending: true }).order('session_id', { ascending: true });
@@ -169,13 +171,12 @@ export async function getSessions(
       }));
 
       // Determine if there are more results and generate next cursor
-      const hasMore = data.length > limit;
-      const nextCursor = hasMore && items.length > 0 ? 
-        encodeCursor({ d: items[items.length - 1].date, i: items[items.length - 1].session_id }) : 
-        null;
-
-      // Remove the extra item if we fetched one more than requested
-      const finalItems = hasMore ? items.slice(0, limit) : items;
+      const hasMore = data.length > pageLimit;
+      const finalItems = hasMore ? items.slice(0, pageLimit) : items;
+      
+      // Generate next cursor from the last item in the returned page
+      const tail = hasMore ? finalItems[finalItems.length - 1] : finalItems[finalItems.length - 1];
+      const nextCursor = hasMore && tail ? encodeCursor({ d: tail.date, i: tail.session_id }) : null;
 
       return { items: finalItems, next_cursor: nextCursor };
     }
@@ -290,15 +291,13 @@ export async function getSessions(
       }
     }
 
-    // Apply limit to fixtures (default to 20 if not specified)
-    const limit = params.limit || 20;
-    const hasMore = filteredItems.length > limit;
-    const finalItems = hasMore ? filteredItems.slice(0, limit) : filteredItems;
+    // Apply limit to fixtures
+    const hasMore = filteredItems.length > pageLimit;
+    const finalItems = hasMore ? filteredItems.slice(0, pageLimit) : filteredItems;
     
-    // Generate next cursor for fixtures
-    const nextCursor = hasMore && finalItems.length > 0 ? 
-      encodeCursor({ d: finalItems[finalItems.length - 1].date, i: finalItems[finalItems.length - 1].session_id }) : 
-      null;
+    // Generate next cursor from the last item in the returned page
+    const tail = hasMore ? finalItems[finalItems.length - 1] : finalItems[finalItems.length - 1];
+    const nextCursor = hasMore && tail ? encodeCursor({ d: tail.date, i: tail.session_id }) : null;
 
     return { items: finalItems, next_cursor: nextCursor };
   } catch (err) {
@@ -414,15 +413,13 @@ export async function getSessions(
       }
     }
 
-    // Apply limit to fixtures (default to 20 if not specified)
-    const limit = params.limit || 20;
-    const hasMore = filteredItems.length > limit;
-    const finalItems = hasMore ? filteredItems.slice(0, limit) : filteredItems;
+    // Apply limit to fixtures
+    const hasMore = filteredItems.length > pageLimit;
+    const finalItems = hasMore ? filteredItems.slice(0, pageLimit) : filteredItems;
     
-    // Generate next cursor for fixtures
-    const nextCursor = hasMore && finalItems.length > 0 ? 
-      encodeCursor({ d: finalItems[finalItems.length - 1].date, i: finalItems[finalItems.length - 1].session_id }) : 
-      null;
+    // Generate next cursor from the last item in the returned page
+    const tail = hasMore ? finalItems[finalItems.length - 1] : finalItems[finalItems.length - 1];
+    const nextCursor = hasMore && tail ? encodeCursor({ d: tail.date, i: tail.session_id }) : null;
 
     return { items: finalItems, next_cursor: nextCursor };
   }
