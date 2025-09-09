@@ -1,1 +1,171 @@
-[]
+{
+  "version": "1.0.0",
+  "last_updated": "2025-01-09",
+  "workouts": [
+    {
+      "id": "drop-1-template",
+      "name": "Drop-1 Template",
+      "description": "Template for Drop-1 workout series",
+      "version": "1.0.0",
+      "category": "template",
+      "difficulty": "intermediate",
+      "duration": {
+        "min": 30,
+        "max": 45,
+        "unit": "minutes"
+      },
+      "intensity": {
+        "level": "moderate",
+        "scale": "1-10",
+        "target": 6
+      },
+      "equipment": {
+        "required": ["bodyweight"],
+        "optional": ["resistance bands", "dumbbells"],
+        "notes": "Minimal equipment required"
+      },
+      "parameters": {
+        "warmup": {
+          "duration": 5,
+          "description": "Dynamic movement preparation"
+        },
+        "main_workout": {
+          "duration": 30,
+          "description": "Primary Drop-1 training protocol"
+        },
+        "cooldown": {
+          "duration": 10,
+          "description": "Recovery and flexibility work"
+        }
+      },
+      "instructions": [
+        {
+          "phase": "warmup",
+          "step": 1,
+          "description": "5 minutes dynamic warm-up",
+          "duration": 5,
+          "intensity": 4
+        },
+        {
+          "phase": "main_workout",
+          "step": 1,
+          "description": "Execute Drop-1 protocol",
+          "duration": 30,
+          "intensity": 6
+        },
+        {
+          "phase": "cooldown",
+          "step": 1,
+          "description": "10 minutes recovery work",
+          "duration": 10,
+          "intensity": 2
+        }
+      ],
+      "variations": [
+        {
+          "name": "Beginner",
+          "modifications": "Reduce intensity and duration by 25%",
+          "duration_adjustment": -10
+        },
+        {
+          "name": "Advanced",
+          "modifications": "Increase intensity and add resistance",
+          "duration_adjustment": 15
+        }
+      ],
+      "safety_notes": [
+        "Maintain proper form throughout",
+        "Stop if experiencing pain",
+        "Consult healthcare provider if needed"
+      ],
+      "tags": ["drop-1", "template", "bodyweight"],
+      "created_date": "2025-01-09",
+      "last_updated": "2025-01-09",
+      "author": "System",
+      "status": "draft"
+    },
+    {
+      "id": "drop-2-template",
+      "name": "Drop-2 Template",
+      "description": "Template for Drop-2 workout series",
+      "version": "1.0.0",
+      "category": "template",
+      "difficulty": "advanced",
+      "duration": {
+        "min": 45,
+        "max": 60,
+        "unit": "minutes"
+      },
+      "intensity": {
+        "level": "high",
+        "scale": "1-10",
+        "target": 8
+      },
+      "equipment": {
+        "required": ["bodyweight", "resistance bands"],
+        "optional": ["dumbbells", "kettlebell"],
+        "notes": "Some equipment recommended for full effect"
+      },
+      "parameters": {
+        "warmup": {
+          "duration": 10,
+          "description": "Comprehensive movement preparation"
+        },
+        "main_workout": {
+          "duration": 40,
+          "description": "Primary Drop-2 training protocol"
+        },
+        "cooldown": {
+          "duration": 10,
+          "description": "Recovery and mobility work"
+        }
+      },
+      "instructions": [
+        {
+          "phase": "warmup",
+          "step": 1,
+          "description": "10 minutes comprehensive warm-up",
+          "duration": 10,
+          "intensity": 5
+        },
+        {
+          "phase": "main_workout",
+          "step": 1,
+          "description": "Execute Drop-2 protocol",
+          "duration": 40,
+          "intensity": 8
+        },
+        {
+          "phase": "cooldown",
+          "step": 1,
+          "description": "10 minutes recovery and mobility",
+          "duration": 10,
+          "intensity": 2
+        }
+      ],
+      "variations": [
+        {
+          "name": "Intermediate",
+          "modifications": "Reduce intensity and duration by 20%",
+          "duration_adjustment": -15
+        },
+        {
+          "name": "Elite",
+          "modifications": "Increase intensity and add advanced movements",
+          "duration_adjustment": 20
+        }
+      ],
+      "safety_notes": [
+        "Advanced level - ensure proper preparation",
+        "Maintain strict form throughout",
+        "Stop immediately if experiencing pain",
+        "Consider working with a trainer initially"
+      ],
+      "tags": ["drop-2", "template", "advanced", "resistance"],
+      "created_date": "2025-01-09",
+      "last_updated": "2025-01-09",
+      "author": "System",
+      "status": "draft"
+    }
+  ]
+}

@@ -1,16 +1,82 @@
 {
-  "workout_id": "00000000-0000-0000-0000-000000000000",
-  "sport": "run",
-  "title": "Run — Endurance Z2 60' — 60'",
-  "description": "Steady aerobic run.",
-  "phase": "base",
-  "focus_tags": ["endurance"],
-  "primary_zone": "z2",
-  "duration_min": 60,
-  "load_hint": 60,
-  "structure_json": { "segments": [
-    { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "z1→z2" },
-    { "type": "steady", "target": "zone", "duration_min": 45, "notes": "z2 steady" },
-    { "type": "cooldown", "target": "zone", "duration_min": 5,  "notes": "z1 easy" }
-  ]}
+  "id": "workout-template",
+  "name": "Workout Template",
+  "description": "Template for creating new workout definitions",
+  "version": "1.0.0",
+  "category": "template",
+  "difficulty": "beginner",
+  "duration": {
+    "min": 0,
+    "max": 0,
+    "unit": "minutes"
+  },
+  "intensity": {
+    "level": "low",
+    "scale": "1-10",
+    "target": 5
+  },
+  "equipment": {
+    "required": [],
+    "optional": [],
+    "notes": "No special equipment required"
+  },
+  "parameters": {
+    "warmup": {
+      "duration": 5,
+      "description": "Light movement preparation"
+    },
+    "main_workout": {
+      "duration": 20,
+      "description": "Primary training component"
+    },
+    "cooldown": {
+      "duration": 5,
+      "description": "Recovery and stretching"
+    }
+  },
+  "instructions": [
+    {
+      "phase": "warmup",
+      "step": 1,
+      "description": "Begin with 5 minutes of light cardio",
+      "duration": 5,
+      "intensity": 3
+    },
+    {
+      "phase": "main_workout",
+      "step": 1,
+      "description": "Execute primary training protocol",
+      "duration": 20,
+      "intensity": 7
+    },
+    {
+      "phase": "cooldown",
+      "step": 1,
+      "description": "Complete with 5 minutes of stretching",
+      "duration": 5,
+      "intensity": 2
+    }
+  ],
+  "variations": [
+    {
+      "name": "Beginner",
+      "modifications": "Reduce intensity by 20%",
+      "duration_adjustment": 0
+    },
+    {
+      "name": "Advanced",
+      "modifications": "Increase intensity by 20%",
+      "duration_adjustment": 10
+    }
+  ],
+  "safety_notes": [
+    "Consult with healthcare provider before starting",
+    "Stop if experiencing pain or discomfort",
+    "Maintain proper form throughout"
+  ],
+  "tags": ["template", "example"],
+  "created_date": "2025-01-09",
+  "last_updated": "2025-01-09",
+  "author": "System",
+  "status": "draft"
 }
