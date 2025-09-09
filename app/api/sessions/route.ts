@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
 import { getSessions } from '@/lib/data/reads';
 import { generateCorrelationId } from '@/lib/utils';
+import { etagFor } from '@/lib/http/etag';
 
 export async function GET(req: NextRequest) {
   const correlationId = generateCorrelationId();
@@ -63,16 +64,24 @@ export async function GET(req: NextRequest) {
     }
     
     // Get sessions data from Supabase or fallback to fixture with filtering and pagination
-    const sessionsData = await getSessions(athleteId, filters);
+    const payload = await getSessions(athleteId, filters);
     
-    // Create response with exact Cycle-1 shape
-    const response = NextResponse.json(sessionsData, { status: 200 });
-    
-    // Add standard headers (H1-H7 compliance)
-    addStandardHeaders(response, correlationId);
-    setCacheHint(response, "private, max-age=60, stale-while-revalidate=60");
-    
-    return response;
+    const { etag, body } = etagFor(payload);
+    const inm = req.headers.get('if-none-match');
+    if (inm && inm === etag) {
+      const res = new NextResponse(null, { status: 304 });
+      addStandardHeaders(res, correlationId);
+      // preserve cache headers you already set for sessions:
+      setCacheHint(res, "private, max-age=60, stale-while-revalidate=60");
+      res.headers.set('ETag', etag);
+      return res;
+    }
+
+    const res = new NextResponse(body, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+    addStandardHeaders(res, correlationId);
+    setCacheHint(res, "private, max-age=60, stale-while-revalidate=60");
+    res.headers.set('ETag', etag);
+    return res;
   } catch (error) {
     // Handle authentication errors gracefully
     console.error('Sessions route error:', error);
