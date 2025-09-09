@@ -1,0 +1,16 @@
+{
+  "workout_id": "00000000-0000-0000-0000-000000000000",
+  "sport": "run",
+  "title": "Run — Endurance Z2 60' — 60'",
+  "description": "Steady aerobic run.",
+  "phase": "base",
+  "focus_tags": ["endurance"],
+  "primary_zone": "z2",
+  "duration_min": 60,
+  "load_hint": 60,
+  "structure_json": { "segments": [
+    { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "z1→z2" },
+    { "type": "steady", "target": "zone", "duration_min": 45, "notes": "z2 steady" },
+    { "type": "cooldown", "target": "zone", "duration_min": 5,  "notes": "z1 easy" }
+  ]}
+}
