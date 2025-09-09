@@ -1,14 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { getAuthFlags, addStandardHeaders } from '@/lib/auth/athlete';
+import { generateCorrelationId } from '@/lib/utils';
 
+/**
+ * Health check endpoint for environment configuration
+ * Returns the current AUTH_MODE and ALLOW_HEADER_OVERRIDE settings
+ * 
+ * GET /api/health/env
+ * Returns: { ok: true, auth_mode: string, allow_header_override: boolean }
+ */
 export async function GET() {
-  // Check environment variable presence without leaking actual values
-  const envStatus = {
-    env: {
-      NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-      SUPABASE_SERVICE_ROLE_KEY_serverOnly: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)
-    }
-  }
-
-  return NextResponse.json(envStatus, { status: 200 })
+  const correlationId = generateCorrelationId();
+  
+  // Get normalized authentication flags
+  const { mode, allow } = getAuthFlags();
+  
+  // Create response with environment configuration
+  const response = NextResponse.json({
+    ok: true,
+    auth_mode: mode,
+    allow_header_override: allow
+  }, { status: 200 });
+  
+  // Add standard headers (H1-H7 compliance)
+  addStandardHeaders(response, correlationId);
+  
+  return response;
 }

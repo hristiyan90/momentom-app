@@ -1,41 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
+ * Get normalized authentication flags from environment
+ * @returns Object with normalized mode and allow override flags
+ */
+export function getAuthFlags() {
+  const mode = (process.env.AUTH_MODE ?? 'dev').toLowerCase();
+  const allow = ['1', 'true', 'yes'].includes((process.env.ALLOW_HEADER_OVERRIDE ?? '0').toLowerCase());
+  return { mode, allow };
+}
+
+/**
  * Extract athlete ID from request with authentication mode awareness
  * 
  * Environment Variables:
- * - AUTH_MODE: Controls authentication strictness
- * - ALLOW_HEADER_OVERRIDE: Allows X-Athlete-Id header in non-prod
+ * - AUTH_MODE: Controls authentication strictness (dev/prod)
+ * - ALLOW_HEADER_OVERRIDE: Allows x-athlete-id header (1/true/yes)
  * 
  * @param req - NextRequest object
  * @returns Promise<string> - Athlete ID
- * @throws Error when prod mapping is pending (A4)
+ * @throws Error when prod mapping is pending (A4) or invalid header
  */
 export async function getAthleteId(req: NextRequest): Promise<string> {
-  const authMode = process.env.AUTH_MODE || 'dev';
-  const allowHeaderOverride = process.env.ALLOW_HEADER_OVERRIDE === '1';
-  const isProdAuth = authMode === 'prod';
+  const { mode, allow } = getAuthFlags();
 
-  // Check for X-Athlete-Id header override
-  const athleteIdHeader = req.headers.get('X-Athlete-Id');
+  // Check for x-athlete-id header override (case-insensitive)
+  const athleteIdHeader = req.headers.get('x-athlete-id');
   
   if (athleteIdHeader) {
     // In non-prod mode with header override enabled, use the header
-    if (!isProdAuth && allowHeaderOverride) {
-      // Convert dev athlete names to UUIDs for database compatibility
-      const athleteMap: Record<string, string> = {
-        'ath_mock': '00000000-0000-0000-0000-000000000001',
-        'ath_u1': '00000000-0000-0000-0000-000000000002',
-        'ath_u2': '00000000-0000-0000-0000-000000000003'
-      };
+    if (mode !== 'prod' && allow) {
+      const raw = athleteIdHeader.trim();
       
-      // If it's already a UUID format, use it directly; otherwise map it
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      const athleteId = uuidRegex.test(athleteIdHeader) 
-        ? athleteIdHeader 
-        : athleteMap[athleteIdHeader] || '00000000-0000-0000-0000-000000000001';
+      // Validate UUID v4/any format: 36 characters with hyphens and hex digits
+      if (!/^[0-9a-fA-F-]{36}$/.test(raw)) {
+        throw new Error('invalid athlete id header');
+      }
       
-      return athleteId;
+      // Additional UUID structure validation (8-4-4-4-12 format)
+      const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+      if (!uuidRegex.test(raw)) {
+        throw new Error('invalid athlete id header');
+      }
+      
+      return raw;
     }
   }
 
@@ -51,6 +59,8 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
  * @returns Modified NextResponse with standard headers
  */
 export function addStandardHeaders(res: NextResponse, correlationId: string): NextResponse {
+  const { allow } = getAuthFlags();
+
   // H3: Request/Trace Correlation Headers
   res.headers.set('X-Request-Id', correlationId);
   res.headers.set('X-Explainability-Id', `xpl_${correlationId.slice(0, 8)}`);
@@ -61,8 +71,12 @@ export function addStandardHeaders(res: NextResponse, correlationId: string): Ne
   res.headers.set('Referrer-Policy', 'no-referrer');
   res.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
   
-  // H5: Vary Header for proper caching
-  res.headers.set('Vary', 'X-Request-Id, X-Client-Timezone');
+  // H5: Vary Header for proper caching (include X-Athlete-Id when overrides enabled)
+  const varyHeaders = ['X-Request-Id', 'X-Client-Timezone'];
+  if (allow) {
+    varyHeaders.push('X-Athlete-Id');
+  }
+  res.headers.set('Vary', varyHeaders.join(', '));
 
   // H5: Cache Control (no-store for mutations by default)
   if (!res.headers.get('Cache-Control')) {
