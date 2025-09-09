@@ -403,6 +403,60 @@ describe('ruleEngineDeterministic - missed_session', () => {
   });
 });
 
+describe('Readiness weight normalization', () => {
+  test('partial readiness drivers weights sum to 1.00', async () => {
+    // This test validates the /api/readiness endpoint weight normalization
+    const response = await fetch('http://localhost:3000/api/readiness?demoPartial=1');
+    expect(response.status).toBe(206);
+    
+    const data = await response.json();
+    expect(data.drivers).toBeDefined();
+    expect(Array.isArray(data.drivers)).toBe(true);
+    
+    // Calculate sum of weights
+    const weightSum = data.drivers.reduce((sum: number, driver: any) => sum + driver.weight, 0);
+    
+    // Assert weight sum is 1.00 ± 1e-6
+    expect(Math.abs(weightSum - 1.0)).toBeLessThan(1e-6);
+    
+    // Verify missing drivers are listed
+    expect(data.data_quality.missing).toContain('sleep');
+    expect(data.data_quality.missing).toContain('rhr');
+    
+    // Verify only remaining drivers are present
+    const driverKeys = data.drivers.map((d: any) => d.key);
+    expect(driverKeys).toContain('hrv');
+    expect(driverKeys).toContain('prior_strain');
+    expect(driverKeys).not.toContain('sleep');
+    expect(driverKeys).not.toContain('rhr');
+  });
+
+  test('complete readiness drivers weights sum to 1.00', async () => {
+    // Test normal mode (no demoPartial parameter)
+    const response = await fetch('http://localhost:3000/api/readiness');
+    expect(response.status).toBe(200);
+    
+    const data = await response.json();
+    expect(data.drivers).toBeDefined();
+    
+    // Calculate sum of weights
+    const weightSum = data.drivers.reduce((sum: number, driver: any) => sum + driver.weight, 0);
+    
+    // Assert weight sum is 1.00 ± 1e-6
+    expect(Math.abs(weightSum - 1.0)).toBeLessThan(1e-6);
+    
+    // Verify no missing drivers
+    expect(data.data_quality.missing).toEqual([]);
+    
+    // Verify all drivers are present
+    const driverKeys = data.drivers.map((d: any) => d.key);
+    expect(driverKeys).toContain('hrv');
+    expect(driverKeys).toContain('sleep');
+    expect(driverKeys).toContain('rhr');
+    expect(driverKeys).toContain('prior_strain');
+  });
+});
+
 describe('Priority and trigger logic', () => {
   test('missed_session has highest priority', () => {
     const sessions = [

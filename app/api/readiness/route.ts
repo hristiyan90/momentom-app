@@ -8,20 +8,43 @@ export async function GET(req: NextRequest) {
   const demoPartialHeader = req.headers.get('X-Demo-Partial') === 'true';
   const isPartialMode = demoPartialQuery || demoPartialHeader;
 
-  // Base readiness data
+  // Base readiness data - full driver set
+  const allDrivers = [
+    { key: 'hrv' as const, z: -0.8, weight: 0.25, contribution: -8 },
+    { key: 'sleep' as const, z: -0.3, weight: 0.2, contribution: -3 },
+    { key: 'rhr' as const, z: 0.2, weight: 0.15, contribution: -2 },
+    { key: 'prior_strain' as const, z: 0.7, weight: 0.15, contribution: -5 }
+  ];
+
+  let drivers = [...allDrivers];
+  let missingDrivers: string[] = [];
+
+  // In partial mode, remove some drivers and track missing ones
+  if (isPartialMode) {
+    missingDrivers = ['sleep', 'rhr'];
+    drivers = drivers.filter(d => !missingDrivers.includes(d.key));
+  }
+
+  // Renormalize weights to sum to 1.00
+  const weightSum = drivers.reduce((sum, driver) => sum + driver.weight, 0);
+  if (weightSum > 0) {
+    drivers = drivers.map(driver => ({
+      ...driver,
+      weight: driver.weight / weightSum
+    }));
+  }
+
   const readinessData = {
     date: '2025-09-06', 
     score: 62, 
     band: 'amber' as const, 
-    drivers: [{ key: 'hrv' as const, z: -0.8, weight: 0.25, contribution: -8 }], 
+    drivers, 
     flags: ['monotony_high'], 
-    data_quality: { missing: [] as string[], clipped: false } 
+    data_quality: { missing: missingDrivers, clipped: false } 
   };
 
-  // Modify data for partial mode
+  // Return appropriate response based on mode
   if (isPartialMode) {
-    // Add missing signals to indicate partial data
-    readinessData.data_quality.missing = ['sleep', 'rhr'];
     // Ensure flags include monotony_high for UI badges
     if (!readinessData.flags.includes('monotony_high')) {
       readinessData.flags.push('monotony_high');

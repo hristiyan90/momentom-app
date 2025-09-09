@@ -7,25 +7,25 @@
       {
         "key": "hrv",
         "z": -0.8,
-        "weight": 0.25,
+        "weight": 0.3333333333333333,
         "contribution": -8.0
       },
       {
         "key": "sleep",
         "z": -0.3,
-        "weight": 0.2,
+        "weight": 0.26666666666666666,
         "contribution": -3.0
       },
       {
         "key": "rhr",
         "z": 0.2,
-        "weight": 0.15,
+        "weight": 0.2,
         "contribution": -2.0
       },
       {
         "key": "prior_strain",
         "z": 0.7,
-        "weight": 0.15,
+        "weight": 0.2,
         "contribution": -5.0
       }
     ],
@@ -73,7 +73,7 @@
         {
           "key": "hrv",
           "z": -0.8,
-          "weight": 0.25,
+          "weight": 0.3333333333333333,
           "contribution": -8.0
         }
       ],
