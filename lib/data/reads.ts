@@ -158,7 +158,10 @@ export async function getSessions(
 
     // If we have data, map it to Cycle-1 format
     if (data && data.length > 0) {
-      const items = data.map(sessionRow => ({
+      // Determine if there are more results and generate next cursor
+      const hasMore = data.length === pageLimit + 1;
+      const pageRows = hasMore ? data.slice(0, pageLimit) : data;
+      const items = pageRows.map(sessionRow => ({
         session_id: sessionRow.session_id,
         date: sessionRow.date,
         sport: sessionRow.sport,
@@ -169,16 +172,11 @@ export async function getSessions(
         status: sessionRow.status || 'planned',
         structure_json: sessionRow.structure_json || { segments: [] }
       }));
-
-      // Determine if there are more results and generate next cursor
-      const hasMore = data.length > pageLimit;
-      const finalItems = hasMore ? items.slice(0, pageLimit) : items;
       
-      // Generate next cursor from the last item in the returned page
-      const tail = hasMore ? finalItems[finalItems.length - 1] : finalItems[finalItems.length - 1];
+      const tail = items[items.length - 1];
       const nextCursor = hasMore && tail ? encodeCursor({ d: tail.date, i: tail.session_id }) : null;
 
-      return { items: finalItems, next_cursor: nextCursor };
+      return { items, next_cursor };
     }
 
     // No data found, return Cycle-1 fixture with filtering applied
