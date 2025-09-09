@@ -2,6 +2,17 @@ import { serverClient } from '@/lib/supabase/server';
 import { TABLES } from './sources';
 
 /**
+ * Type-safe helper to detect PostgreSQL missing relation errors
+ * PGRST205 indicates a relation/table doesn't exist or isn't accessible
+ * 
+ * @param e - Unknown error object to check
+ * @returns Type predicate indicating if error is a missing relation error
+ */
+export function isMissingRelation(e: unknown): e is { code: string } {
+  return typeof e === 'object' && e !== null && 'code' in e && (e as any).code === 'PGRST205';
+}
+
+/**
  * Get plan data for an athlete
  * Returns Supabase data if found, otherwise falls back to Cycle-1 fixture
  * 
