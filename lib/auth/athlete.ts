@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as jose from 'jose';
 
 /**
  * Get normalized authentication flags from environment
@@ -13,45 +14,82 @@ export function getAuthFlags() {
   return { mode, allow };
 }
 
+type JwtAthleteClaims = {
+  sub?: string;
+  user_metadata?: { athlete_id?: string } | null;
+  [k: string]: unknown;
+};
+
+async function verifySupabaseJwt(token: string): Promise<JwtAthleteClaims | null> {
+  try {
+    const secret = process.env.SUPABASE_JWT_SECRET;
+    if (!secret) return null;
+    const { payload } = await jose.jwtVerify(token, new TextEncoder().encode(secret), {
+      algorithms: ['HS256']
+    });
+    return payload as JwtAthleteClaims;
+  } catch {
+    return null;
+  }
+}
+
+function readAuthToken(req: NextRequest): string | null {
+  const h = req.headers.get('authorization');
+  if (h && /^bearer\s+/i.test(h)) return h.split(/\s+/)[1] ?? null;
+  // Supabase cookie (server-side)
+  const cookie = req.cookies.get('sb-access-token')?.value;
+  return cookie ?? null;
+}
+
+function isUuid(value: string): boolean {
+  const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+  return uuidRegex.test(value);
+}
+
 /**
  * Extract athlete ID from request with authentication mode awareness
  * 
  * Environment Variables:
  * - AUTH_MODE: Controls authentication strictness (dev/prod)
  * - ALLOW_HEADER_OVERRIDE: Allows x-athlete-id header (1/true/yes)
+ * - SUPABASE_JWT_SECRET: JWT secret for production token verification
  * 
  * @param req - NextRequest object
  * @returns Promise<string> - Athlete ID
- * @throws Error when prod mapping is pending (A4) or invalid header
+ * @throws Error when authentication fails or invalid tokens
  */
 export async function getAthleteId(req: NextRequest): Promise<string> {
   const { mode, allow } = getAuthFlags();
 
-  // Check for x-athlete-id header override (case-insensitive)
-  const rawHeader = req.headers.get('x-athlete-id') ?? null;
-  const athleteIdHeader = rawHeader;
-  
-  if (athleteIdHeader) {
-    // In non-prod mode with header override enabled, use the header
-    if (mode !== 'prod' && allow) {
-      const raw = athleteIdHeader.trim();
-      
-      // Validate UUID format (8-4-4-4-12 format)
-      const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
-      if (!uuidRegex.test(raw)) {
-        throw new Error('invalid athlete id header');
-      }
-      
-      return raw;
-    }
+  // Dev override path
+  const rawHeader = req.headers.get('x-athlete-id');
+  if (mode !== 'prod' && allow && rawHeader) {
+    const id = rawHeader.trim();
+    if (!isUuid(id)) throw new Error('invalid athlete id header');
+    return id;
   }
 
-  // Production authentication mapping is not yet implemented
-  if (mode === 'prod') {
-    throw new Error('prod mapping pending (A4)');
+  // Prod (and dev without override): require Supabase JWT
+  const token = readAuthToken(req);
+  if (!token) {
+    if (mode === 'prod') throw new Error('authentication required');
+    // dev fallback when no override/token
+    throw new Error('authentication required');
   }
-  
-  // In dev mode without valid header override, provide fallback
+
+  const claims = await verifySupabaseJwt(token);
+  if (!claims) {
+    if (mode === 'prod') throw new Error('invalid token');
+    throw new Error('invalid token');
+  }
+
+  const metaId = claims.user_metadata?.athlete_id;
+  if (typeof metaId === 'string' && isUuid(metaId)) return metaId;
+
+  const sub = typeof claims.sub === 'string' ? claims.sub : '';
+  if (isUuid(sub)) return sub;
+
+  // No usable mapping in token
   throw new Error('authentication required');
 }
 
