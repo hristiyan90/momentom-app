@@ -274,6 +274,12 @@ export async function getSessions(
       // If invalid sport, ignore filter (don't filter out anything)
     }
 
+    // Ensure stable sort before cursor filtering and limit slicing
+    filteredItems.sort((a, b) => {
+      if (a.date === b.date) return a.session_id > b.session_id ? 1 : (a.session_id < b.session_id ? -1 : 0);
+      return a.date > b.date ? 1 : -1;
+    });
+
     // Apply cursor-based pagination to fixtures if provided
     if (params.cursor) {
       const decodedCursor = decodeCursor(params.cursor);
@@ -395,6 +401,12 @@ export async function getSessions(
         filteredItems = filteredItems.filter(item => item.sport === params.sport);
       }
     }
+
+    // Ensure stable sort before cursor filtering and limit slicing
+    filteredItems.sort((a, b) => {
+      if (a.date === b.date) return a.session_id > b.session_id ? 1 : (a.session_id < b.session_id ? -1 : 0);
+      return a.date > b.date ? 1 : -1;
+    });
 
     // Apply cursor-based pagination to fixtures if provided
     if (params.cursor) {
