@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
+import { getAthleteId, addStandardHeaders, setCacheHint, addAuthChallenge } from '@/lib/auth/athlete';
 import { getFuelSessionById } from '@/lib/data/reads';
 import { generateCorrelationId } from '@/lib/utils';
+import { etagFor } from '@/lib/http/etag';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const correlationId = generateCorrelationId();
@@ -17,9 +18,22 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const isDebugMode = debugQuery || debugHeader;
     
     // Get fuel session data from Supabase or fallback to fixture
-    let fuelData = await getFuelSessionById(athleteId, params.id);
+    const row = await getFuelSessionById(athleteId, params.id);
+    
+    // Check if fuel session was found
+    if (!row) {
+      // Preserve Cycle-1 error shape and headers
+      const errorResponse = NextResponse.json(
+        { ok: false, error: 'Fuel session not found', request_id: correlationId },
+        { status: 404 }
+      );
+      addStandardHeaders(errorResponse, correlationId);
+      addAuthChallenge(errorResponse);
+      return errorResponse;
+    }
     
     // Add debug meta block if debug mode is enabled
+    let fuelData = row;
     if (isDebugMode) {
       // Internal sodium concentration used for derivation
       const sodiumConcentrationRange = [300, 800]; // mg/L
@@ -33,13 +47,21 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
     
     // Create response with exact Cycle-1 shape
-    const response = NextResponse.json(fuelData, { status: 200 });
-    
-    // Add standard headers (H1-H7 compliance)
-    addStandardHeaders(response, correlationId);
-    setCacheHint(response, "private, max-age=60, stale-while-revalidate=60");
-    
-    return response;
+    const { etag, body } = etagFor(fuelData);
+    const inm = req.headers.get('if-none-match');
+    if (inm && inm === etag) {
+      const res = new NextResponse(null, { status: 304 });
+      addStandardHeaders(res, correlationId);
+      setCacheHint(res, "private, max-age=60, stale-while-revalidate=60");
+      res.headers.set('ETag', etag);
+      return res;
+    }
+
+    const res = new NextResponse(body, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+    addStandardHeaders(res, correlationId);
+    setCacheHint(res, "private, max-age=60, stale-while-revalidate=60");
+    res.headers.set('ETag', etag);
+    return res;
   } catch (error) {
     // Handle authentication errors gracefully
     console.error('Fuel session route error:', error);
