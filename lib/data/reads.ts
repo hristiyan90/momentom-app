@@ -135,20 +135,17 @@ export async function getSessions(
       query = query.eq('sport', params.sport);
     }
 
-    // Apply cursor-based pagination if provided
-    if (params.cursor) {
-      const decodedCursor = decodeCursor(params.cursor);
-      if (decodedCursor) {
-        // Use cursor for pagination: date > cursor.date OR (date = cursor.date AND session_id > cursor.i)
-        query = query.or(`date.gt.${decodedCursor.d},and(date.eq.${decodedCursor.d},session_id.gt.${decodedCursor.i})`);
-      }
+    const decoded = params.cursor ? decodeCursor(params.cursor) : null;
+    if (decoded && decoded.d && decoded.i) {
+      // Keyset: (date > d) OR (date = d AND session_id > i)
+      query = query.or(`and(date.eq.${decoded.d},session_id.gt.${decoded.i}),date.gt.${decoded.d}`);
     }
 
-    // Apply limit (get one extra to determine if there are more results)
-    query = query.limit(pageLimit + 1);
-
-    // Order by date (ascending) then by session_id (ascending) for consistent pagination
-    query = query.order('date', { ascending: true }).order('session_id', { ascending: true });
+    // Keep ordering + overfetch exactly like this:
+    query = query
+      .order('date', { ascending: true })
+      .order('session_id', { ascending: true })
+      .limit(pageLimit + 1);
 
     const { data, error } = await query;
 
