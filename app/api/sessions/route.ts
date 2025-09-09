@@ -10,14 +10,16 @@ export async function GET(req: NextRequest) {
     // Extract athlete ID from request
     const athleteId = await getAthleteId(req);
     
-    // Parse query parameters for soft filtering
+    // Parse query parameters for soft filtering and pagination
     const { searchParams } = req.nextUrl;
     const start = searchParams.get('start');
     const end = searchParams.get('end');
     const sport = searchParams.get('sport');
+    const limit = Number(searchParams.get('limit') ?? '');
+    const cursor = searchParams.get('cursor') ?? undefined;
     
     // Build filters object (soft validation - ignore invalids)
-    const filters: { start?: string; end?: string; sport?: string } = {};
+    const filters: { start?: string; end?: string; sport?: string; cursor?: string; limit?: number } = {};
     
     if (start) {
       // Soft validate start date
@@ -52,7 +54,15 @@ export async function GET(req: NextRequest) {
       // If invalid sport, ignore filter (don't add to filters)
     }
     
-    // Get sessions data from Supabase or fallback to fixture with filtering
+    // Add pagination parameters
+    if (cursor) {
+      filters.cursor = cursor;
+    }
+    if (Number.isFinite(limit)) {
+      filters.limit = limit;
+    }
+    
+    // Get sessions data from Supabase or fallback to fixture with filtering and pagination
     const sessionsData = await getSessions(athleteId, filters);
     
     // Create response with exact Cycle-1 shape
