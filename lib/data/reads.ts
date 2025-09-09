@@ -1,5 +1,6 @@
 import { serverClient } from '@/lib/supabase/server';
 import { TABLES } from './sources';
+import { encodeCursor, decodeCursor } from '@/lib/pagination/cursor';
 
 /**
  * Type-safe helper to detect PostgreSQL missing relation errors
@@ -109,7 +110,7 @@ export async function getPlan(athleteId: string) {
  */
 export async function getSessions(
   athleteId: string, 
-  filters: { start?: string; end?: string; sport?: string } = {}
+  params: { start?: string; end?: string; sport?: string; cursor?: string; limit?: number } = {}
 ) {
   const supabase = serverClient();
   
@@ -121,15 +122,31 @@ export async function getSessions(
       .eq('athlete_id', athleteId);
 
     // Apply date range filters if provided
-    if (filters.start) {
-      query = query.gte('date', filters.start);
+    if (params.start) {
+      query = query.gte('date', params.start);
     }
-    if (filters.end) {
-      query = query.lte('date', filters.end);
+    if (params.end) {
+      query = query.lte('date', params.end);
     }
-    if (filters.sport) {
-      query = query.eq('sport', filters.sport);
+    if (params.sport) {
+      query = query.eq('sport', params.sport);
     }
+
+    // Apply cursor-based pagination if provided
+    if (params.cursor) {
+      const decodedCursor = decodeCursor(params.cursor);
+      if (decodedCursor) {
+        // Use cursor for pagination: date > cursor.date OR (date = cursor.date AND session_id > cursor.i)
+        query = query.or(`date.gt.${decodedCursor.d},and(date.eq.${decodedCursor.d},session_id.gt.${decodedCursor.i})`);
+      }
+    }
+
+    // Apply limit (default to 20 if not specified)
+    const limit = params.limit || 20;
+    query = query.limit(limit + 1); // Get one extra to determine if there are more results
+
+    // Order by date (ascending) then by session_id (ascending) for consistent pagination
+    query = query.order('date', { ascending: true }).order('session_id', { ascending: true });
 
     const { data, error } = await query;
 
@@ -151,7 +168,16 @@ export async function getSessions(
         structure_json: sessionRow.structure_json || { segments: [] }
       }));
 
-      return { items, next_cursor: null };
+      // Determine if there are more results and generate next cursor
+      const hasMore = data.length > limit;
+      const nextCursor = hasMore && items.length > 0 ? 
+        encodeCursor({ d: items[items.length - 1].date, i: items[items.length - 1].session_id }) : 
+        null;
+
+      // Remove the extra item if we fetched one more than requested
+      const finalItems = hasMore ? items.slice(0, limit) : items;
+
+      return { items: finalItems, next_cursor: nextCursor };
     }
 
     // No data found, return Cycle-1 fixture with filtering applied
@@ -206,14 +232,14 @@ export async function getSessions(
     let filteredItems = [...allItems];
 
     // Filter by date range if start/end provided
-    if (filters.start || filters.end) {
+    if (params.start || params.end) {
       filteredItems = filteredItems.filter(item => {
         const itemDate = new Date(item.date);
         let includeItem = true;
 
-        if (filters.start) {
+        if (params.start) {
           try {
-            const startDate = new Date(filters.start);
+            const startDate = new Date(params.start);
             if (!isNaN(startDate.getTime())) {
               includeItem = includeItem && itemDate >= startDate;
             }
@@ -222,9 +248,9 @@ export async function getSessions(
           }
         }
 
-        if (filters.end) {
+        if (params.end) {
           try {
-            const endDate = new Date(filters.end);
+            const endDate = new Date(params.end);
             if (!isNaN(endDate.getTime())) {
               // Include end date (end of day)
               const endOfDay = new Date(endDate);
@@ -241,15 +267,40 @@ export async function getSessions(
     }
 
     // Filter by sport if provided
-    if (filters.sport) {
+    if (params.sport) {
       const validSports = ['run', 'bike', 'swim', 'strength', 'mobility'];
-      if (validSports.includes(filters.sport)) {
-        filteredItems = filteredItems.filter(item => item.sport === filters.sport);
+      if (validSports.includes(params.sport)) {
+        filteredItems = filteredItems.filter(item => item.sport === params.sport);
       }
       // If invalid sport, ignore filter (don't filter out anything)
     }
 
-    return { items: filteredItems, next_cursor: null };
+    // Apply cursor-based pagination to fixtures if provided
+    if (params.cursor) {
+      const decodedCursor = decodeCursor(params.cursor);
+      if (decodedCursor) {
+        filteredItems = filteredItems.filter(item => {
+          const itemDate = item.date;
+          const itemId = item.session_id;
+          
+          // Date > cursor.date OR (date = cursor.date AND session_id > cursor.i)
+          return itemDate > decodedCursor.d || 
+                 (itemDate === decodedCursor.d && itemId > decodedCursor.i);
+        });
+      }
+    }
+
+    // Apply limit to fixtures (default to 20 if not specified)
+    const limit = params.limit || 20;
+    const hasMore = filteredItems.length > limit;
+    const finalItems = hasMore ? filteredItems.slice(0, limit) : filteredItems;
+    
+    // Generate next cursor for fixtures
+    const nextCursor = hasMore && finalItems.length > 0 ? 
+      encodeCursor({ d: finalItems[finalItems.length - 1].date, i: finalItems[finalItems.length - 1].session_id }) : 
+      null;
+
+    return { items: finalItems, next_cursor: nextCursor };
   } catch (err) {
     if (isMissingRelation(err)) {
       console.info('Supabase sessions missing; using fixtures', { code: (err as any).code });
@@ -308,14 +359,14 @@ export async function getSessions(
     // Apply soft filtering to fixture data
     let filteredItems = [...allItems];
 
-    if (filters.start || filters.end) {
+    if (params.start || params.end) {
       filteredItems = filteredItems.filter(item => {
         const itemDate = new Date(item.date);
         let includeItem = true;
 
-        if (filters.start) {
+        if (params.start) {
           try {
-            const startDate = new Date(filters.start);
+            const startDate = new Date(params.start);
             if (!isNaN(startDate.getTime())) {
               includeItem = includeItem && itemDate >= startDate;
             }
@@ -324,9 +375,9 @@ export async function getSessions(
           }
         }
 
-        if (filters.end) {
+        if (params.end) {
           try {
-            const endDate = new Date(filters.end);
+            const endDate = new Date(params.end);
             if (!isNaN(endDate.getTime())) {
               const endOfDay = new Date(endDate);
               endOfDay.setHours(23, 59, 59, 999);
@@ -341,14 +392,39 @@ export async function getSessions(
       });
     }
 
-    if (filters.sport) {
+    if (params.sport) {
       const validSports = ['run', 'bike', 'swim', 'strength', 'mobility'];
-      if (validSports.includes(filters.sport)) {
-        filteredItems = filteredItems.filter(item => item.sport === filters.sport);
+      if (validSports.includes(params.sport)) {
+        filteredItems = filteredItems.filter(item => item.sport === params.sport);
       }
     }
 
-    return { items: filteredItems, next_cursor: null };
+    // Apply cursor-based pagination to fixtures if provided
+    if (params.cursor) {
+      const decodedCursor = decodeCursor(params.cursor);
+      if (decodedCursor) {
+        filteredItems = filteredItems.filter(item => {
+          const itemDate = item.date;
+          const itemId = item.session_id;
+          
+          // Date > cursor.date OR (date = cursor.date AND session_id > cursor.i)
+          return itemDate > decodedCursor.d || 
+                 (itemDate === decodedCursor.d && itemId > decodedCursor.i);
+        });
+      }
+    }
+
+    // Apply limit to fixtures (default to 20 if not specified)
+    const limit = params.limit || 20;
+    const hasMore = filteredItems.length > limit;
+    const finalItems = hasMore ? filteredItems.slice(0, limit) : filteredItems;
+    
+    // Generate next cursor for fixtures
+    const nextCursor = hasMore && finalItems.length > 0 ? 
+      encodeCursor({ d: finalItems[finalItems.length - 1].date, i: finalItems[finalItems.length - 1].session_id }) : 
+      null;
+
+    return { items: finalItems, next_cursor: nextCursor };
   }
 }
 
