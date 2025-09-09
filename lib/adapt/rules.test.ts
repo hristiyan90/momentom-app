@@ -458,20 +458,44 @@ describe('Readiness weight normalization', () => {
 });
 
 describe('Fuel sodium derivation', () => {
-  test('sodium mg/h derived from concentration × fluid rate', async () => {
-    // This test validates the /api/fuel/session/{id} endpoint sodium derivation
+  test('default response excludes concentration, includes derived sodium_mg_per_h', async () => {
+    // Test default behavior - no debug mode
     const response = await fetch('http://localhost:3000/api/fuel/session/ses_001');
     expect(response.status).toBe(200);
     
     const data = await response.json();
     expect(data.during).toBeDefined();
     
-    const { fluid_l_per_h, sodium_mg_per_l, sodium_mg_per_h } = data.during;
+    // Verify public fields are present
+    expect(data.during.fluid_l_per_h).toBeDefined();
+    expect(data.during.sodium_mg_per_h).toBeDefined();
+    
+    // Verify sodium concentration is NOT in public response
+    expect(data.during.sodium_mg_per_l).toBeUndefined();
+    
+    // Verify no meta block in default mode
+    expect(data.meta).toBeUndefined();
+    
+    // Verify derived values are correct (without knowing internal concentration)
+    expect(data.during.sodium_mg_per_h).toEqual([120, 640]);
+  });
+
+  test('debug mode includes meta block with concentration and validates derivation', async () => {
+    // Test debug mode via query parameter
+    const response = await fetch('http://localhost:3000/api/fuel/session/ses_001?debug=1');
+    expect(response.status).toBe(200);
+    
+    const data = await response.json();
+    expect(data.during).toBeDefined();
+    expect(data.meta).toBeDefined();
+    
+    const { fluid_l_per_h, sodium_mg_per_h } = data.during;
+    const { sodium_mg_per_l } = data.meta;
     
     // Verify all required fields are present
     expect(fluid_l_per_h).toBeDefined();
-    expect(sodium_mg_per_l).toBeDefined();
     expect(sodium_mg_per_h).toBeDefined();
+    expect(sodium_mg_per_l).toBeDefined();
     
     // Verify arrays have 2 elements each (lo, hi)
     expect(fluid_l_per_h).toHaveLength(2);
@@ -486,11 +510,29 @@ describe('Fuel sodium derivation', () => {
     expect(sodium_mg_per_h[0]).toBe(expectedLow);
     expect(sodium_mg_per_h[1]).toBe(expectedHigh);
     
-    // Verify specific expected values based on fixture
+    // Verify specific expected values
     // 0.4 L/h × 300 mg/L = 120 mg/h
     // 0.8 L/h × 800 mg/L = 640 mg/h
     expect(sodium_mg_per_h[0]).toBe(120);
     expect(sodium_mg_per_h[1]).toBe(640);
+    expect(sodium_mg_per_l).toEqual([300, 800]);
+  });
+
+  test('debug mode via header includes meta block', async () => {
+    // Test debug mode via X-Debug header
+    const response = await fetch('http://localhost:3000/api/fuel/session/ses_001', {
+      headers: { 'X-Debug': 'true' }
+    });
+    expect(response.status).toBe(200);
+    
+    const data = await response.json();
+    
+    // Verify meta block is present
+    expect(data.meta).toBeDefined();
+    expect(data.meta.sodium_mg_per_l).toEqual([300, 800]);
+    
+    // Verify derivation still works
+    expect(data.during.sodium_mg_per_h).toEqual([120, 640]);
   });
 });
 
