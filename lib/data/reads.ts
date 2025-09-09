@@ -446,8 +446,24 @@ export async function getReadiness(
 export async function getFuelSessionById(athleteId: string, id: string) {
   const supabase = serverClient();
   
+  // Local fuel fixtures record keyed by session_id
+  const FUEL_FIXTURES_BY_ID: Record<string, any> = {
+    'ses_777': {
+      session_id: 'ses_777',
+      weight_kg: 75,
+      pre: { carb_g_per_kg: [1.0, 2.0], fluid_ml_per_kg: [5, 10] },
+      during: { 
+        carb_g_per_h: [60, 90], 
+        fluid_l_per_h: [0.4, 0.8], 
+        sodium_mg_per_h: [120, 640] 
+      },
+      post: { carb_g_per_kg: [1.0, 1.2], protein_g: [20, 40], fluid_replacement_pct: 150 },
+      modifiers: { heat: true, altitude: false, fasted_variant: false }
+    }
+  };
+  
   try {
-    // Query Supabase for fuel session data
+    // Query Supabase for fuel session data with RLS
     const { data, error } = await supabase
       .from(TABLES.fuel)
       .select('*')
@@ -459,8 +475,8 @@ export async function getFuelSessionById(athleteId: string, id: string) {
       throw error;
     }
 
-    // If we have data, map it to Cycle-1 format
-    if (data && data.length > 0) {
+    // If we have exactly 1 row, map and return it
+    if (data && data.length === 1) {
       const fuelRow = data[0];
       return {
         session_id: fuelRow.session_id,
@@ -476,38 +492,20 @@ export async function getFuelSessionById(athleteId: string, id: string) {
       };
     }
 
-    // No data found, return Cycle-1 fixture
-    return {
-      session_id: id,
-      weight_kg: 75,
-      pre: { carb_g_per_kg: [1.0, 2.0], fluid_ml_per_kg: [5, 10] },
-      during: { 
-        carb_g_per_h: [60, 90], 
-        fluid_l_per_h: [0.4, 0.8], 
-        sodium_mg_per_h: [120, 640] 
-      },
-      post: { carb_g_per_kg: [1.0, 1.2], protein_g: [20, 40], fluid_replacement_pct: 150 },
-      modifiers: { heat: true, altitude: false, fasted_variant: false }
-    };
-  } catch (err) {
-    if (isMissingRelation(err)) {
-      console.info('Supabase fuel session missing; using fixtures', { code: (err as any).code });
+    // If success and rows.length === 0, fall through to fixtures check
+    const fx = FUEL_FIXTURES_BY_ID[id];
+    if (fx) return fx;
+    return null; // Important: indicate "not found" to the route
+  } catch (e) {
+    if (isMissingRelation(e)) {
+      console.info('Supabase fuel_sessions missing; using fixtures');
     } else {
-      console.error('Supabase fuel session query error', err);
+      console.error('Supabase fuel session query error', e);
     }
     
-    // Return Cycle-1 fixture on any error to keep API green
-    return {
-      session_id: id,
-      weight_kg: 75,
-      pre: { carb_g_per_kg: [1.0, 2.0], fluid_ml_per_kg: [5, 10] },
-      during: { 
-        carb_g_per_h: [60, 90], 
-        fluid_l_per_h: [0.4, 0.8], 
-        sodium_mg_per_h: [120, 640] 
-      },
-      post: { carb_g_per_kg: [1.0, 1.2], protein_g: [20, 40], fluid_replacement_pct: 150 },
-      modifiers: { heat: true, altitude: false, fasted_variant: false }
-    };
+    // Fixtures path
+    const fx = FUEL_FIXTURES_BY_ID[id];
+    if (fx) return fx;
+    return null; // Important: indicate "not found" to the route
   }
 }
