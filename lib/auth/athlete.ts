@@ -6,9 +6,10 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export function getAuthFlags() {
   const mode = (process.env.AUTH_MODE ?? 'dev').toLowerCase();
+  // In dev-like modes, default override ON unless explicitly disabled
   const allow =
     mode !== 'prod' &&
-    ['1','true','yes'].includes((process.env.ALLOW_HEADER_OVERRIDE ?? '0').toLowerCase());
+    ['1','true','yes'].includes((process.env.ALLOW_HEADER_OVERRIDE ?? '1').toLowerCase());
   return { mode, allow };
 }
 
@@ -27,19 +28,15 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   const { mode, allow } = getAuthFlags();
 
   // Check for x-athlete-id header override (case-insensitive)
-  const athleteIdHeader = req.headers.get('x-athlete-id');
+  const rawHeader = req.headers.get('x-athlete-id') ?? null;
+  const athleteIdHeader = rawHeader;
   
   if (athleteIdHeader) {
     // In non-prod mode with header override enabled, use the header
     if (mode !== 'prod' && allow) {
       const raw = athleteIdHeader.trim();
       
-      // Validate UUID v4/any format: 36 characters with hyphens and hex digits
-      if (!/^[0-9a-fA-F-]{36}$/.test(raw)) {
-        throw new Error('invalid athlete id header');
-      }
-      
-      // Additional UUID structure validation (8-4-4-4-12 format)
+      // Validate UUID format (8-4-4-4-12 format)
       const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
       if (!uuidRegex.test(raw)) {
         throw new Error('invalid athlete id header');
@@ -112,4 +109,16 @@ export function setCacheHint(res: NextResponse, hint: string): void {
  */
 export function addAuthChallenge(res: NextResponse, realm = 'momentom', error = 'invalid_token'): void {
   res.headers.set('WWW-Authenticate', `Bearer realm="${realm}", error="${error}"`);
+}
+
+/**
+ * Add authentication debug header for non-production environments
+ * 
+ * @param res - NextResponse instance
+ * @param info - Authentication debug information
+ */
+export function addAuthDebug(res: NextResponse, info: { mode: string; allow: boolean; saw_header: boolean }) {
+  if (info.mode !== 'prod') {
+    res.headers.set('X-Debug-Auth', JSON.stringify(info));
+  }
 }

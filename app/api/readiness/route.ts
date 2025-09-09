@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
+import { getAthleteId, addStandardHeaders, setCacheHint, getAuthFlags, addAuthDebug } from '@/lib/auth/athlete';
 import { getReadiness, isMissingRelation } from '@/lib/data/reads';
 import { generateCorrelationId } from '@/lib/utils';
 import { etagFor } from '@/lib/http/etag';
@@ -8,6 +8,10 @@ export async function GET(req: NextRequest) {
   const correlationId = generateCorrelationId();
   
   try {
+    // Capture auth flags and raw header for debug
+    const flags = getAuthFlags();
+    const rawHeader = req.headers.get('x-athlete-id') ?? null;
+    
     // Extract athlete ID from request
     const athleteId = await getAthleteId(req);
     
@@ -60,6 +64,7 @@ export async function GET(req: NextRequest) {
         addStandardHeaders(res, correlationId);
         setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
         res.headers.set('ETag', etag);
+        addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
         return res;
       }
 
@@ -68,6 +73,7 @@ export async function GET(req: NextRequest) {
       addStandardHeaders(res, correlationId);
       setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
       res.headers.set('ETag', etag);
+      addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
       return res;
     }
     
@@ -79,6 +85,7 @@ export async function GET(req: NextRequest) {
       addStandardHeaders(res, correlationId);
       setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
       res.headers.set('ETag', etag);
+      addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
       return res;
     }
 
@@ -86,6 +93,7 @@ export async function GET(req: NextRequest) {
     addStandardHeaders(res, correlationId);
     setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
     res.headers.set('ETag', etag);
+    addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
     return res;
   } catch (error) {
     // Classify error type for appropriate logging
@@ -117,6 +125,7 @@ export async function GET(req: NextRequest) {
       addStandardHeaders(res, correlationId);
       setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
       res.headers.set('ETag', etag);
+      addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
       return res;
     }
 
@@ -124,6 +133,7 @@ export async function GET(req: NextRequest) {
     addStandardHeaders(res, correlationId);
     setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
     res.headers.set('ETag', etag);
+    addAuthDebug(res, { mode: flags.mode, allow: flags.allow, saw_header: !!rawHeader });
     return res;
   }
 }
