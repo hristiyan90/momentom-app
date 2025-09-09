@@ -6,7 +6,9 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export function getAuthFlags() {
   const mode = (process.env.AUTH_MODE ?? 'dev').toLowerCase();
-  const allow = ['1', 'true', 'yes'].includes((process.env.ALLOW_HEADER_OVERRIDE ?? '0').toLowerCase());
+  const allow =
+    mode !== 'prod' &&
+    ['1','true','yes'].includes((process.env.ALLOW_HEADER_OVERRIDE ?? '0').toLowerCase());
   return { mode, allow };
 }
 
@@ -48,7 +50,12 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   }
 
   // Production authentication mapping is not yet implemented
-  throw new Error('prod mapping pending (A4)');
+  if (mode === 'prod') {
+    throw new Error('prod mapping pending (A4)');
+  }
+  
+  // In dev mode without valid header override, provide fallback
+  throw new Error('authentication required');
 }
 
 /**
