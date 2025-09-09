@@ -71,9 +71,13 @@
         0.4,
         0.8
       ],
-      "sodium_mg_per_h": [
+      "sodium_mg_per_l": [
         300,
         800
+      ],
+      "sodium_mg_per_h": [
+        120,
+        640
       ]
     },
     "post": {

@@ -457,6 +457,43 @@ describe('Readiness weight normalization', () => {
   });
 });
 
+describe('Fuel sodium derivation', () => {
+  test('sodium mg/h derived from concentration × fluid rate', async () => {
+    // This test validates the /api/fuel/session/{id} endpoint sodium derivation
+    const response = await fetch('http://localhost:3000/api/fuel/session/ses_001');
+    expect(response.status).toBe(200);
+    
+    const data = await response.json();
+    expect(data.during).toBeDefined();
+    
+    const { fluid_l_per_h, sodium_mg_per_l, sodium_mg_per_h } = data.during;
+    
+    // Verify all required fields are present
+    expect(fluid_l_per_h).toBeDefined();
+    expect(sodium_mg_per_l).toBeDefined();
+    expect(sodium_mg_per_h).toBeDefined();
+    
+    // Verify arrays have 2 elements each (lo, hi)
+    expect(fluid_l_per_h).toHaveLength(2);
+    expect(sodium_mg_per_l).toHaveLength(2);
+    expect(sodium_mg_per_h).toHaveLength(2);
+    
+    // Calculate expected derived values: lo×loC, hi×hiC
+    const expectedLow = Math.round(fluid_l_per_h[0] * sodium_mg_per_l[0]);
+    const expectedHigh = Math.round(fluid_l_per_h[1] * sodium_mg_per_l[1]);
+    
+    // Assert derived bounds match multiplication
+    expect(sodium_mg_per_h[0]).toBe(expectedLow);
+    expect(sodium_mg_per_h[1]).toBe(expectedHigh);
+    
+    // Verify specific expected values based on fixture
+    // 0.4 L/h × 300 mg/L = 120 mg/h
+    // 0.8 L/h × 800 mg/L = 640 mg/h
+    expect(sodium_mg_per_h[0]).toBe(120);
+    expect(sodium_mg_per_h[1]).toBe(640);
+  });
+});
+
 describe('Priority and trigger logic', () => {
   test('missed_session has highest priority', () => {
     const sessions = [
