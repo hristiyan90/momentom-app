@@ -1,109 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withSecurityHeaders } from '@/lib/http/headers';
+import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
+import { getSessions } from '@/lib/data/reads';
+import { generateCorrelationId } from '@/lib/utils';
 
 export async function GET(req: NextRequest) {
-  // Mock data with multiple sessions for testing
-  const allItems = [
-    { 
-      session_id: 'ses_001', 
-      date: '2025-09-06', 
-      sport: 'run', 
-      title: 'Endurance Base', 
-      planned_duration_min: 90, 
-      planned_load: 75, 
-      planned_zone_primary: 'z2', 
-      status: 'planned', 
-      structure_json: { segments: [] } 
-    },
-    { 
-      session_id: 'ses_002', 
-      date: '2025-09-07', 
-      sport: 'bike', 
-      title: 'Tempo Intervals', 
-      planned_duration_min: 60, 
-      planned_load: 65, 
-      planned_zone_primary: 'z3', 
-      status: 'planned', 
-      structure_json: { segments: [] } 
-    },
-    { 
-      session_id: 'ses_003', 
-      date: '2025-09-08', 
-      sport: 'swim', 
-      title: 'Technique Focus', 
-      planned_duration_min: 45, 
-      planned_load: 40, 
-      planned_zone_primary: 'z1', 
-      status: 'planned', 
-      structure_json: { segments: [] } 
-    },
-    { 
-      session_id: 'ses_004', 
-      date: '2025-09-06', 
-      sport: 'strength', 
-      title: 'Core & Stability', 
-      planned_duration_min: 30, 
-      planned_load: 20, 
-      planned_zone_primary: null, 
-      status: 'planned', 
-      structure_json: { segments: [] } 
-    }
-  ];
-
-  // Parse query parameters
-  const { searchParams } = req.nextUrl;
-  const start = searchParams.get('start');
-  const end = searchParams.get('end');
-  const sport = searchParams.get('sport');
-
-  // Apply soft filtering
-  let filteredItems = [...allItems];
-
-  // Filter by date range if start/end provided
-  if (start || end) {
-    filteredItems = filteredItems.filter(item => {
-      const itemDate = new Date(item.date);
-      let includeItem = true;
-
-      if (start) {
-        try {
-          const startDate = new Date(start);
-          if (!isNaN(startDate.getTime())) {
-            includeItem = includeItem && itemDate >= startDate;
-          }
-        } catch {
-          // Ignore invalid start date
+  const correlationId = generateCorrelationId();
+  
+  try {
+    // Extract athlete ID from request
+    const athleteId = await getAthleteId(req);
+    
+    // Parse query parameters for soft filtering
+    const { searchParams } = req.nextUrl;
+    const start = searchParams.get('start');
+    const end = searchParams.get('end');
+    const sport = searchParams.get('sport');
+    
+    // Build filters object (soft validation - ignore invalids)
+    const filters: { start?: string; end?: string; sport?: string } = {};
+    
+    if (start) {
+      // Soft validate start date
+      try {
+        const startDate = new Date(start);
+        if (!isNaN(startDate.getTime())) {
+          filters.start = start;
         }
+      } catch {
+        // Ignore invalid start date - no error thrown
       }
-
-      if (end) {
-        try {
-          const endDate = new Date(end);
-          if (!isNaN(endDate.getTime())) {
-            // Include end date (end of day)
-            const endOfDay = new Date(endDate);
-            endOfDay.setHours(23, 59, 59, 999);
-            includeItem = includeItem && itemDate <= endOfDay;
-          }
-        } catch {
-          // Ignore invalid end date
-        }
-      }
-
-      return includeItem;
-    });
-  }
-
-  // Filter by sport if provided
-  if (sport) {
-    const validSports = ['run', 'bike', 'swim', 'strength', 'mobility'];
-    if (validSports.includes(sport)) {
-      filteredItems = filteredItems.filter(item => item.sport === sport);
     }
-    // If invalid sport, ignore filter (don't filter out anything)
+    
+    if (end) {
+      // Soft validate end date
+      try {
+        const endDate = new Date(end);
+        if (!isNaN(endDate.getTime())) {
+          filters.end = end;
+        }
+      } catch {
+        // Ignore invalid end date - no error thrown
+      }
+    }
+    
+    if (sport) {
+      // Soft validate sport
+      const validSports = ['run', 'bike', 'swim', 'strength', 'mobility'];
+      if (validSports.includes(sport)) {
+        filters.sport = sport;
+      }
+      // If invalid sport, ignore filter (don't add to filters)
+    }
+    
+    // Get sessions data from Supabase or fallback to fixture with filtering
+    const sessionsData = await getSessions(athleteId, filters);
+    
+    // Create response with exact Cycle-1 shape
+    const response = NextResponse.json(sessionsData, { status: 200 });
+    
+    // Add standard headers (H1-H7 compliance)
+    addStandardHeaders(response, correlationId);
+    setCacheHint(response, "private, max-age=60, stale-while-revalidate=60");
+    
+    return response;
+  } catch (error) {
+    // Handle authentication errors gracefully
+    console.error('Sessions route error:', error);
+    
+    const errorResponse = NextResponse.json(
+      { error: { code: 'AUTH_REQUIRED', message: 'Authentication required', request_id: correlationId } },
+      { status: 401 }
+    );
+    
+    addStandardHeaders(errorResponse, correlationId);
+    errorResponse.headers.set('WWW-Authenticate', 'Bearer realm="momentom", error="invalid_token"');
+    
+    return errorResponse;
   }
-
-  return withSecurityHeaders(NextResponse.json({ items: filteredItems, next_cursor: null }), { 
-    cacheHint: "private, max-age=60, stale-while-revalidate=60" 
-  });
 }

@@ -1,45 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withSecurityHeaders } from '@/lib/http/headers';
+import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
+import { getFuelSessionById } from '@/lib/data/reads';
+import { generateCorrelationId } from '@/lib/utils';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  // Check for debug mode via query param or header
-  const { searchParams } = req.nextUrl;
-  const debugQuery = searchParams.get('debug') === '1';
-  const debugHeader = req.headers.get('X-Debug') === 'true';
-  const isDebugMode = debugQuery || debugHeader;
-
-  // Base fluid and sodium ranges
-  const fluidRange = [0.4, 0.8]; // L/h
-  const sodiumConcentrationRange = [300, 800]; // mg/L (internal calculation)
+  const correlationId = generateCorrelationId();
   
-  // Calculate derived sodium per hour: concentration × fluid rate
-  const sodiumPerHour = [
-    Math.round(fluidRange[0] * sodiumConcentrationRange[0]), // 0.4 * 300 = 120
-    Math.round(fluidRange[1] * sodiumConcentrationRange[1])  // 0.8 * 800 = 640
-  ];
-
-  // Build the response object
-  const response: any = { 
-    session_id: params.id, 
-    weight_kg: 75, 
-    pre: { carb_g_per_kg: [1.0, 2.0], fluid_ml_per_kg: [5, 10] }, 
-    during: { 
-      carb_g_per_h: [60, 90], 
-      fluid_l_per_h: fluidRange, 
-      sodium_mg_per_h: sodiumPerHour
-    }, 
-    post: { carb_g_per_kg: [1.0, 1.2], protein_g: [20, 40], fluid_replacement_pct: 150 }, 
-    modifiers: { heat: true, altitude: false, fasted_variant: false } 
-  };
-
-  // Add debug meta block if debug mode is enabled
-  if (isDebugMode) {
-    response.meta = {
-      sodium_mg_per_l: sodiumConcentrationRange
-    };
+  try {
+    // Extract athlete ID from request
+    const athleteId = await getAthleteId(req);
+    
+    // Check for debug mode via query param or header
+    const { searchParams } = req.nextUrl;
+    const debugQuery = searchParams.get('debug') === '1';
+    const debugHeader = req.headers.get('X-Debug') === 'true';
+    const isDebugMode = debugQuery || debugHeader;
+    
+    // Get fuel session data from Supabase or fallback to fixture
+    let fuelData = await getFuelSessionById(athleteId, params.id);
+    
+    // Add debug meta block if debug mode is enabled
+    if (isDebugMode) {
+      // Internal sodium concentration used for derivation
+      const sodiumConcentrationRange = [300, 800]; // mg/L
+      
+      fuelData = {
+        ...fuelData,
+        meta: {
+          sodium_mg_per_l: sodiumConcentrationRange
+        }
+      };
+    }
+    
+    // Create response with exact Cycle-1 shape
+    const response = NextResponse.json(fuelData, { status: 200 });
+    
+    // Add standard headers (H1-H7 compliance)
+    addStandardHeaders(response, correlationId);
+    setCacheHint(response, "private, max-age=60, stale-while-revalidate=60");
+    
+    return response;
+  } catch (error) {
+    // Handle authentication errors gracefully
+    console.error('Fuel session route error:', error);
+    
+    const errorResponse = NextResponse.json(
+      { error: { code: 'AUTH_REQUIRED', message: 'Authentication required', request_id: correlationId } },
+      { status: 401 }
+    );
+    
+    addStandardHeaders(errorResponse, correlationId);
+    errorResponse.headers.set('WWW-Authenticate', 'Bearer realm="momentom", error="invalid_token"');
+    
+    return errorResponse;
   }
-
-  return withSecurityHeaders(NextResponse.json(response), { 
-    cacheHint: "private, max-age=60, stale-while-revalidate=60" 
-  });
 }
