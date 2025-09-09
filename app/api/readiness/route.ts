@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAthleteId, addStandardHeaders, setCacheHint } from '@/lib/auth/athlete';
 import { getReadiness, isMissingRelation } from '@/lib/data/reads';
 import { generateCorrelationId } from '@/lib/utils';
+import { etagFor } from '@/lib/http/etag';
 
 export async function GET(req: NextRequest) { 
   const correlationId = generateCorrelationId();
@@ -52,23 +53,40 @@ export async function GET(req: NextRequest) {
       }
       
       // Return 206 with Warning header for partial data
-      const response = NextResponse.json(readinessData, { status: 206 });
-      response.headers.set('Warning', '199 - partial data');
-      
-      addStandardHeaders(response, correlationId);
-      setCacheHint(response, "private, max-age=30, stale-while-revalidate=30");
-      
-      return response;
+      const { etag, body } = etagFor(readinessData);
+      const inm = req.headers.get('if-none-match');
+      if (inm && inm === etag) {
+        const res = new NextResponse(null, { status: 304 });
+        addStandardHeaders(res, correlationId);
+        setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+        res.headers.set('ETag', etag);
+        return res;
+      }
+
+      const res = new NextResponse(body, { status: 206, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+      res.headers.set('Warning', '199 - partial data');
+      addStandardHeaders(res, correlationId);
+      setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+      res.headers.set('ETag', etag);
+      return res;
     }
     
     // Normal mode: return 200 with complete data
-    const response = NextResponse.json(readinessData, { status: 200 });
-    
-    // Add standard headers (H1-H7 compliance)
-    addStandardHeaders(response, correlationId);
-    setCacheHint(response, "private, max-age=30, stale-while-revalidate=30");
-    
-    return response;
+    const { etag, body } = etagFor(readinessData);
+    const inm = req.headers.get('if-none-match');
+    if (inm && inm === etag) {
+      const res = new NextResponse(null, { status: 304 });
+      addStandardHeaders(res, correlationId);
+      setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+      res.headers.set('ETag', etag);
+      return res;
+    }
+
+    const res = new NextResponse(body, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+    addStandardHeaders(res, correlationId);
+    setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+    res.headers.set('ETag', etag);
+    return res;
   } catch (error) {
     // Classify error type for appropriate logging
     if (isMissingRelation(error)) {
@@ -92,10 +110,20 @@ export async function GET(req: NextRequest) {
       data_quality: { missing: [] as string[], clipped: false }
     };
     
-    const response = NextResponse.json(fixtureReadiness, { status: 200 });
-    addStandardHeaders(response, correlationId);
-    setCacheHint(response, "private, max-age=30, stale-while-revalidate=30");
-    
-    return response;
+    const { etag, body } = etagFor(fixtureReadiness);
+    const inm = req.headers.get('if-none-match');
+    if (inm && inm === etag) {
+      const res = new NextResponse(null, { status: 304 });
+      addStandardHeaders(res, correlationId);
+      setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+      res.headers.set('ETag', etag);
+      return res;
+    }
+
+    const res = new NextResponse(body, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+    addStandardHeaders(res, correlationId);
+    setCacheHint(res, "private, max-age=30, stale-while-revalidate=30");
+    res.headers.set('ETag', etag);
+    return res;
   }
 }
