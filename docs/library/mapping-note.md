@@ -1,0 +1,5 @@
+- **Library → Planned session:** Copy the workout object as the session; `structure_json` is identical in the plan.
+- **Targets at render-time:** Segment `target` types (zone|rpe|power|pace|none) map to athlete-specific numbers via current zones/thresholds — **not** baked into the library.
+- **Primary display:** use `title`, `description`, `primary_zone`, `duration_min`, and `focus_tags`.
+- **Ordering only:** `load_hint` is optional and can be used for internal ordering or previews; it is not persisted as canonical load.
+- **No schema changes:** all fields match OpenAPI 1.0.1; segments are time-based only (swim distances may be described in `notes`).
