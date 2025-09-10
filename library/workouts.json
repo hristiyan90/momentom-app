@@ -1,0 +1,241 @@
+[
+  {
+    "workout_id": "8c8a9e1d-6a1b-4e9a-9f59-0f3b8f2d51e5",
+    "sport": "run",
+    "title": "Run — Endurance 45′ (Z2)",
+    "description": "Steady aerobic run to build aerobic base and durability.",
+    "phase": "base",
+    "focus_tags": ["endurance", "aerobic"],
+    "primary_zone": "z2",
+    "duration_min": 45,
+    "load_hint": 45,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy; relaxed cadence" },
+        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 aerobic; nose-breathing OK" },
+        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 walk or easy jog" }
+      ]
+    }
+  },
+  {
+    "workout_id": "3a2f7b68-5c3d-4b97-9a6e-1c2d7f4e8b90",
+    "sport": "run",
+    "title": "Run — Threshold 3×10′ (Z4)",
+    "description": "Sustained LT2 work to raise threshold pace; short recoveries.",
+    "phase": "build",
+    "focus_tags": ["threshold"],
+    "primary_zone": "z4",
+    "duration_min": 60,
+    "load_hint": 70,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 12, "notes": "Z1→low Z2 + 4×20″ strides (easy)" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 easy jog" }
+      ]
+    }
+  },
+  {
+    "workout_id": "5e4d6c72-9b3f-4e1a-8a67-2f1c9d3b7a24",
+    "sport": "run",
+    "title": "Run — Taper Sharpener 30′ + 6×1′ Strides (Z2)",
+    "description": "Keep legs snappy without fatigue; taper-safe opener.",
+    "phase": "taper",
+    "focus_tags": ["taper_safe", "neuromuscular"],
+    "primary_zone": "z2",
+    "duration_min": 30,
+    "load_hint": 25,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Easy jog; relaxed" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8; fast but relaxed" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "cooldown", "target": "none", "duration_min": 8, "notes": "Easy walk/jog" }
+      ]
+    }
+  },
+  {
+    "workout_id": "0f9a1b2c-3d4e-4f60-8a9b-0c1d2e3f4a5b",
+    "sport": "bike",
+    "title": "Bike — Endurance 90′ + Tempo Blocks (Z2)",
+    "description": "Aerobic endurance with light tempo exposures for muscular endurance.",
+    "phase": "base",
+    "focus_tags": ["endurance", "tempo"],
+    "primary_zone": "z2",
+    "duration_min": 90,
+    "load_hint": 80,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 spin" },
+        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z2 aerobic" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 spin" }
+      ]
+    }
+  },
+  {
+    "workout_id": "7c6b5a49-3827-4d16-91a3-6e5f4d3c2b10",
+    "sport": "bike",
+    "title": "Bike — Threshold 3×12′ (Z4)",
+    "description": "Raise sustainable power with long LT2 intervals.",
+    "phase": "build",
+    "focus_tags": ["threshold"],
+    "primary_zone": "z4",
+    "duration_min": 75,
+    "load_hint": 95,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 3×1′ high-cadence" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 spin" }
+      ]
+    }
+  },
+  {
+    "workout_id": "e1f2d3c4-b5a6-4d89-8c7d-6e5f4a3b2c10",
+    "sport": "bike",
+    "title": "Bike — Taper Opener 50′ (Z2)",
+    "description": "Maintain intensity feel without accumulating fatigue.",
+    "phase": "taper",
+    "focus_tags": ["taper_safe", "opener"],
+    "primary_zone": "z2",
+    "duration_min": 50,
+    "load_hint": 45,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "steady", "target": "zone", "duration_min": 10, "notes": "Z2 steady" },
+        { "type": "steady", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 7, "notes": "Z1 spin" }
+      ]
+    }
+  },
+  {
+    "workout_id": "2b3c4d5e-6f70-4a81-92a3-b4c5d6e7f890",
+    "sport": "swim",
+    "title": "Swim — Taper Sharpener 30′ (6×1′ Fast) (Z2)",
+    "description": "Keep feel for the water; short fast reps with plenty of easy.",
+    "phase": "taper",
+    "focus_tags": ["taper_safe", "neuromuscular"],
+    "primary_zone": "z2",
+    "duration_min": 30,
+    "load_hint": 25,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy; drills optional, e.g., 4×50" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5; e.g., 25–50m at CSS−5″/100" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "cooldown", "target": "pace", "duration_min": 8, "notes": "Easy; choice stroke" }
+      ]
+    }
+  },
+  {
+    "workout_id": "91a2b3c4-d5e6-47f8-9012-3b4c5d6e7f80",
+    "sport": "swim",
+    "title": "Swim — CSS 10×2′ (Z4)",
+    "description": "Threshold/CSS reps to improve sustainable swim pace.",
+    "phase": "build",
+    "focus_tags": ["threshold", "css"],
+    "primary_zone": "z4",
+    "duration_min": 45,
+    "load_hint": 60,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy + drills (e.g., 4×50)" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace (e.g., 100s)" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "cooldown", "target": "pace", "duration_min": 5, "notes": "Easy" }
+      ]
+    }
+  },
+  {
+    "workout_id": "a1b2c3d4-e5f6-4a7b-8c90-1d2e3f4a5b6c",
+    "sport": "strength",
+    "title": "Strength — Full-Body 45′ (Strength)",
+    "description": "General strength: hinge, squat, push, pull and trunk; RPE 6–7.",
+    "phase": "base",
+    "focus_tags": ["strength_general", "injury_prevention"],
+    "primary_zone": "strength",
+    "duration_min": 45,
+    "load_hint": 50,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Mobility and activation" },
+        { "type": "strength", "target": "rpe", "duration_min": 32, "notes": "3×5–8 reps main lifts @ RPE 6–7; accessories 2–3×10–12" },
+        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and breathing" }
+      ]
+    }
+  },
+  {
+    "workout_id": "d0e1f2a3-b4c5-46d7-98e9-0a1b2c3d4e5f",
+    "sport": "strength",
+    "title": "Strength — Run-Support 30′ (Strength)",
+    "description": "Calf complex, hamstrings, hip stabilisers; low volume to avoid soreness.",
+    "phase": "taper",
+    "focus_tags": ["strength_run_support", "taper_safe"],
+    "primary_zone": "strength",
+    "duration_min": 30,
+    "load_hint": 20,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Mobility and band activation" },
+        { "type": "strength", "target": "rpe", "duration_min": 20, "notes": "Calf raises 3×10, RDL 2×8 light, hip abduction 2×12, plank 3×30–45s @ RPE 5–6" },
+        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Light stretch" }
+      ]
+    }
+  }
+]
