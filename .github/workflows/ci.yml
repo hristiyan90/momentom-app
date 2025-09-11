@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Prepare artifacts dir
+        run: mkdir -p artifacts
+      - name: Fetch main OpenAPI
+        run: |
+          curl -sSL -o artifacts/openapi_main.yaml \
+            https://raw.githubusercontent.com/hristiyan90/momentom-app/main/openapi/momentom_api_openapi_1.0.1.yaml
+      - name: OpenAPI diff (oasdiff via Docker)
+        run: |
+          docker run --rm -v "$PWD":/work tufin/oasdiff:latest \
+            diff --fail-on=breaking --format=text /work/artifacts/openapi_main.yaml /work/openapi/momentom_api_openapi_1.0.1.yaml \
+            | tee artifacts/openapi-diff.txt
+      - name: OpenAPI validate
+        run: npx --yes @apidevtools/swagger-cli@4.0.4 validate openapi/momentom_api_openapi_1.0.1.yaml
+      - name: Upload OpenAPI diff artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-artifacts
+          path: artifacts/openapi-diff.txt
+
+  postman:
+    runs-on: ubuntu-latest
+    needs: openapi
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install Newman
+        run: npm i -g newman@6
+      - name: Prepare artifacts dir
+        run: mkdir -p artifacts
+      - name: Run Newman
+        env:
+          PREVIEW_BASE_URL: https://v0-endurance-app-ui.vercel.app
+        run: |
+          npx newman run postman/momentom_postman_collection.json \
+            -e postman/momentom_postman_environment.json \
+            --env-var "baseUrl=$PREVIEW_BASE_URL" \
+            --reporters cli,html \
+            --reporter-html-export artifacts/newman.html
+      - name: Upload Newman report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: artifacts/newman.html
+
+  smoke:
+    runs-on: ubuntu-latest
+    needs: postman
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install deps
+        run: npm ci
+      - name: Run H1–H7 smoke
+        run: npm run smoke | tee artifacts/smoke.log
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-logs
+          path: artifacts/smoke.log
