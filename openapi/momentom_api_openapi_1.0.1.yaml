@@ -1,4 +1,3 @@
-# OpenAPI spec - latest update
 openapi: 3.1.0
 info:
   title: Momentom API (MVP)
@@ -223,52 +222,54 @@ components:
           properties:
             carb_g_per_kg:
               type: array
-              items:
-                type: number
               minItems: 2
               maxItems: 2
+              items:
+                type: number
             fluid_ml_per_kg:
               type: array
-              items:
-                type: number
               minItems: 2
               maxItems: 2
+              items:
+                type: number
+
         during:
           type: object
           properties:
             carb_g_per_h:
               type: array
-              items:
-                type: number
               minItems: 2
               maxItems: 2
+              items:
+                type: number
             fluid_l_per_h:
               type: array
+              minItems: 2
+              maxItems: 2
               items:
                 type: number
-              minItems: 2
-              maxItems: 2
             sodium_mg_per_h:
               type: array
-              items:
-                type: integer
               minItems: 2
               maxItems: 2
+              items:
+                type: integer
+
         post:
           type: object
           properties:
             carb_g_per_kg:
               type: array
-              items:
-                type: number
               minItems: 2
               maxItems: 2
+              items:
+                type: number
             protein_g:
               type: array
-              items:
-                type: number
               minItems: 2
               maxItems: 2
+              items:
+                type: number
             fluid_replacement_pct:
               type: integer
         modifiers:
@@ -437,24 +438,10 @@ paths:
       parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
       requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
+        content: { application/json: { schema: { type: object, additionalProperties: true } } }
       responses:
-        '200':
-          description: Updated
-          headers:
-            ETag:
-              schema:
-                type: string
-        '409':
-          description: Version conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiError'
+        '200': { description: Updated, headers: { ETag: { schema: { type: string } } } }
+        '409': { description: Version conflict, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
 
   /session/{id}/feedback:
     post:
@@ -664,22 +651,10 @@ paths:
     patch:
       tags: [Preferences]
       summary: Update preferences (ETag required)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
+      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
       responses:
-        '200':
-          description: Updated
-          headers:
-            ETag:
-              schema:
-                type: string
-        '412':
-          description: Precondition failed (If-Match)
+        '200': { description: Updated, headers: { ETag: { schema: { type: string } } } }
+        '412': { description: Precondition failed (If-Match) }
 
   /integrations:
     get:
@@ -793,7 +768,7 @@ paths:
       tags: [Preferences]
       summary: Start zone/threshold test (stub for future)
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
