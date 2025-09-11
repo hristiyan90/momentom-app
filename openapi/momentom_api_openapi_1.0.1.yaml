@@ -104,14 +104,22 @@ components:
         date: { type: string, format: date }
         score: { type: integer, minimum: 0, maximum: 100 }
         band: { type: string, enum: [green, amber, red] }
-        drivers: { type: array, items: { $ref: '#/components/schemas/ReadinessDriver' } }
+        drivers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReadinessDriver'
         flags:
           type: array
-          items: { type: string, enum: [monotony_high, ramp_high, illness] }
+          items:
+            type: string
+            enum: [monotony_high, ramp_high, illness]
         data_quality:
           type: object
           properties:
-            missing: { type: array, items: { type: string } }
+            missing:
+            type: array
+            items:
+              type: string
             clipped: { type: boolean }
 
     LoadPoint:
@@ -128,14 +136,19 @@ components:
     MetricsSeriesResponse:
       type: object
       properties:
-        series: { type: array, items: { $ref: '#/components/schemas/LoadPoint' } }
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadPoint'
         next_cursor: { type: string, nullable: true }
         data_quality:
           type: object
           properties:
             flags:
               type: array
-              items: { type: string, enum: [partial_data] }
+              items:
+            type: string
+            enum: [partial_data]
 
     PlanSummary:
       type: object
@@ -301,7 +314,11 @@ components:
         reason_code:
           type: string
           enum: [low_readiness, missed_session, monotony_high, ramp_high, illness]
-        triggers: { type: array, items: { type: string, enum: [low_readiness, missed_session, monotony_high, ramp_high, illness] } }
+        triggers:
+          type: array
+          items:
+            type: string
+            enum: [low_readiness, missed_session, monotony_high, ramp_high, illness]
         changes:
           type: array
           items: { $ref: '#/components/schemas/DiffChange' }
@@ -325,7 +342,10 @@ components:
           type: object
           properties:
             prompt: { type: string }
-            chips: { type: array, items: { type: string } }
+            chips:
+            type: array
+            items:
+              type: string
             context:
               type: object
               properties:
@@ -335,8 +355,14 @@ components:
           type: object
           properties:
             reply: { type: string }
-            reasons: { type: array, items: { type: string } }
-            references: { type: array, items: { type: string } }
+            reasons:
+            type: array
+            items:
+              type: string
+            references:
+              type: array
+              items:
+                type: string
             explainability_id: { type: string }
 
 paths:
@@ -422,9 +448,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  items: { type: array, items: { $ref: '#/components/schemas/Session' } }
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
                   next_cursor: { type: string, nullable: true }
-
   /session/{id}:
     get:
       tags: [Sessions]
@@ -542,7 +570,11 @@ paths:
               required: [decision]
               properties:
                 decision: { type: string, enum: [accepted, modified, rejected] }
-                modified_changes: { type: array, items: { $ref: '#/components/schemas/DiffChange' }, nullable: true }
+                modified_changes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DiffChange'
+                  nullable: true
       responses:
         '200':
           description: Persisted; plan version bump included
@@ -735,7 +767,17 @@ paths:
       summary: List blockers
       parameters: [ { $ref: '#/components/parameters/Start' }, { $ref: '#/components/parameters/End' } ]
       responses:
-        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { items: { type: array, items: { type: object, additionalProperties: true } } } } } } }
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
   /blockers/{id}:
     patch:
       tags: [Blockers]
