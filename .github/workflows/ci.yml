@@ -92,6 +92,8 @@ jobs:
           cache: 'npm'
       - name: Install deps
         run: npm ci
+      - name: Prepare artifacts dir
+        run: mkdir -p artifacts
       - name: Run H1–H7 smoke
         run: npm run smoke | tee artifacts/smoke.log
       - name: Upload smoke logs
