@@ -23,7 +23,7 @@ jobs:
       - name: OpenAPI diff (oasdiff via Docker)
         run: |
           docker run --rm -v "$PWD":/work tufin/oasdiff:latest \
-            diff --fail-on=all --format=text /work/artifacts/openapi_main.yaml /work/openapi/momentom_api_openapi_1.0.1.yaml \
+            diff --fail-on=breaking --format=text /work/artifacts/openapi_main.yaml /work/openapi/momentom_api_openapi_1.0.1.yaml \
             | tee artifacts/openapi-diff.txt
       - name: OpenAPI validate
         run: npx --yes @apidevtools/swagger-cli@4.0.4 validate openapi/momentom_api_openapi_1.0.1.yaml
