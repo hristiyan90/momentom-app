@@ -220,20 +220,56 @@ components:
         pre:
           type: object
           properties:
-            carb_g_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
-            fluid_ml_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
+            carb_g_per_kg:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+            fluid_ml_per_kg:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
         during:
           type: object
           properties:
-            carb_g_per_h:   { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
-            fluid_l_per_h:  { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
-            sodium_mg_per_h:{ type: array, items: { type: integer }, minItems: 2, maxItems: 2 }
+            carb_g_per_h:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+            fluid_l_per_h:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+            sodium_mg_per_h:
+              type: array
+              items:
+                type: integer
+              minItems: 2
+              maxItems: 2
         post:
           type: object
           properties:
-            carb_g_per_kg: { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
-            protein_g:     { type: array, items: { type: number }, minItems: 2, maxItems: 2 }
-            fluid_replacement_pct: { type: integer }
+            carb_g_per_kg:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+            protein_g:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+            fluid_replacement_pct:
+              type: integer
         modifiers:
           type: object
           properties:
@@ -336,6 +372,7 @@ paths:
       parameters: [ { $ref: '#/components/parameters/Start' }, { $ref: '#/components/parameters/End' }, { $ref: '#/components/parameters/Limit' }, { $ref: '#/components/parameters/Cursor' } ]
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema: { $ref: '#/components/schemas/MetricsSeriesResponse' }
@@ -353,7 +390,7 @@ paths:
       tags: [Plan & Calendar]
       summary: Active plan summary (blocks & focus)
       responses:
-        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/PlanSummary' } } } }
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/PlanSummary' } } } }
 
   /sessions:
     get:
@@ -377,6 +414,7 @@ paths:
           schema: { type: boolean }
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -391,17 +429,31 @@ paths:
       summary: Session detail
       parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
       responses:
-        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } } }
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } } }
     patch:
       tags: [Sessions]
       summary: Update planned session (time, title, structure, etc.)
       parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
       requestBody:
         required: true
-        content: { application/json: { schema: { type: object, additionalProperties: true } } }
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
-        '200': { description: Updated; headers: { ETag: { schema: { type: string } } } }
-        '409': { description: Version conflict; content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+        '200':
+          description: Updated
+          headers:
+            ETag:
+              schema:
+                type: string
+        '409':
+          description: Version conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 
   /session/{id}/feedback:
     post:
@@ -428,7 +480,7 @@ paths:
       summary: Fuel recommendations for a session (pre/during/post + modifiers)
       parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
       responses:
-        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/FuelGuidance' } } } }
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/FuelGuidance' } } } }
 
   /fuel/session/{id}/intake:
     post:
@@ -486,7 +538,7 @@ paths:
                 date: { type: string, format: date }
                 scope: { type: string, enum: [today, next_72h, week] }
       responses:
-        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/Adaptation' } } } }
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Adaptation' } } } }
 
   /adaptations/{id}/decision:
     post:
@@ -516,6 +568,7 @@ paths:
       summary: List races
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -539,6 +592,7 @@ paths:
       parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -571,6 +625,7 @@ paths:
       summary: Personal records shelf
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -597,21 +652,33 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/CoachMessage' } } }
       responses:
-        '200': { content: { application/json: { schema: { $ref: '#/components/schemas/CoachMessage' } } } }
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/CoachMessage' } } } }
 
   /preferences:
     get:
       tags: [Preferences]
       summary: Get preferences
       responses:
-        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+        '200': { description: OK, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
     patch:
       tags: [Preferences]
       summary: Update preferences (ETag required)
-      requestBody: { required: true, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
-        '200': { description: Updated; headers: { ETag: { schema: { type: string } } } }
-        '412': { description: Precondition failed (If-Match) }
+        '200':
+          description: Updated
+          headers:
+            ETag:
+              schema:
+                type: string
+        '412':
+          description: Precondition failed (If-Match)
 
   /integrations:
     get:
@@ -619,6 +686,7 @@ paths:
       summary: Integration statuses
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -639,6 +707,7 @@ paths:
       summary: Alerts list
       responses:
         '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -690,7 +759,7 @@ paths:
       summary: List blockers
       parameters: [ { $ref: '#/components/parameters/Start' }, { $ref: '#/components/parameters/End' } ]
       responses:
-        '200': { content: { application/json: { schema: { type: object, properties: { items: { type: array, items: { type: object, additionalProperties: true } } } } } } }
+        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { items: { type: array, items: { type: object, additionalProperties: true } } } } } } }
   /blockers/{id}:
     patch:
       tags: [Blockers]
@@ -704,7 +773,7 @@ paths:
       tags: [Preferences]
       summary: Thresholds (raw)
       responses:
-        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+        '200': { description: OK, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
     patch:
       tags: [Preferences]
       summary: Update thresholds (partial)
@@ -716,12 +785,18 @@ paths:
       tags: [Preferences]
       summary: Derived zones (from thresholds)
       responses:
-        '200': { content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+        '200': { description: OK, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
 
   /zones/tests:
     post:
       tags: [Preferences]
       summary: Start zone/threshold test (stub for future)
-      requestBody: { required: false }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '202': { description: Accepted (stub) }
