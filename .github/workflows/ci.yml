@@ -44,8 +44,10 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - name: Install Newman
-        run: npm i -g newman@6
+      - name: Install Newman and HTML reporter
+        run: |
+          npm i -g newman@6
+          npm i -g newman-reporter-html
       - name: Prepare artifacts dir
         run: mkdir -p artifacts
       - name: Run Newman
