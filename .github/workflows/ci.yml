@@ -50,7 +50,7 @@ jobs:
         run: mkdir -p artifacts
       - name: Run Newman
         env:
-          PREVIEW_BASE_URL: https://v0-endurance-app-ui.vercel.app/api
+          PREVIEW_BASE_URL: https://v0-endurance-app-ui.vercel.app
         run: |
           npx newman run postman/momentom_postman_collection.json \
             -e postman/momentom_postman_environment.json \
