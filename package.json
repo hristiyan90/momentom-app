@@ -14,7 +14,12 @@
     "start": "next start",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "smoke": "bash scripts/smoke_h1_h7.sh",
+    "test:api": "newman run postman/momentom_postman_collection.json -e postman/momentom_postman_environment.json",
+    "test:etag": "node -e \"const {etagFor} = require('./lib/http/etag.ts'); console.log('ETag test:', etagFor({test: 'data'}).etag);\"",
+    "validate:openapi": "npx @apidevtools/swagger-cli@4.0.4 validate openapi/momentom_api_openapi_1.0.1.yaml",
+    "validate:library": "node -e \"const workouts = JSON.parse(require('fs').readFileSync('library/workouts.json', 'utf8')); console.log('Library validation:', workouts.length, 'workouts');\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
