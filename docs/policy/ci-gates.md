@@ -44,3 +44,60 @@ docker run --rm -v "$PWD":/work tufin/oasdiff:latest \
 
 # Validate syntax
 npx --yes @apidevtools/swagger-cli@4.0.4 validate openapi/momentom_api_openapi_1.0.1.yaml
+```
+
+**Option B — Redocly CLI (fallback)**
+```bash
+# Install Redocly CLI
+npm install -g @redocly/cli
+
+# Fetch main spec
+curl -sSL -o artifacts/openapi_main.yaml \
+  https://raw.githubusercontent.com/hristiyan90/momentom-app/main/openapi/momentom_api_openapi_1.0.1.yaml
+
+# Diff (fail on any change)
+npx @redocly/cli diff \
+  --fail-on=all \
+  --format=text \
+  artifacts/openapi_main.yaml openapi/momentom_api_openapi_1.0.1.yaml \
+  | tee artifacts/openapi-diff.txt
+
+# Validate syntax
+npx @redocly/cli lint openapi/momentom_api_openapi_1.0.1.yaml
+```
+
+### 2) Postman/Newman Tests
+- **Collection**: `postman/momentom_postman_collection.json`
+- **Environment**: `postman/momentom_postman_environment.json`
+- **Timeout**: 10s per request, 10s per script
+- **Report**: HTML output for artifact upload
+
+```bash
+# Install Newman
+npm install -g newman newman-reporter-html
+
+# Run tests
+newman run postman/momentom_postman_collection.json \
+  -e postman/momentom_postman_environment.json \
+  -r cli,html \
+  --reporter-html-export newman-report.html \
+  --timeout-request 10000 \
+  --timeout-script 10000
+```
+
+### 3) H1–H7 Smoke Tests
+- **Entry point**: `npm run smoke` (as defined in `package.json`)
+- **Coverage**: All H1–H7 features must pass
+- **Output**: Logs to `artifacts/smoke-results.txt`
+
+```bash
+# Run smoke tests
+mkdir -p artifacts
+npm run smoke > artifacts/smoke-results.txt 2>&1
+```
+
+## Artifact Upload
+On any gate failure, upload:
+- `artifacts/openapi-diff.txt` (OpenAPI changes)
+- `newman-report.html` (Postman test results)
+- `artifacts/smoke-results.txt` (Smoke test logs)

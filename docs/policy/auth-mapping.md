@@ -14,6 +14,31 @@
 - Both Bearer and Cookie supported.
 - **Prod** ignores `X-Athlete-Id`; **Dev** may enable behind env gate.
 
+### Error Response Examples
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer error="invalid_token", error_description="JWT verification failed"
+X-Request-Id: req_123456789
+Content-Type: application/json
+
+{
+  "error": "authentication_required",
+  "message": "Valid JWT token required"
+}
+```
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer error="invalid_token", error_description="athlete_id not found"
+X-Request-Id: req_123456790
+Content-Type: application/json
+
+{
+  "error": "athlete_mapping_failed",
+  "message": "Unable to resolve athlete_id from token"
+}
+```
+
 ---
 
 ## Assumptions
@@ -35,7 +60,15 @@
 
 ---
 
-## Optional DDL
+## Implementation Notes
+
+### JWT Verification Error Handling
+- **Expired token**: Return 401 with `error="invalid_token", error_description="token_expired"`
+- **Invalid signature**: Return 401 with `error="invalid_token", error_description="signature_verification_failed"`
+- **Missing token**: Return 401 with `error="invalid_token", error_description="token_missing"`
+- **Malformed token**: Return 401 with `error="invalid_token", error_description="malformed_token"`
+
+### Optional DDL
 ```sql
 create table if not exists public.athlete_user_map (
   user_sub text primary key,

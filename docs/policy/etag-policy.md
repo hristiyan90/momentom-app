@@ -38,6 +38,33 @@ Use strong validators (no `W/` prefix). Our GET responses are deterministic afte
 - Canonicalise (sort keys recursively; UTF-8; stable number serialization).
 - Compute **SHA-256**, hex-encode, wrap in quotes: `ETag: "sha256:<hex>"`.
 
+**Canonical JSON Implementation:**
+```javascript
+// Example canonical JSON serialization
+function canonicalize(obj) {
+  if (obj === null) return null;
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(canonicalize);
+  
+  const sorted = {};
+  Object.keys(obj).sort().forEach(key => {
+    sorted[key] = canonicalize(obj[key]);
+  });
+  return sorted;
+}
+
+// Generate ETag
+const canonical = canonicalize(responseBody);
+const json = JSON.stringify(canonical);
+const hash = crypto.createHash('sha256').update(json, 'utf8').digest('hex');
+const etag = `"sha256:${hash}"`;
+```
+
+**Collision Handling:**
+- SHA-256 collision probability is negligible for practical purposes
+- If collision detected (extremely unlikely), log warning and use timestamp fallback
+- Monitor ETag generation for any anomalies
+
 ### 3) Headers
 **200 GET (example)**  
 ETag: "sha256:9f5a…"  
@@ -62,6 +89,12 @@ If `If-None-Match` matches the computed strong ETag:
 - Respond **304 Not Modified**, **no body**,
 - Include the same `Cache-Control`, `Vary`, and correlation/security headers
   (keep `X-Request-Id` and `X-Explainability-Id`).
+
+## Performance Considerations
+- **ETag computation**: Should be < 1ms for typical response sizes (< 10KB)
+- **Memory usage**: Canonical JSON should not exceed 2x original response size
+- **Caching**: ETag computation only on cache miss; 304 responses skip body generation
+- **Monitoring**: Track ETag generation time and cache hit rates
 
 ## cURL checks
 API=https://api.momentom.app/v1
