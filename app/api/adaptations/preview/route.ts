@@ -33,112 +33,81 @@ export async function POST(req: NextRequest) {
     const auth = await getAthleteIdFromAuth(req);
     if (!auth) {
       console.log('❌ Authentication failed');
-      
-      // Enhanced 401 response with proper WWW-Authenticate header
-      const authHeader = req.headers.get('Authorization');
-      const hasBearerToken = authHeader && authHeader.startsWith('Bearer ');
-      
       return withSecurityHeaders(NextResponse.json({ 
         error: { 
-          code: 'AUTH_REQUIRED', 
-          message: 'Authentication required', 
-          request_id: request_id 
+          code: 'UNAUTHORIZED', 
+          message: 'Authentication required',
+          request_id 
         } 
       }, { 
         status: 401,
         headers: {
           'X-Request-Id': request_id,
-          'X-Explainability-Id': explainability_id
+          'WWW-Authenticate': 'Bearer'
         }
-      }), { 
-        noStore: true,
-        wwwAuthenticate: hasBearerToken ? 'Bearer realm="momentom", error="invalid_token"' : 'Bearer realm="momentom"'
-      });
+      }), { noStore: true });
     }
     
-    const athleteId = auth.athleteId;
-    console.log('👤 Athlete ID:', athleteId);
-
-    const tz = req.headers.get('X-Client-Timezone') ?? undefined;
-    const { startISO, endISO } = computeImpactWindow(date, scope, tz);
-    console.log('⏰ Impact window:', { startISO, endISO });
-
-    const plan = await fetchPlanSummary(athleteId);
+    const { athlete_id: athleteId } = auth;
+    console.log('✅ Authenticated athlete:', athleteId);
     
-    // Determine if readiness is required
-    const requiresReadiness = strictMode || scope === 'today' || scope === 'next_72h';
-    console.log('🎯 Readiness required:', requiresReadiness);
+    // Compute impact window
+    const { startISO, endISO } = computeImpactWindow(date, scope);
+    console.log('📅 Impact window:', { start: startISO, end: endISO, scope });
     
-    let readiness: Readiness | null = null;
-    
-    if (requiresReadiness) {
-      try {
-        readiness = await fetchReadiness(athleteId, date);
-      } catch (error) {
-        if (error instanceof MissingReadinessError) {
-          // Check if bypass is allowed
-          if (allowMissing) {
-            console.log('✅ Readiness missing but bypass allowed, continuing...');
-            readiness = null; // Continue without readiness
-          } else {
-            const retrySec = 300; // 5 minutes
-            
-            console.log('🚫 Readiness missing and required, returning 424');
-            
-            // Emit trace for missing readiness
-            traceInfo(explainability_id, 'readiness_missing', {
-              scope, 
-              strictMode, 
-              allowMissing, 
-              retry_after_sec: retrySec,
-              request_id
-            });
-            
-            console.log('🚫 Returning 424 - readiness required but missing');
-            
-            // Return 424 UNPROCESSABLE_DEPENDENCY with contract-accurate body
-          return withSecurityHeaders(NextResponse.json({
-            error: {
-              code: "UNPROCESSABLE_DEPENDENCY",
-              message: "Upstream ingest incomplete",
-              fallback_hint: "partial",
-              request_id: request_id,
-              retry_after: "PT5M"
-            }
-          }, {
-            status: 424,
-            headers: {
-              'Retry-After': String(retrySec),
-              'Warning': '199 - readiness missing',
-              'X-Explainability-Id': explainability_id,
-              'X-Request-Id': request_id
-            }
-          }), { noStore: true });
-          }
-        }
-        
-        // Non-missing errors or allowed-missing cases fall through
-        console.log('🔄 Continuing without readiness data');
-      }
-    }
-    
-    const [sessions, load, blockers] = await Promise.all([
+    // Fetch plan and readiness data
+    const [plan, sessions, readiness, dailyLoad, blockers] = await Promise.all([
+      fetchPlanSummary(athleteId),
       fetchSessionsInWindow(athleteId, startISO, endISO),
+      fetchReadiness(athleteId, date),
       fetchDailyLoadWindow(athleteId, startISO, endISO),
-      fetchBlockers(athleteId, startISO, endISO),
+      fetchBlockers(athleteId, startISO, endISO)
     ]);
     
-    console.log('📈 Data fetched:', {
-      sessions: sessions.length,
-      readiness: readiness ? 'yes' : 'no',
-      load: load.length,
-      blockers: blockers.length
+    console.log('📊 Data fetched:', {
+      plan: plan?.plan_id,
+      sessions: sessions?.length || 0,
+      readiness: readiness?.date,
+      dailyLoad: dailyLoad?.length || 0,
+      blockers: blockers?.length || 0
     });
-
-    const checksum = createHash('sha256').update(JSON.stringify({ athleteId, date, scope, planVersion: plan.version, sessions, readiness, load, blockers })).digest('hex');
-    console.log('🔒 Checksum:', checksum.substring(0, 8) + '...');
     
-    console.log('🔍 Checking cache with idempotency...');
+    // Check readiness requirements
+    if (!readiness && !allowMissing) {
+      console.log('❌ Missing readiness data and not allowed');
+      const retryAfter = strictMode ? 300 : 60; // 5min strict, 1min normal
+      
+      return withSecurityHeaders(NextResponse.json({ 
+        error: { 
+          code: 'MISSING_READINESS', 
+          message: 'Readiness data required but not available',
+          request_id,
+          retry_after_seconds: retryAfter
+        } 
+      }, { 
+        status: 424,
+        headers: {
+          'X-Request-Id': request_id,
+          'Retry-After': String(retryAfter)
+        }
+      }), { noStore: true });
+    }
+    
+    // Create checksum for caching
+    const checksum = createHash('sha256')
+      .update(JSON.stringify({ 
+        athleteId, 
+        date, 
+        scope, 
+        planVersion: plan?.version || 0,
+        readinessDate: readiness?.date || null,
+        readinessScore: readiness?.score || null
+      }))
+      .digest('hex');
+    
+    console.log('🔍 Cache checksum:', checksum);
+    
+    // Check cache with idempotency
     const cacheResult = await getCachedPreviewWithIdempotency(athleteId, checksum, idempotency_key);
     if (cacheResult) {
       const { adaptation, isReplay, idempotencyKey } = cacheResult;
@@ -188,14 +157,16 @@ export async function POST(req: NextRequest) {
     
     console.log('🤖 Running rules engine...');
     const out = ruleEngineDeterministic({
-      sessions,
-      readiness,
-      load,
-      blockers,
       plan,
-      date,
-      scope
-    }, explainability_id);
+      sessions: sessions || [],
+      readiness: readiness || null,
+      dailyLoad: dailyLoad || [],
+      blockers: blockers || [],
+      impactStart: startISO,
+      impactEnd: endISO,
+      scope,
+      allowMissingReadiness: allowMissing
+    });
     
     console.log('📝 Rules output:', {
       reason_code: out.reason_code,
@@ -231,19 +202,18 @@ export async function POST(req: NextRequest) {
       checksum,
       idempotency_key,
       explainability_id,
-      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h TTL
     });
     
-    console.log('✅ Preview created successfully:', adaptation.adaptation_id);
+    console.log('✅ Created adaptation:', adaptation.adaptation_id);
     
     // Emit trace for new adaptation
-    traceInfo(explainability_id, 'adaptation_preview', { 
+    traceInfo(explainability_id, 'adaptation_preview_created', { 
       scope, 
-      reason_code: out.reason_code, 
-      change_count: out.changes.length, 
       request_id,
-      idempotency_key,
-      replayed: false
+      adaptation_id: adaptation.adaptation_id,
+      reason_code: out.reason_code,
+      changes_count: out.changes.length
     });
     
     const headers: Record<string, string> = {
