@@ -4,6 +4,7 @@ import { getAuthFlags } from '@/lib/auth/athlete'
 export async function GET() {
   const flags = getAuthFlags()
   
+  // Check environment variable presence without leaking actual values
   const envStatus = {
     env: {
       NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
