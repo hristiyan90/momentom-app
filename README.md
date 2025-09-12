@@ -49,4 +49,4 @@ A next-gen endurance platform for triathletes and runners:
 
 - Start with: docs/vision/vision.md, docs/product/overview.md, docs/architecture/overview.md
 - See policies in docs/policy/
-- Decision records in docs/ops/decision-log.md
+- Decision records in docs/decisions/decision-log.md
