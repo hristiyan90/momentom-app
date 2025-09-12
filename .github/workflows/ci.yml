@@ -1,4 +1,4 @@
-name: CI Comprehensive
+name: CI Comprehensive v2
 
 on:
   pull_request:
@@ -79,7 +79,7 @@ jobs:
           done
       - name: Run Postman tests
         run: |
-          echo "Running Postman tests..."
+          echo "Running Postman tests with timeout settings..."
           newman run postman/momentom_postman_collection.json \
             -e postman/momentom_postman_environment.json \
             -r cli,html \
