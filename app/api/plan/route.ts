@@ -39,8 +39,11 @@ export async function GET(req: NextRequest) {
     // Handle authentication errors gracefully
     console.error('Plan route error:', error);
     
+    const errorMessage = error instanceof Error ? error.message : 'Authentication required';
+    const isProdMappingError = errorMessage.includes('prod mapping pending');
+    
     const errorResponse = NextResponse.json(
-      { error: { code: 'AUTH_REQUIRED', message: 'Authentication required', request_id: correlationId } },
+      { error: { code: 'AUTH_REQUIRED', message: errorMessage, request_id: correlationId } },
       { status: 401 }
     );
     

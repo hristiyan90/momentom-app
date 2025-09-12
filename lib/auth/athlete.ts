@@ -72,14 +72,14 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   // Prod (and dev without override): require Supabase JWT
   const token = readAuthToken(req);
   if (!token) {
-    if (mode === 'prod') throw new Error('authentication required');
+    if (mode === 'prod') throw new Error('prod mapping pending (A4)');
     // dev fallback when no override/token
     throw new Error('authentication required');
   }
 
   const claims = await verifySupabaseJwt(token);
   if (!claims) {
-    if (mode === 'prod') throw new Error('invalid token');
+    if (mode === 'prod') throw new Error('prod mapping pending (A4)');
     throw new Error('invalid token');
   }
 
@@ -90,6 +90,7 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   if (isUuid(sub)) return sub;
 
   // No usable mapping in token
+  if (mode === 'prod') throw new Error('prod mapping pending (A4)');
   throw new Error('authentication required');
 }
 
