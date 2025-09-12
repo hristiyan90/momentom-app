@@ -1,30 +1,52 @@
-# Endurance app UI
+# Momentom
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+**Adaptive, athlete-first coaching for endurance athletes.**  
+Momentom blends **adaptive training**, **real-time readiness**, **fuel guidance**, and a transparent
+**AI coach** into one clean experience.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/chris-1175s-projects/v0-endurance-app-ui)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/pZtBDp4bXSE)
+> Status: Cycle-2 / Sprint-1 in progress. Contracts frozen at **OpenAPI 1.0.1**.  
+> A1–A4 infra shipped (Supabase reads + RLS, keyset pagination, strong ETags, prod JWT auth).  
+> B1 (Workout Library v0 seed + read-only GET) now active.
 
-## Overview
+## Quick Links
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+- **Live app (Prod):** https://v0-endurance-app-ui.vercel.app/
+- **OpenAPI 1.0.1:** openapi/momentom_api_openapi_1.0.1.yaml
+- **Postman:** postman/momentom_postman_collection.json (+ environment)
+- **Dev notes & Smoke (H1–H7):** README-dev.md
+- **Policies:** docs/policy/ (ETag, Auth mapping, CI gates)
+- **Workout Library docs:** docs/library/
 
-## Deployment
+## What is Momentom?
 
-Your project is live at:
+A next-gen endurance platform for triathletes and runners:
+- **Workout & Plan Builder** (phased periodisation; library-backed at MVP)
+- **Adaptations Engine** (readiness, compliance, constraints → intelligent changes)
+- **Coach Tom (AI)** (explain *why*, not just *what* changed)
+- **Fuel Guidance** (carbs/fluids/sodium bands with derivations)
 
-**[https://vercel.com/chris-1175s-projects/v0-endurance-app-ui](https://vercel.com/chris-1175s-projects/v0-endurance-app-ui)**
+## MVP Scope (high-level)
 
-## Build your app
+- **Auth & onboarding** (preferences, races; JWT prod auth)
+- **Readiness** (drivers, bands, partial-data hygiene)
+- **Workout Library v0** (seeded, pre-defined; time-based segments; run/bike/swim/strength)
+- **Manual ingest** of completed workouts (**.TCX/.GPX**) → staging → normalized session
+- **Manual morning metrics** (HRV, RHR, sleep, soreness) until device integrations arrive
+- **Adaptations preview/decision** routes (reason codes, guardrails)
+- **Caching & perf**: strong **ETag** on GETs; **keyset pagination**; RLS-scoped reads
 
-Continue building your app on:
+## Architecture Snapshot
 
-**[https://v0.app/chat/projects/pZtBDp4bXSE](https://v0.app/chat/projects/pZtBDp4bXSE)**
+- **Frontend**: Next.js / React (Vercel)
+- **Backend**: Next.js API routes
+- **DB**: Supabase (Postgres + **RLS**)
+- **Auth**: Supabase JWT (HS256) → athlete_id mapping (prod); dev header override gated
+- **Caching**: strong ETag from **canonical JSON**, Vary: X-Client-Timezone (and X-Athlete-Id in dev)
+- **Observability**: JSON logs + correlation headers
+- **CI gates**: OpenAPI diff, Postman/Newman, H1–H7 smoke
 
-## How It Works
+## Contributing
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- Start with: docs/vision/vision.md, docs/product/overview.md, docs/architecture/overview.md
+- See policies in docs/policy/
+- Decision records in docs/ops/decision-log.md
