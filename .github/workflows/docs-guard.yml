@@ -1,0 +1,19 @@
+name: Docs Guard
+on: pull_request
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect API/policy changes
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed.txt
+          CHANGED=$(cat changed.txt)
+          echo "$CHANGED"
+          if echo "$CHANGED" | egrep -q '^(app/api/|openapi/|docs/policy/)'; then
+            if ! egrep -q '^docs/decisions/0[0-9]{3}-.*\.md' changed.txt; then
+              echo "::error::API/policy changed but no ADR found in docs/decisions/"
+              exit 1
+            fi
+          fi

@@ -1,5 +1,34 @@
 # Product Overview (MVP)
 
+## Now → Next → Later
+
+- **Now (Cycle-2 Sprint-1):**
+  - Supabase reads + RLS (no contract change)
+  - Sessions keyset pagination
+  - ETag/304 caching
+  - Auth hardening (Supabase JWT prod)
+  - Observability, CI gates
+  - Workout Library v0 seed + ingest endpoint (.TCX/.GPX)
+  - UX wiring to live GETs
+  - Coach Tom v0 (light)
+
+- **Next (Sprint-2):**
+  - Races/blockers → rules inputs
+  - Manual readiness UI
+  - Workout export (.tcx/.zwo)
+  - GTM alpha cohort
+  - Data integration plan
+
+- **Later:**
+  - Rule-based Builder MVP
+  - Advanced ML adaptations
+  - Device integrations (Garmin/Apple/Strava)
+  - Closed beta, mobile-first polish
+  - Privacy/GDPR compliance
+  - Analytics layer
+
+---
+
 ## Target Users
 
 - Time-starved triathletes and runners who want adaptive plans without a coach
@@ -37,11 +66,11 @@
 1. **Onboard → Plan**  
    User authenticates → sets goals & races → receives phased plan from library.
 2. **Daily**  
-   Morning metrics (manual now) → readiness shown → today’s session visible.
-3. **After Training**  
-   Export to device manually (interim) → complete workout → upload **.TCX** → session appears with stats.
-4. **Adaptation**  
-   Low readiness or missed session → preview recommendation → user accepts → plan updates (versioned).
+   Morning metrics (manual now, synced via device integration later) → readiness shown → today’s session visible.
+3. **Execute → Upload → Feedback**  
+   Export workout (manual now, synced via device integration later) → complete session → upload .TCX (manual now, synced via device integration later) → view stats in plan.
+4. **Adaptation Loop**
+   Low readiness, missed session or life blockers (travel, work, family, illness, injury) → preview recommendation → user accepts → plan updates (versioned).
 
 ## Content Model (Library Item)
 
