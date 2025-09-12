@@ -125,7 +125,16 @@ jobs:
       - name: Start server in prod mode
         run: |
           AUTH_MODE=prod ALLOW_HEADER_OVERRIDE=0 npm run dev &
-          sleep 10
+          sleep 15
+          # Wait for server to be ready
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/api/plan > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 1
+          done
       - name: Test production auth behavior
         run: |
           echo "Testing production auth mode..."
@@ -133,10 +142,16 @@ jobs:
           # Test 1: No auth should return 401 with prod mapping error
           echo "Test 1: No auth → 401"
           RESPONSE=$(curl -s -i "http://localhost:3000/api/plan")
+          echo "Response:"
+          echo "$RESPONSE"
+          echo "---"
+          
           if echo "$RESPONSE" | grep -q "prod mapping pending (A4)"; then
             echo "✅ Production auth error message correct"
           else
             echo "❌ Production auth error message incorrect"
+            echo "Looking for 'prod mapping pending (A4)' in response"
+            echo "Response body: $(echo "$RESPONSE" | tail -n +2)"
             exit 1
           fi
           
