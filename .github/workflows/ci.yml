@@ -63,15 +63,18 @@ jobs:
         run: npm install -g newman newman-reporter-html
       - name: Start server
         run: |
-          AUTH_MODE=dev ALLOW_HEADER_OVERRIDE=1 npm run dev &
+          export AUTH_MODE=dev
+          export ALLOW_HEADER_OVERRIDE=1
+          npm run dev &
           sleep 15
-          # Wait for server to be ready
+          # Wait for server to be ready (accept 200 or 401 as valid responses)
           for i in {1..30}; do
-            if curl -s http://localhost:3000/api/plan > /dev/null 2>&1; then
-              echo "Server is ready"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/plan)
+            if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "401" ]; then
+              echo "Server is ready (HTTP $HTTP_CODE)"
               break
             fi
-            echo "Waiting for server... ($i/30)"
+            echo "Waiting for server... ($i/30) - HTTP $HTTP_CODE"
             sleep 1
           done
       - name: Run Postman tests
@@ -133,17 +136,24 @@ jobs:
         run: npm ci
       - name: Start server in prod mode
         run: |
-          AUTH_MODE=prod ALLOW_HEADER_OVERRIDE=0 npm run dev &
+          export AUTH_MODE=prod
+          export ALLOW_HEADER_OVERRIDE=0
+          npm run dev &
           sleep 15
-          # Wait for server to be ready
+          # Wait for server to be ready (accept 401 as valid response in prod mode)
           for i in {1..30}; do
-            if curl -s http://localhost:3000/api/plan > /dev/null 2>&1; then
-              echo "Server is ready"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/plan)
+            if [ "$HTTP_CODE" = "401" ]; then
+              echo "Server is ready (HTTP $HTTP_CODE)"
               break
             fi
-            echo "Waiting for server... ($i/30)"
+            echo "Waiting for server... ($i/30) - HTTP $HTTP_CODE"
             sleep 1
           done
+      - name: Verify environment variables
+        run: |
+          echo "AUTH_MODE: $AUTH_MODE"
+          echo "ALLOW_HEADER_OVERRIDE: $ALLOW_HEADER_OVERRIDE"
       - name: Test production auth behavior
         run: |
           echo "Testing production auth mode..."
@@ -191,15 +201,18 @@ jobs:
         run: npm ci
       - name: Start server
         run: |
-          AUTH_MODE=dev ALLOW_HEADER_OVERRIDE=1 npm run dev &
+          export AUTH_MODE=dev
+          export ALLOW_HEADER_OVERRIDE=1
+          npm run dev &
           sleep 15
-          # Wait for server to be ready
+          # Wait for server to be ready (accept 200 as valid response in dev mode)
           for i in {1..30}; do
-            if curl -s http://localhost:3000/api/plan > /dev/null 2>&1; then
-              echo "Server is ready"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Athlete-Id: 123e4567-e89b-12d3-a456-426614174000" http://localhost:3000/api/plan)
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Server is ready (HTTP $HTTP_CODE)"
               break
             fi
-            echo "Waiting for server... ($i/30)"
+            echo "Waiting for server... ($i/30) - HTTP $HTTP_CODE"
             sleep 1
           done
       - name: Test ETag functionality
