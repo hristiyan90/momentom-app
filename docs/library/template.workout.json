@@ -1,35 +1,18 @@
 {
-  "workout_id": "template-workout-uuid",
-  "sport": "run|bike|swim|strength",
-  "title": "Workout Title - Phase Focus (Zone)",
-  "description": "Brief description of the workout's purpose and benefits.",
-  "phase": "base|build|peak|taper|recovery",
-  "focus_tags": [
-    "endurance|threshold|strength|taper_safe|neuromuscular|injury_prevention|strength_general|strength_run_support|css|tempo"
-  ],
-  "primary_zone": "z1|z2|z3|z4|z5|strength",
-  "duration_min": 30,
-  "load_hint": 45,
+  "workout_id": "00000000-0000-0000-0000-000000000000",
+  "sport": "run",
+  "title": "Endurance Z2 60",
+  "description": "Steady aerobic run.",
+  "phase": "base",
+  "focus_tags": ["endurance"],
+  "primary_zone": "z2",
+  "duration_min": 60,
+  "load_hint": 60,
   "structure_json": {
     "segments": [
-      {
-        "type": "warmup",
-        "target": "zone|pace|rpe|none",
-        "duration_min": 10,
-        "notes": "Easy warmup; specific instructions"
-      },
-      {
-        "type": "steady|interval|recovery|strength",
-        "target": "zone|pace|rpe|none",
-        "duration_min": 20,
-        "notes": "Main work; specific target and instructions"
-      },
-      {
-        "type": "cooldown",
-        "target": "zone|pace|rpe|none",
-        "duration_min": 5,
-        "notes": "Easy cooldown; recovery instructions"
-      }
+      { "type": "warmup",  "target": "zone", "duration_min": 10, "notes": "z1→z2" },
+      { "type": "steady",  "target": "zone", "duration_min": 45, "notes": "z2" },
+      { "type": "cooldown","target": "zone", "duration_min": 5,  "notes": "z1" }
     ]
   }
 }

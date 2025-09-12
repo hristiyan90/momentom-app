@@ -1,0 +1,12 @@
+# CODEOWNERS (optional; update handles when known)
+# Docs & policies
+/docs/                       @hristiyan90
+/.github/                    @hristiyan90
+
+# API & routes
+/app/api/                    @hristiyan90
+
+# Library data
+/library/                    @hristiyan90
+
+# NOTE: Replace with real team GitHub handles when available.
