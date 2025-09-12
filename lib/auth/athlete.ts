@@ -72,7 +72,7 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   // Prod (and dev without override): require Supabase JWT
   const token = readAuthToken(req);
   if (!token) {
-    if (mode === 'prod') throw new Error('authentication required');
+    if (mode === 'prod') throw new Error('prod mapping pending (A4)');
     // dev fallback when no override/token
     throw new Error('authentication required');
   }
