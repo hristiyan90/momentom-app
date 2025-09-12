@@ -64,7 +64,16 @@ jobs:
       - name: Start server
         run: |
           AUTH_MODE=dev ALLOW_HEADER_OVERRIDE=1 npm run dev &
-          sleep 10
+          sleep 15
+          # Wait for server to be ready
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/api/plan > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 1
+          done
       - name: Run Postman tests
         run: |
           newman run postman/momentom_postman_collection.json \
