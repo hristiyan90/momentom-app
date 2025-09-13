@@ -107,5 +107,5 @@
 
 - Policies: `docs/policy/` (ETag, Auth mapping, CI gates)  
 - Library docs: `docs/library/`  
-- Decision Log: `docs/ops/decision-log.md`  
+- Decision Log: `docs/decisions/decision-log.md`  
 - OpenAPI: `openapi/momentom_api_openapi_1.0.1.yaml`
