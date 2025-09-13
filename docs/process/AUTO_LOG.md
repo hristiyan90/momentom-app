@@ -18,3 +18,25 @@ Add a “Decisions” section in the PR description with a one-liner:
 > No ADR/RFC needed. No contract/policy/RLS/caching changes.
 
 Commit these records as `docs(decisions): ...` inside the same PR.
+
+---
+
+# Auto-Log Ritual
+
+At the end of each task/PR, paste an "OPS DIGEST" comment into the PR and update STATUS where applicable.
+
+## OPS DIGEST (template)
+- Task: <e.g., B2 — Manual Workout Upload (TCX/GPX)>
+- Branch/PR: <branch> → #<PR>
+- Status: ✅ Ready for review | ⏳ Blocked: <why>
+- Contract: <OpenAPI change? yes/no>
+- Policies: <e.g., ETag on GET only; POST no-store>
+- RLS: <e.g., staging rows scoped by athlete_id (policy added)>
+- cURLs (paste the actual runs):
+  - <example> POST /api/_internal/ingest/workout → 202 (multipart ok, <25MB enforced)
+  - <example> GET /api/ingest/status → 200 (ETag present)
+- CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (attach artifacts if failed)
+- Follow-ups: <bullets>
+
+## STATUS updates
+For any status banner in README or docs/process/STATUS.md, reflect newly active tasks and sprint progress.

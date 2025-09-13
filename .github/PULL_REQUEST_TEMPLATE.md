@@ -19,3 +19,15 @@
 ## Risk & Rollback
 - Risk level:
 - Rollback plan:
+
+---
+
+### Inputs from other roles (requested in C0)
+| Role | Needed Item | Path/Link | Blocking? | Due | Notes |
+|------|-------------|-----------|-----------|-----|-------|
+| Product Architect | Confirm ETag/Auth applicability | docs/policy/* | No | — | — |
+| UX | Dropzone copy & error states | docs/ux/* | No | — | Using defaults |
+| Ops | Max upload size / bucket | .env.local | **Yes** | — | Needs value or default |
+
+### Ops Digest (to include before requesting review)
+Use the template in `docs/process/AUTO_LOG.md` and paste the "OPS DIGEST" into this PR as a comment.

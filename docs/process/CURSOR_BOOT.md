@@ -89,6 +89,23 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 Update `docs/process/AUTO_LOG.md` with:
 - Task ID / Branch
-- “What changed” (1–2 lines)
+- "What changed" (1–2 lines)
 - Links to PR, key files
 - Validation summary (1–2 lines)
+
+---
+
+## D) Dependency Scan & Requests to Other Roles (run before proposing plan)
+
+Produce a short table of inputs you need from other roles and flag blockers.
+
+**Output format (paste in PR description under "Inputs from other roles"):**
+
+| Role                   | Needed Item                                  | Path / Link                                  | Blocking? | Due | Notes |
+|------------------------|-----------------------------------------------|----------------------------------------------|-----------|-----|-------|
+| Product Architect      | Confirm ETag/Auth policy applies to new routes | docs/policy/etag-policy.md, auth-mapping.md  | No        | —   | Call out exceptions if any |
+| Sports Science         | N/A for this task                              | —                                            | —         | —   | —     |
+| UX                     | Dropzone microcopy & error states              | docs/ux/content.md (or PR comment)           | No        | —   | Defaults allowed |
+| Ops Orchestrator       | Max upload size, storage bucket name           | .env.local / README-dev.md                   | Yes       | —   | Provide defaults if unknown |
+
+If anything is **Blocking? = Yes**, STOP and ask in the PR with @-mentions (per CODEOWNERS), then proceed once resolved.
