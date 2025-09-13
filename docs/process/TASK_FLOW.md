@@ -14,6 +14,13 @@ A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md`
 
 ---
 
+## Pre-C0 — Dependency Scan (if needed)
+- Run dependency scan per `docs/process/CURSOR_BOOT.md` Step D
+- Identify cross-role inputs and blockers
+- Only proceed to C0 if no blocking dependencies
+
+---
+
 ## Stages: C0 → C5
 
 ### C0 — Kickoff
