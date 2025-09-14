@@ -1,5 +1,8 @@
 # CI Gates (PR blocking)
 
+
+## Overview
+This policy defines the CI/CD gates and validation requirements for the Momentom API. It covers OpenAPI conformance checking, Postman/Newman testing, smoke tests, and other quality gates that must pass before code can be merged to main.
 ## TL;DR
 Every pull request must pass **three gates**:
 1) **OpenAPI conformance & diff** (no breaking/undeclared changes)  

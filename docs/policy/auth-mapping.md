@@ -1,5 +1,8 @@
 # Auth Mapping (JWT → athlete_id)
 
+
+## Overview
+This policy defines the JWT to athlete_id mapping system for authentication and authorization in the Momentom API. It covers JWT verification using Supabase secrets, athlete_id resolution from user metadata, RLS enforcement, and development vs production authentication modes.
 ## TL;DR
 - **Verify** JWT (HS256 via `SUPABASE_JWT_SECRET`) using `Authorization: Bearer <jwt>` or `sb-access-token` cookie.
 - **Resolve athlete_id**: prefer `user_metadata.athlete_id` (UUID). If absent, **fallback** to `sub` **only if** it is a UUID. Else **401**.

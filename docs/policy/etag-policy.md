@@ -1,5 +1,8 @@
 # ETag Policy
 
+
+## Overview
+This policy defines the implementation of HTTP ETags for caching and conditional requests in the Momentom API. ETags provide a mechanism for clients to cache responses and make conditional requests, reducing bandwidth usage and improving performance. The policy covers canonical JSON serialization, strong ETag generation, appropriate HTTP headers, and caching behavior for different endpoint types.
 ## TL;DR
 - **Where**: Apply **ETag** on **GET** endpoints only (per OpenAPI 1.0.1).
 - **What to hash**: Compute a **strong ETag** from the **final serialized JSON body** (canonical JSON:
