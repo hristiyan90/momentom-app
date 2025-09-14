@@ -95,17 +95,17 @@ Update `docs/process/AUTO_LOG.md` with:
 
 ---
 
-## D) Dependency Scan & Requests to Other Roles (run before proposing plan)
+## D) Dependency Scan & Requests to Other Roles (must run before proposing plan)
 
 Produce a short table of inputs you need from other roles and flag blockers.
 
-**Output format (paste in PR description under "Inputs from other roles"):**
+**Output (paste in PR description under "Inputs from other roles"):**
 
-| Role                   | Needed Item                                  | Path / Link                                  | Blocking? | Due | Notes |
-|------------------------|-----------------------------------------------|----------------------------------------------|-----------|-----|-------|
-| Product Architect      | Confirm ETag/Auth policy applies to new routes | docs/policy/etag-policy.md, auth-mapping.md  | No        | —   | Call out exceptions if any |
-| Sports Science         | N/A for this task                              | —                                            | —         | —   | —     |
-| UX                     | Dropzone microcopy & error states              | docs/ux/content.md (or PR comment)           | No        | —   | Defaults allowed |
-| Ops Orchestrator       | Max upload size, storage bucket name           | .env.local / README-dev.md                   | Yes       | —   | Provide defaults if unknown |
+| Role | Needed Item | Path/Link | Blocking? | Due | Notes |
+|------|-------------|-----------|-----------|-----|-------|
+| Product Architect | Confirm ETag/Auth policy for new routes | docs/policy/* | No | — | Call out exceptions |
+| Sports Science | (If needed) data shape/content | docs/library/* | No | — | — |
+| UX | Microcopy & error states (if UI) | docs/ux/* | No | — | Defaults allowed |
+| Ops | Env values (limits/buckets) | .env.local.example | **Yes** | — | Provide defaults if unknown |
 
-If anything is **Blocking? = Yes**, STOP and ask in the PR with @-mentions (per CODEOWNERS), then proceed once resolved.
+If anything is **Blocking? = Yes**, STOP and ask in the PR comments, @-mentioning CODEOWNERS.

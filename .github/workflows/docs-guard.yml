@@ -1,19 +1,32 @@
-name: Docs Guard
-on: pull_request
+name: docs-guard
+
+on:
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  guard:
+  docs-guard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Detect API/policy changes
+        with:
+          fetch-depth: 0
+      - name: Check if code touched requires a spec
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed.txt
-          CHANGED=$(cat changed.txt)
-          echo "$CHANGED"
-          if echo "$CHANGED" | egrep -q '^(app/api/|openapi/|docs/policy/)'; then
-            if ! egrep -q '^docs/decisions/0[0-9]{3}-.*\.md' changed.txt; then
-              echo "::error::API/policy changed but no ADR found in docs/decisions/"
+          set -euo pipefail
+          BASE="${{ github.base_ref || 'main' }}"
+          CHANGED=$(git diff --name-only "origin/${BASE}...HEAD" || true)
+
+          requires_spec=false
+          echo "$CHANGED" | grep -E '^(app/api/|pages/api/|openapi/|supabase/migrations/|lib/|docs/policy/)' && requires_spec=true || true
+
+          if [ "$requires_spec" = true ]; then
+            echo "Code touched that requires a spec. Verifying docs/specs/* present in PR…"
+            echo "$CHANGED" | grep -E '^docs/specs/.+\.md$' >/dev/null || {
+              echo "::error::Missing feature spec in docs/specs/*.md for this PR."
+              echo "Touching API/openapi/migrations or policies requires a spec doc."
               exit 1
-            fi
+            }
+          else
+            echo "No guarded paths changed."
           fi

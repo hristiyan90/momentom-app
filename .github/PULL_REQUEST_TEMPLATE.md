@@ -2,6 +2,7 @@
 
 ## Summary
 - What changed and why.
+- **Spec:** docs/specs/<feature>.md
 
 ## Checklist
 - [ ] Contract fidelity: no schema/shape changes to existing responses.

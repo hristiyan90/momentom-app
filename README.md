@@ -25,7 +25,18 @@ Momentom blends **adaptive training**, **real-time readiness**, **fuel guidance*
 - **Workout Library docs:** `docs/library/`
 - **Decision Log:** `docs/decisions/DECISION_LOG.md`
 - **Process**: `docs/process/CURSOR_BOOT.md` · `docs/process/CURSOR_WORKFLOW.md` · `docs/process/TASK_FLOW.md`
+- **Sprint History:** `docs/process/sprints/README.md`
+- **Feature Specs:** `docs/specs/README.md`
 - **Cursor system files**: `/.cursor/rules.md` · `/.cursor/context.md` · `/.cursor/CURSOR_OPERATING_AGREEMENT.md`
+
+## For Cursor (FS Dev)
+
+Before coding:
+- Run **C0** from `docs/process/CURSOR_BOOT.md`.
+- Paste the **Context Digest** and **Inputs from other roles** into the PR template.
+- Link the feature spec in `docs/specs/`.
+
+Docs guard will fail the PR if guarded code changes lack a matching spec.
 
 ## What is Momentom?
 

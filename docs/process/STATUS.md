@@ -1,6 +1,15 @@
 # Project Status
-- Cycle: Cycle-2
-- Sprint: Sprint-1
-- Current focus: **B2 — Manual Workout Upload (TCX/GPX)**
-- Next up: B3 — TBD
-- Last change: 2025-01-10
+
+Update this file per merged task.
+
+## Current
+- Cycle: **2**
+- Sprint: **1**
+- Active focus: **B2 — Manual Workout Upload (TCX/GPX)**
+
+## Recently completed
+- A1–A4 infra, policies in place
+- B1 — Workout Library v0 (seed + GET)
+
+## Next up
+- B3 — Readiness UI polish (example)
