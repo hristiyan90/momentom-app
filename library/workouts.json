@@ -11,24 +11,9 @@
     "load_hint": 45,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z1 easy; relaxed cadence"
-        },
-        {
-          "type": "steady",
-          "target": "zone",
-          "duration_min": 30,
-          "notes": "Z2 aerobic; nose-breathing OK"
-        },
-        {
-          "type": "cooldown",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z1 walk or easy jog"
-        }
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy; relaxed cadence" },
+        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 aerobic; nose-breathing OK" },
+        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 walk or easy jog" }
       ]
     }
   },
@@ -44,48 +29,13 @@
     "load_hint": 70,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z1→low Z2 + 4×20″ strides (easy)"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 3,
-          "notes": "Z1–Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 3,
-          "notes": "Z1–Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "cooldown",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z1 easy jog"
-        }
+        { "type": "warmup", "target": "zone", "duration_min": 12, "notes": "Z1→low Z2 + 4×20″ strides (easy)" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
+        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 easy jog" }
       ]
     }
   },
@@ -101,84 +51,19 @@
     "load_hint": 25,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "none",
-          "duration_min": 10,
-          "notes": "Easy jog; relaxed"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8; fast but relaxed"
-        },
-        {
-          "type": "recovery",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "RPE 2–3 easy"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8"
-        },
-        {
-          "type": "recovery",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "RPE 2–3 easy"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8"
-        },
-        {
-          "type": "recovery",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "RPE 2–3 easy"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8"
-        },
-        {
-          "type": "recovery",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "RPE 2–3 easy"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8"
-        },
-        {
-          "type": "recovery",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "RPE 2–3 easy"
-        },
-        {
-          "type": "interval",
-          "target": "rpe",
-          "duration_min": 1,
-          "notes": "Stride ~RPE 8"
-        },
-        {
-          "type": "cooldown",
-          "target": "none",
-          "duration_min": 8,
-          "notes": "Easy walk/jog"
-        }
+        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Easy jog; relaxed" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8; fast but relaxed" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
+        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
+        { "type": "cooldown", "target": "none", "duration_min": 8, "notes": "Easy walk/jog" }
       ]
     }
   },
@@ -194,60 +79,15 @@
     "load_hint": 80,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z1 spin"
-        },
-        {
-          "type": "steady",
-          "target": "zone",
-          "duration_min": 40,
-          "notes": "Z2 aerobic"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z3 tempo"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z3 tempo"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z3 tempo"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 5,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "cooldown",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z1 spin"
-        }
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 spin" },
+        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z2 aerobic" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 spin" }
       ]
     }
   },
@@ -263,54 +103,14 @@
     "load_hint": 95,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "zone",
-          "duration_min": 15,
-          "notes": "Z1→Z2 + 3×1′ high-cadence"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z4 threshold"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "cooldown",
-          "target": "zone",
-          "duration_min": 12,
-          "notes": "Z1 spin"
-        }
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 3×1′ high-cadence" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 spin" }
       ]
     }
   },
@@ -326,60 +126,15 @@
     "load_hint": 45,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "zone",
-          "duration_min": 15,
-          "notes": "Z1→Z2"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 2,
-          "notes": "Z4 controlled"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 2,
-          "notes": "Z4 controlled"
-        },
-        {
-          "type": "recovery",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "interval",
-          "target": "zone",
-          "duration_min": 2,
-          "notes": "Z4 controlled"
-        },
-        {
-          "type": "steady",
-          "target": "zone",
-          "duration_min": 10,
-          "notes": "Z2 steady"
-        },
-        {
-          "type": "steady",
-          "target": "zone",
-          "duration_min": 4,
-          "notes": "Z2 easy"
-        },
-        {
-          "type": "cooldown",
-          "target": "zone",
-          "duration_min": 7,
-          "notes": "Z1 spin"
-        }
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
+        { "type": "steady", "target": "zone", "duration_min": 10, "notes": "Z2 steady" },
+        { "type": "steady", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
+        { "type": "cooldown", "target": "zone", "duration_min": 7, "notes": "Z1 spin" }
       ]
     }
   },
@@ -395,84 +150,19 @@
     "load_hint": 25,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "pace",
-          "duration_min": 10,
-          "notes": "Easy; drills optional, e.g., 4×50"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5; e.g., 25–50m at CSS−5″/100"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Fast ~Z5"
-        },
-        {
-          "type": "cooldown",
-          "target": "pace",
-          "duration_min": 8,
-          "notes": "Easy; choice stroke"
-        }
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy; drills optional, e.g., 4×50" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5; e.g., 25–50m at CSS−5″/100" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
+        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
+        { "type": "cooldown", "target": "pace", "duration_min": 8, "notes": "Easy; choice stroke" }
       ]
     }
   },
@@ -488,144 +178,27 @@
     "load_hint": 60,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "pace",
-          "duration_min": 10,
-          "notes": "Easy + drills (e.g., 4×50)"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace (e.g., 100s)"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "recovery",
-          "target": "pace",
-          "duration_min": 1,
-          "notes": "Easy swim"
-        },
-        {
-          "type": "interval",
-          "target": "pace",
-          "duration_min": 2,
-          "notes": "Z4 CSS pace"
-        },
-        {
-          "type": "cooldown",
-          "target": "pace",
-          "duration_min": 5,
-          "notes": "Easy"
-        }
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy + drills (e.g., 4×50)" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace (e.g., 100s)" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
+        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
+        { "type": "cooldown", "target": "pace", "duration_min": 5, "notes": "Easy" }
       ]
     }
   },
@@ -641,24 +214,9 @@
     "load_hint": 50,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "none",
-          "duration_min": 8,
-          "notes": "Mobility and activation"
-        },
-        {
-          "type": "strength",
-          "target": "rpe",
-          "duration_min": 32,
-          "notes": "3×5–8 reps main lifts @ RPE 6–7; accessories 2–3×10–12"
-        },
-        {
-          "type": "cooldown",
-          "target": "none",
-          "duration_min": 5,
-          "notes": "Stretching and breathing"
-        }
+        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Mobility and activation" },
+        { "type": "strength", "target": "rpe", "duration_min": 32, "notes": "3×5–8 reps main lifts @ RPE 6–7; accessories 2–3×10–12" },
+        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and breathing" }
       ]
     }
   },
@@ -674,24 +232,9 @@
     "load_hint": 20,
     "structure_json": {
       "segments": [
-        {
-          "type": "warmup",
-          "target": "none",
-          "duration_min": 5,
-          "notes": "Mobility and band activation"
-        },
-        {
-          "type": "strength",
-          "target": "rpe",
-          "duration_min": 20,
-          "notes": "Calf raises 3×10, RDL 2×8 light, hip abduction 2×12, plank 3×30–45s @ RPE 5–6"
-        },
-        {
-          "type": "cooldown",
-          "target": "none",
-          "duration_min": 5,
-          "notes": "Light stretch"
-        }
+        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Mobility and band activation" },
+        { "type": "strength", "target": "rpe", "duration_min": 20, "notes": "Calf raises 3×10, RDL 2×8 light, hip abduction 2×12, plank 3×30–45s @ RPE 5–6" },
+        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Light stretch" }
       ]
     }
   }

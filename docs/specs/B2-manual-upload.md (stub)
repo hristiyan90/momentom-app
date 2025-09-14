@@ -1,0 +1,45 @@
+# C2-S1-B2 — Manual Workout Upload (TCX/GPX)
+
+**ID:** C2-S1-B2  
+**Title:** Manual Workout Upload (TCX/GPX)  
+**Owner:** Full-Stack (Cursor) • **Status:** Draft
+
+## 1) User story & outcomes
+- As an athlete, I can upload **.TCX/.GPX** so my completed workout appears in history.
+- Success: ≥95% valid files parse; <1% 5xx; upload ≤25 MB; parse <2s @ 10 MB.
+
+## 2) Scope
+**In:** UI dropzone; server-only POST; Supabase storage; staging table; parser; map to `sessions`.  
+**Out:** Device integrations, duplicate detection, lap editing.
+
+## 3) Contracts
+- **OpenAPI:** `POST /api/_internal/ingest/workout` (multipart/form-data)
+  - 201 `{ "ingest_id": "uuid" }`; 400/401/413/415; POST is `Cache-Control: no-store`, **no ETag**.
+- **DB:** `ingest_staging(ingest_id uuid pk, athlete_id uuid, filename text, file_type enum<tcx|gpx>,
+  file_size bigint, status enum<received|parsed|normalized|error>, error_message text, session_id uuid?,
+  created_at timestamptz, updated_at timestamptz)` with **RLS**: `athlete_id = auth.jwt()->>'athlete_id'`.
+- **Storage:** bucket `ingest/raw/<athlete_id>/<ingest_id>.<ext>`; max 25 MB; MIME `application/xml`,
+  `application/gpx+xml`.
+- **Policies:** ETag GET-only; `Vary: X-Client-Timezone`; prod auth mapping per policy; dev header override gated.
+
+## 4) Non-functionals
+Streaming read; memory-safe; logs include ingest_id/athlete_id; metrics by status; error taxonomy.
+
+## 5) UX flow
+Drop file → progress → “Imported; appears after processing.”  
+Errors: too big, wrong type, parse fail (friendly copy).
+
+## 6) Acceptance checks
+- cURL 201 for valid multipart; 401 no auth; 413 >25 MB; 415 wrong type.
+- RLS: athlete A can’t read B’s staging rows.
+- Status transitions received→parsed→normalized; error path sets `error_message`.
+- Headers: POST `no-store`, no ETag.
+- Newman: cases for 201/401/413/415. Smoke: H-case for 201 & owner visibility.
+
+## 7) Open questions
+- Max file size default 25 MB? (Ops confirm)
+- Bucket name `ingest`? (Ops confirm)
+- Inline parse vs. queue? (v1: inline; RFC if >2s parse common)
+
+## 8) Tasks
+T-1 migration+RLS; T-2 storage helper; T-3 API route; T-4 parsers; T-5 mapper; T-6 UI; T-7 tests; T-8 docs.

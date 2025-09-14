@@ -1,286 +1,106 @@
-# CI Gates Policy
+# CI Gates (PR blocking)
+
 
 ## Overview
+This policy defines the CI/CD gates and validation requirements for the Momentom API. It covers OpenAPI conformance checking, Postman/Newman testing, smoke tests, and other quality gates that must pass before code can be merged to main.
+## TL;DR
+Every pull request must pass **three gates**:
+1) **OpenAPI conformance & diff** (no breaking/undeclared changes)  
+2) **Postman/Newman tests** (collection runs green)  
+3) **H1–H7 smoke** suite passes
 
-This document defines the CI/CD gate requirements for the Momentom API, ensuring code quality, API contract compliance, and deployment safety through automated checks.
+Fail any gate → fail the PR.
 
-## Gate Architecture
+## Acceptance
+- CI runs on PRs; merges to `main` are blocked if any gate fails.
+- Artifacts (Newman HTML, diff output, smoke logs) are uploaded on failure.
+- Badge may be shown in README.
 
-### PR-Blocking Gates
-All gates must pass before a PR can be merged to main branch. Failed gates block the merge and require fixes.
+## Assumptions
+- Node.js **20.x** in CI.
+- Docker is available for `tufin/oasdiff`. If unavailable, use Redocly CLI diff.
+- The repo contains:
+  - `openapi/momentom_api_openapi_1.0.1.yaml`
+  - `postman/momentom_postman_collection.json`
+  - `postman/momentom_postman_environment.json`
+  - H1–H7 smoke entry point: `npm run smoke` (as referenced in `README-dev.md`)
 
-### Gate Categories
-1. **Code Quality**: Linting, formatting, type checking
-2. **API Contract**: OpenAPI validation, schema compliance
-3. **Testing**: Unit tests, integration tests, Postman tests
-4. **Security**: Vulnerability scanning, dependency checks
-5. **Performance**: Load testing, response time validation
+---
 
-## Gate 1: Code Quality
+## Steps
 
-### Linting
-- **Tool**: ESLint with TypeScript rules
-- **Configuration**: `.eslintrc.json` with strict rules
-- **Scope**: All TypeScript and JavaScript files
-- **Failure**: Any linting errors block the PR
+### 1) OpenAPI conformance & diff
+- **Validate** 3.1 syntax.
+- **Diff** against `main` and **fail on any change**.
 
-### Formatting
-- **Tool**: Prettier with consistent configuration
-- **Configuration**: `.prettierrc` with standard formatting
-- **Scope**: All code files (TS, JS, JSON, MD, YAML)
-- **Failure**: Any formatting inconsistencies block the PR
+**Option A — Docker oasdiff (preferred)**
+```bash
+# Fetch main spec
+curl -sSL -o artifacts/openapi_main.yaml \
+  https://raw.githubusercontent.com/hristiyan90/momentom-app/main/openapi/momentom_api_openapi_1.0.1.yaml
 
-### Type Checking
-- **Tool**: TypeScript compiler (`tsc --noEmit`)
-- **Configuration**: `tsconfig.json` with strict mode
-- **Scope**: All TypeScript files
-- **Failure**: Any type errors block the PR
+# Diff (fail on any change)
+docker run --rm -v "$PWD":/work tufin/oasdiff:latest \
+  diff --fail-on=all --format=text \
+  /work/artifacts/openapi_main.yaml /work/openapi/momentom_api_openapi_1.0.1.yaml \
+  | tee artifacts/openapi-diff.txt
 
-### Dependencies
-- **Tool**: `npm audit` for vulnerability scanning
-- **Configuration**: Audit level `moderate` or higher
-- **Scope**: All production dependencies
-- **Failure**: High or critical vulnerabilities block the PR
-
-## Gate 2: API Contract Validation
-
-### OpenAPI Specification
-- **Tool**: `swagger-cli` for YAML validation
-- **Configuration**: Strict validation mode
-- **Scope**: `openapi/momentom_api_openapi_*.yaml`
-- **Failure**: Any YAML syntax or schema errors block the PR
-
-### OpenAPI Diff
-- **Tool**: `oasdiff` for breaking change detection
-- **Configuration**: `--fail-on=breaking` mode
-- **Scope**: Compare against main branch
-- **Failure**: Any breaking changes block the PR
-
-### Schema Compliance
-- **Tool**: Custom validation against OpenAPI schema
-- **Configuration**: Strict mode with all required fields
-- **Scope**: All API responses and requests
-- **Failure**: Any schema violations block the PR
-
-## Gate 3: API Testing
-
-### Postman Collection Tests
-- **Tool**: Newman (Postman CLI)
-- **Configuration**: HTML reporter with detailed results
-- **Scope**: All API endpoints with various scenarios
-- **Failure**: Any test failures block the PR
-
-### Test Coverage
-- **Endpoints**: All API routes must be tested
-- **Scenarios**: Success, error, and edge cases
-- **Authentication**: Both dev and prod modes
-- **ETag**: Conditional request behavior
-
-### Smoke Tests
-- **Tool**: Custom shell script (`scripts/smoke_h1_h7.sh`)
-- **Configuration**: Basic health checks and endpoint availability
-- **Scope**: Critical API functionality
-- **Failure**: Any smoke test failures block the PR
-
-## Gate 4: Security Validation
-
-### Dependency Scanning
-- **Tool**: `npm audit` with security focus
-- **Configuration**: High and critical vulnerabilities only
-- **Scope**: All dependencies (production and development)
-- **Failure**: Any high/critical vulnerabilities block the PR
-
-### Secret Scanning
-- **Tool**: Custom regex patterns for secret detection
-- **Configuration**: Common secret patterns (API keys, passwords, tokens)
-- **Scope**: All code files and configuration
-- **Failure**: Any exposed secrets block the PR
-
-### Authentication Testing
-- **Tool**: Custom tests for auth bypass attempts
-- **Configuration**: Various attack vectors and edge cases
-- **Scope**: All authentication endpoints
-- **Failure**: Any security vulnerabilities block the PR
-
-## Gate 5: Performance Validation
-
-### Response Time
-- **Tool**: Custom performance tests
-- **Configuration**: 95th percentile < 500ms for API responses
-- **Scope**: All API endpoints
-- **Failure**: Slow responses block the PR
-
-### Load Testing
-- **Tool**: Artillery or similar load testing tool
-- **Configuration**: 100 concurrent users for 5 minutes
-- **Scope**: Critical API endpoints
-- **Failure**: High error rates or timeouts block the PR
-
-### Resource Usage
-- **Tool**: Memory and CPU monitoring
-- **Configuration**: Memory usage < 512MB, CPU < 80%
-- **Scope**: All API operations
-- **Failure**: Resource exhaustion blocks the PR
-
-## Implementation Details
-
-### GitHub Actions Workflow
-```yaml
-name: CI Gates
-on: [pull_request]
-jobs:
-  code-quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Format check
-        run: npm run format:check
-      - name: Type check
-        run: npm run type-check
-      - name: Security audit
-        run: npm audit --audit-level=moderate
-
-  api-contract:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm ci
-      - name: OpenAPI validation
-        run: npx swagger-cli validate openapi/momentom_api_openapi_*.yaml
-      - name: OpenAPI diff
-        run: npx oasdiff diff main openapi/momentom_api_openapi_*.yaml --fail-on=breaking
-
-  api-testing:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm ci
-      - name: Start server
-        run: npm run dev &
-      - name: Wait for server
-        run: sleep 10
-      - name: Run Postman tests
-        run: npx newman run postman/momentom-api.json -r html
-      - name: Run smoke tests
-        run: npm run smoke
+# Validate syntax
+npx --yes @apidevtools/swagger-cli@4.0.4 validate openapi/momentom_api_openapi_1.0.1.yaml
 ```
 
-### Required Scripts
-```json
-{
-  "scripts": {
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "format:check": "prettier --check .",
-    "format": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "smoke": "bash scripts/smoke_h1_h7.sh",
-    "test:api": "newman run postman/momentom-api.json"
-  }
-}
+**Option B — Redocly CLI (fallback)**
+```bash
+# Install Redocly CLI
+npm install -g @redocly/cli
+
+# Fetch main spec
+curl -sSL -o artifacts/openapi_main.yaml \
+  https://raw.githubusercontent.com/hristiyan90/momentom-app/main/openapi/momentom_api_openapi_1.0.1.yaml
+
+# Diff (fail on any change)
+npx @redocly/cli diff \
+  --fail-on=all \
+  --format=text \
+  artifacts/openapi_main.yaml openapi/momentom_api_openapi_1.0.1.yaml \
+  | tee artifacts/openapi-diff.txt
+
+# Validate syntax
+npx @redocly/cli lint openapi/momentom_api_openapi_1.0.1.yaml
 ```
 
-## Gate Configuration
+### 2) Postman/Newman Tests
+- **Collection**: `postman/momentom_postman_collection.json`
+- **Environment**: `postman/momentom_postman_environment.json`
+- **Timeout**: 10s per request, 10s per script
+- **Report**: HTML output for artifact upload
 
-### Failure Thresholds
-- **Code Quality**: 0 errors allowed
-- **API Contract**: 0 breaking changes allowed
-- **Testing**: 100% test pass rate required
-- **Security**: 0 high/critical vulnerabilities allowed
-- **Performance**: 95th percentile < 500ms required
+```bash
+# Install Newman
+npm install -g newman newman-reporter-html
 
-### Bypass Conditions
-- **Emergency Fixes**: Security patches can bypass non-security gates
-- **Documentation**: Documentation-only changes can bypass testing gates
-- **Configuration**: Environment configuration changes can bypass code gates
-- **Approval**: All bypasses require maintainer approval
+# Run tests
+newman run postman/momentom_postman_collection.json \
+  -e postman/momentom_postman_environment.json \
+  -r cli,html \
+  --reporter-html-export newman-report.html \
+  --timeout-request 10000 \
+  --timeout-script 10000
+```
 
-## Monitoring and Reporting
+### 3) H1–H7 Smoke Tests
+- **Entry point**: `npm run smoke` (as defined in `package.json`)
+- **Coverage**: All H1–H7 features must pass
+- **Output**: Logs to `artifacts/smoke-results.txt`
 
-### Gate Status Dashboard
-- **Real-time**: Current status of all gates
-- **History**: Historical gate performance
-- **Trends**: Gate failure patterns and improvements
+```bash
+# Run smoke tests
+mkdir -p artifacts
+npm run smoke > artifacts/smoke-results.txt 2>&1
+```
 
-### Failure Notifications
-- **Immediate**: Slack/email notifications for gate failures
-- **Escalation**: Maintainer notification after 1 hour
-- **Resolution**: Success notification when gates pass
-
-### Metrics Collection
-- **Gate Pass Rate**: Percentage of successful gate runs
-- **Failure Causes**: Breakdown of gate failure reasons
-- **Resolution Time**: Average time to fix gate failures
-- **Performance Impact**: Gate execution time and resource usage
-
-## Gate Maintenance
-
-### Regular Updates
-- **Dependencies**: Monthly updates to testing tools
-- **Rules**: Quarterly review of gate rules and thresholds
-- **Configuration**: Annual review of gate configurations
-
-### Performance Optimization
-- **Parallel Execution**: Run independent gates in parallel
-- **Caching**: Cache dependencies and build artifacts
-- **Resource Allocation**: Optimize resource usage for gate execution
-
-### Rule Evolution
-- **New Requirements**: Add gates for new quality requirements
-- **Threshold Adjustments**: Modify thresholds based on performance data
-- **Tool Upgrades**: Upgrade testing tools and frameworks
-
-## Troubleshooting
-
-### Common Issues
-- **Flaky Tests**: Investigate and fix unstable tests
-- **Performance Degradation**: Optimize slow-running gates
-- **False Positives**: Adjust rules to reduce false positives
-- **Resource Constraints**: Scale resources for gate execution
-
-### Debugging Process
-1. **Identify**: Determine which gate is failing
-2. **Investigate**: Check logs and error messages
-3. **Reproduce**: Reproduce the issue locally
-4. **Fix**: Implement the necessary fixes
-5. **Verify**: Confirm the fix resolves the issue
-
-### Support Escalation
-- **Level 1**: Developer self-service debugging
-- **Level 2**: Team lead assistance
-- **Level 3**: Platform team intervention
-- **Level 4**: External tool support
-
-## Future Enhancements
-
-### Advanced Testing
-- **Contract Testing**: Pact-based contract testing
-- **Chaos Engineering**: Failure injection testing
-- **Mutation Testing**: Code mutation analysis
-
-### AI-Powered Gates
-- **Code Review**: AI-assisted code review
-- **Security Analysis**: AI-powered vulnerability detection
-- **Performance Prediction**: ML-based performance forecasting
-
-### Integration Improvements
-- **IDE Integration**: Real-time gate feedback in IDEs
-- **Pre-commit Hooks**: Local gate execution before commit
-- **Smart Caching**: Intelligent cache invalidation
+## Artifact Upload
+On any gate failure, upload:
+- `artifacts/openapi-diff.txt` (OpenAPI changes)
+- `newman-report.html` (Postman test results)
+- `artifacts/smoke-results.txt` (Smoke test logs)
