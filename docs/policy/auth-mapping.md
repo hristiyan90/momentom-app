@@ -84,3 +84,41 @@ set athlete_id = excluded.athlete_id;
 
 create or replace view public.v_athlete_identity as
 select m.user_sub, m.athlete_id from public.athlete_user_map m;
+```
+
+### Environment Variables
+- `AUTH_MODE`: Set to `"prod"` for production, `"dev"` for development
+- `ALLOW_HEADER_OVERRIDE`: Set to `"true"` to allow `X-Athlete-Id` header in dev mode
+- `SUPABASE_JWT_SECRET`: HS256 secret for JWT verification
+- `SUPABASE_URL`: Supabase project URL (for additional verification if needed)
+
+### Security Considerations
+- **Token Storage**: Never log JWT tokens in plaintext
+- **Secret Management**: Use environment variables for `SUPABASE_JWT_SECRET`
+- **Header Validation**: Strictly validate `X-Athlete-Id` format (must be valid UUID)
+- **Rate Limiting**: Implement rate limiting on auth endpoints
+- **Audit Logging**: Log authentication attempts (without sensitive data)
+
+### Testing Requirements
+- Unit tests for JWT verification with various token states
+- Integration tests for athlete_id resolution logic
+- Error handling tests for all failure scenarios
+- Performance tests for token verification under load
+
+### Monitoring & Observability
+- Track authentication success/failure rates
+- Monitor JWT verification performance
+- Alert on unusual authentication patterns
+- Log correlation IDs for request tracing
+
+### Migration Strategy
+- Phase 1: Implement JWT verification alongside existing auth
+- Phase 2: Add athlete_id mapping logic
+- Phase 3: Enable RLS enforcement
+- Phase 4: Remove legacy auth mechanisms
+
+### Troubleshooting Guide
+- **401 errors**: Check JWT secret, token format, expiration
+- **Athlete mapping failures**: Verify user_metadata structure
+- **RLS issues**: Confirm athlete_id is properly set in request context
+- **Dev override not working**: Check AUTH_MODE and ALLOW_HEADER_OVERRIDE settings
