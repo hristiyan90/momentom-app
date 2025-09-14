@@ -23,7 +23,7 @@ jobs:
         run: npm ci
         
       - name: Check status sync
-        run: npm run status:check
+        run: npm run status:check  # Force fresh CI run
         
       - name: Status check passed
         run: echo "✅ All status blocks are up to date"
