@@ -2,7 +2,7 @@
 
 **ID:** C2-S1-B2  
 **Title:** Manual Workout Upload (TCX/GPX)  
-**Owner:** Full-Stack (Cursor) • **Status:** Draft
+**Owner:** Full-Stack (Cursor) • **Status:** Ready for Implementation
 
 ## 1) User story & outcomes
 - As an athlete, I can upload **.TCX/.GPX** so my completed workout appears in history.

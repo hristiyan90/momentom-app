@@ -35,7 +35,7 @@ Update this file per merged task.
 - **Process**: `docs/process/CURSOR_BOOT.md` · `docs/process/CURSOR_WORKFLOW.md` · `docs/process/TASK_FLOW.md`
 - **Sprint History:** `docs/process/sprints/README.md`
 - **Feature Specs:** `docs/specs/README.md`
-- **Cursor system files**: `/.cursor/rules.md` · `/.cursor/context.md` · `/.cursor/CURSOR_OPERATING_AGREEMENT.md`
+- **Cursor system files**: `/docs/cursor/rules.md` · `/docs/cursor/context.md` · `/docs/cursor/CURSOR_OPERATING_AGREEMENT.md`
 
 ## For Cursor (FS Dev)
 
@@ -98,7 +98,7 @@ Before proposing any plan or writing code:
 - Feature Map: `docs/product/feature-map.md`
 - Architecture Overview: `docs/architecture/overview.md`
 - Engineering Playbook: `docs/engineering/PLAYBOOK.md`
-- **Cursor Rules & Workflow:** `/.cursor/rules.md`, `docs/process/CURSOR_WORKFLOW.md`, `/.cursor/CURSOR_OPERATING_AGREEMENT.md`
+- **Cursor Rules & Workflow:** `/docs/cursor/rules.md`, `docs/process/CURSOR_WORKFLOW.md`, `/docs/cursor/CURSOR_OPERATING_AGREEMENT.md`
 - Policies: `docs/policy/etag-policy.md`, `docs/policy/auth-mapping.md`, `docs/policy/ci-gates.md`
 - Workout Library: `docs/library/`, seed: `library/workouts.json`
 - OpenAPI (frozen): `openapi/momentom_api_openapi_1.0.1.yaml`

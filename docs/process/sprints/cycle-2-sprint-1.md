@@ -11,7 +11,7 @@
 | A3  | **ETag / If-None-Match** for GETs (POST = `no-store`)                 | ✅ Done       | <link> | `docs/policy/etag-policy.md`, curl checks in PR |
 | A4  | **Auth hardening** (Supabase JWT → athlete_id; disable header override in prod) | ✅ Done | <link> | `docs/policy/auth-mapping.md`, PR evidence |
 | B1  | **Workout Library v0** (seed + read-only GET)                         | ✅ Done       | <link> | `docs/library/README.md`, `library/workouts.json`, coverage/evidence notes |
-| B1-b| **Cursor workflow** (docs + rules + templates + guards)               | ✅ Done       | <link> | `docs/process/*`, `/.cursor/*` |
+| B1-b| **Cursor workflow** (docs + rules + templates + guards)               | ✅ Done       | <link> | `docs/process/*`, `/docs/cursor/*` |
 | B2  | **Manual Workout Upload (TCX/GPX)** → POST `/api/_internal/ingest/workout`, parser → staging → normalized session; **UI dropzone + status** | 🚧 In progress | <link> | `docs/features/B2-manual-upload.md` (create), `docs/architecture/overview.md` |
 | B3  | **UX wiring to live GETs** (Loading/Empty/Error/Partial) + re-shoot screenshots | ⏳ Pending | <link> | `docs/product/feature-map.md`, `docs/product/overview.md` |
 | C1  | **Coach Tom v0 (light)** (read-only explainers from live data)        | ⏳ Pending    | <link> | `docs/product/overview.md`, `docs/architecture/overview.md` |
@@ -24,7 +24,7 @@
 ## Artifacts & Evidence
 - **Policies**: ETag/Auth/CI under `docs/policy/`.
 - **Library**: `library/workouts.json` (Drop-1), plus coverage/evidence/mapping notes under `docs/library/`.
-- **Workflow**: `docs/process/cursor_workflow.md`, `docs/process/task_flow.md`, `/.cursor/rules.md`, templates.
+- **Workflow**: `docs/process/cursor_workflow.md`, `docs/process/task_flow.md`, `/docs/cursor/rules.md`, templates.
 - **cURL checks**: attached in PRs for A3/A4 and Library GETs.
 - **RLS**: verified with per-athlete filters; partial data returns `206` + `Warning`.
 
