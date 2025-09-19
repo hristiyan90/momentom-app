@@ -311,3 +311,4 @@ export function validateParsedData(data: ParsedWorkoutData): { valid: boolean; e
     errors
   };
 }
+
