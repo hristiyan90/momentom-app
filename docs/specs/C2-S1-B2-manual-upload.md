@@ -3,7 +3,7 @@
 **ID:** C2-S1-B2  
 **Title:** Manual Workout Upload (TCX/GPX)  
 **Owner:** Full-Stack (Cursor)
-**Status:** `{{status.features.C2-S1-B2}}` (see docs/config/status.yml)
+**Status:** ✅ Implemented (see docs/config/status.yml)
 
 ## 1) User story & outcomes
 - As an athlete, I can upload **.TCX/.GPX** so my completed workout appears in history.

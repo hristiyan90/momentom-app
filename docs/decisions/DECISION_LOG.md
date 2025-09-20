@@ -4,4 +4,4 @@
 | 0002 | Auth mapping (JWT→athlete)  | Accepted | 2025-09-10 | Product Architect  | —          | [auth-mapping.md](docs/policy/auth-mapping.md) |
 | 0003 | CI gates (PR blocking)      | Accepted | 2025-09-10 | Product Architect  | —          | [ci-gates.md](docs/policy/ci-gates.md) |
 | 0004 | Workout Library v0 shape    | Accepted | 2025-09-10 | Sports Science     | —          | [README.md](docs/library/README.md) |
-| 0005 | B2 Manual Upload | {{status.features.C2-S1-B2}} | 2025-09-19 | Dev | [Spec](../specs/C2-S1-B2.md) |
+| 0005 | B2 Manual Upload (TCX/GPX) | Accepted | 2025-09-19 | Dev | — | [Spec](../specs/C2-S1-B2-manual-upload.md) |
