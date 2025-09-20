@@ -48,3 +48,21 @@ For any status banner in README or docs/process/STATUS.md, reflect newly active 
 C0: B2 — Manual Workout Upload (TCX/GPX) - Phase 1
 Branch: feat/b2-manual-upload-phase1 → PR #[pending]
 Plan: Database migration only - create ingest_staging and sessions tables with RLS policies
+
+## C5 Entries
+
+C5: B2 — Manual Workout Upload (TCX/GPX) - Complete Implementation
+Branch: feat/b2-manual-upload-phase3 → PR #12
+Status: ✅ Ready for review
+Contract: OpenAPI change? yes - New endpoints added
+Policies: ETag on GET only; POST no-store
+RLS: staging rows scoped by athlete_id (policy added)
+cURLs (paste the actual runs):
+  - ✅ POST /api/ingest/workout → 201 (multipart ok, <25MB enforced)
+  - ✅ GET /api/ingest/workout/{id} → 200 (ETag present)
+  - ✅ Invalid file type → 415 (proper rejection)
+  - ✅ Missing file → 400 (validation working)
+  - ✅ ETag caching → 304 (If-None-Match working)
+  - ✅ Malformed file → 500 (error handling working)
+CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (test suite: 9/9 passing)
+Follow-ups: UI dropzone component (Phase 4), production deployment

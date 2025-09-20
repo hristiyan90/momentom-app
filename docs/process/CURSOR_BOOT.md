@@ -23,6 +23,7 @@ This file tells Cursor exactly what to read and how to operate before it propose
 - `docs/process/CONTRIBUTING.md`
 - `docs/process/TEAM.md` (roles & ownership)
 - `docs/decisions/DECISION_LOG.md` (recent decisions)
+- `docs/process/sprints/README.md` (sprint history)
 
 **Policies (hard requirements)**
 - `docs/policy/etag-policy.md`
@@ -47,6 +48,10 @@ This file tells Cursor exactly what to read and how to operate before it propose
 - `/docs/cursor/context.md`
 - `/docs/cursor/operating-agreement.md`
 - `/docs/cursor/templates/pr.md`
+
+**Feature Specs (current work)**
+- `docs/specs/README.md` (spec index)
+- `docs/specs/[CURRENT_FEATURE].md` (active spec only)
 
 ---
 
@@ -98,6 +103,24 @@ Create table of inputs needed from other roles:
 > No schema changes. Changes are ≤1 hour and reversible.
 
 **STOP AFTER C0** and wait for approval before implementing.
+
+## Phase 6: Documentation & Wrap-up
+
+### 6.1 Update Repository Documentation
+- [ ] Update status in `docs/config/status.yml` (ONLY place needed)
+- [ ] Add Decision Log entry
+- [ ] Add implementation notes to spec
+
+### 6.2 Prepare for Review
+- [ ] Create PR with descriptive title and body
+- [ ] Reference relevant specs and decisions
+- [ ] Include testing summary
+- [ ] Tag for review if needed
+
+### 6.3 Archive & Clean
+- [ ] Archive temporary files
+- [ ] Clean up development artifacts
+- [ ] Update next steps
 
 ---
 
