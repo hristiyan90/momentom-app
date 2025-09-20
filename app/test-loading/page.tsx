@@ -5,10 +5,16 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { SkeletonCard } from "@/components/ui/skeleton-card"
 import { SkeletonTable } from "@/components/ui/skeleton-table"
 import { LoadingOverlay } from "@/components/ui/loading-overlay"
+import { ErrorState, ErrorCard, NetworkError, ServerError, ErrorBoundary } from "@/components/ui/error"
 
 export default function TestLoadingPage() {
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayProgress, setOverlayProgress] = useState(0)
+  const [showErrorState, setShowErrorState] = useState(false)
+  const [showErrorCard, setShowErrorCard] = useState(false)
+  const [showNetworkError, setShowNetworkError] = useState(false)
+  const [showServerError, setShowServerError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const simulateProgress = () => {
     setShowOverlay(true)
@@ -30,8 +36,8 @@ export default function TestLoadingPage() {
     <div className="min-h-screen bg-bg-app p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-text-1 mb-2">Loading Components Test</h1>
-          <p className="text-text-2">Testing all B3a loading state components</p>
+          <h1 className="text-3xl font-bold text-text-1 mb-2">Loading & Error Components Test</h1>
+          <p className="text-text-2">Testing all B3a loading and error state components</p>
         </div>
 
         {/* LoadingSpinner Tests */}
@@ -197,6 +203,182 @@ export default function TestLoadingPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Error Components */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-text-1">Error Components</h2>
+          
+          {/* ErrorCard Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ErrorCard Component</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Default Error</h4>
+                  <ErrorCard
+                    title="Validation Error"
+                    message="Please check your input and try again."
+                    onDismiss={() => setShowErrorCard(false)}
+                    onRetry={() => console.log("Retry clicked")}
+                    showRetry={true}
+                    variant="default"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Warning Error</h4>
+                  <ErrorCard
+                    title="Warning"
+                    message="This action cannot be undone."
+                    onDismiss={() => console.log("Dismissed")}
+                    variant="warning"
+                    size="sm"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Danger Error</h4>
+                  <ErrorCard
+                    title="Critical Error"
+                    message="System failure detected."
+                    onDismiss={() => console.log("Dismissed")}
+                    variant="danger"
+                    size="lg"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Info Error</h4>
+                  <ErrorCard
+                    title="Information"
+                    message="Please review your settings."
+                    onDismiss={() => console.log("Dismissed")}
+                    variant="info"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* NetworkError Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">NetworkError Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Network Error</h4>
+                <NetworkError
+                  title="Connection Failed"
+                  message="Unable to connect to the server."
+                  onRetry={() => console.log("Retry network request")}
+                  onCheckConnection={() => console.log("Check connection")}
+                  showConnectionCheck={true}
+                />
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Offline Error</h4>
+                <NetworkError
+                  isOffline={true}
+                  onRetry={() => console.log("Retry when online")}
+                  onCheckConnection={() => console.log("Check connection")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ServerError Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ServerError Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">500 Server Error</h4>
+                <ServerError
+                  statusCode={500}
+                  onRetry={() => console.log("Retry server request")}
+                  onReportBug={() => console.log("Report bug")}
+                  showBugReport={true}
+                />
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">429 Rate Limited</h4>
+                <ServerError
+                  statusCode={429}
+                  retryAfter={60}
+                  onRetry={() => console.log("Retry after rate limit")}
+                  onReportBug={() => console.log("Report bug")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Error State Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ErrorState Component</h3>
+            <div className="space-y-4">
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setShowErrorState(true)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Show Error State
+                </button>
+                <button
+                  onClick={() => setErrorMessage("Custom error message")}
+                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                >
+                  Set Custom Error
+                </button>
+                <button
+                  onClick={() => setErrorMessage(null)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Clear Error
+                </button>
+              </div>
+              
+              {showErrorState && (
+                <div className="border border-border-weak rounded-lg overflow-hidden">
+                  <ErrorState
+                    title="Test Error State"
+                    message="This is a test error state for demonstration."
+                    error={errorMessage}
+                    onRetry={() => {
+                      setShowErrorState(false);
+                      setErrorMessage(null);
+                    }}
+                    onRefresh={() => window.location.reload()}
+                    onGoBack={() => window.history.back()}
+                    onGoHome={() => window.location.href = "/"}
+                    variant="default"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Error Boundary Test */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ErrorBoundary Component</h3>
+            <div className="bg-bg-surface border border-border-weak rounded-lg p-6">
+              <p className="text-sm text-text-2 mb-4">
+                The ErrorBoundary component catches React errors and displays a fallback UI.
+                In a real application, this would catch JavaScript errors in child components.
+              </p>
+              <ErrorBoundary
+                onError={(error, errorInfo) => {
+                  console.log("Error caught by boundary:", error, errorInfo);
+                }}
+                resetOnPropsChange={true}
+                resetKeys={["test"]}
+              >
+                <div className="p-4 bg-bg-raised rounded-lg">
+                  <p className="text-sm text-text-1">
+                    This content is wrapped in an ErrorBoundary. If an error occurs here,
+                    it will be caught and displayed with a fallback UI.
+                  </p>
+                </div>
+              </ErrorBoundary>
             </div>
           </div>
         </section>
