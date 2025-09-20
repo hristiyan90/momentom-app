@@ -3,6 +3,12 @@
 **Purpose**  
 This file tells Cursor exactly what to read and how to operate before it proposes or changes anything.
 
+**See Also:**
+- `docs/process/TASK_FLOW.md` - Master task flow (C0-C5 stages)
+- `docs/process/CURSOR_WORKFLOW.md` - High-level workflow overview
+- `docs/process/AUTO_LOG.md` - Decision log and task tracking process
+- `docs/process/CONTRIBUTING.md` - Setup and testing guide
+
 ---
 
 ## Golden Rules

@@ -2,6 +2,12 @@
 
 A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md` and `docs/process/CURSOR_BOOT.md`.
 
+**See Also:**
+- `docs/process/CURSOR_BOOT.md` - Detailed required reading and context digest process
+- `docs/process/CURSOR_WORKFLOW.md` - High-level workflow overview
+- `docs/process/AUTO_LOG.md` - Decision log and task tracking process
+- `docs/cursor/templates/pr.md` - PR template format
+
 ---
 
 ## Roles (shortcut)
@@ -55,6 +61,13 @@ A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md`
 - You review diff + headers + cURLs.
 - Merge with squash. Tag if it closes a sprint item.
 - Cursor appends **C5** entry in `docs/process/AUTO_LOG.md`.
+
+### Phase 6 — Documentation & Wrap-up
+- Update status in `docs/config/status.yml` (ONLY place needed)
+- Add Decision Log entry if applicable
+- Add implementation notes to spec
+- Archive temporary files and clean up development artifacts
+- Update next steps and follow-ups
 
 ---
 

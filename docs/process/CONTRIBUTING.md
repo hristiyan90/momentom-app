@@ -6,6 +6,12 @@
 4) Keep contracts stable; if changing, update OpenAPI + ADR first.
 5) Docs are living artifacts — update them when direction changes.
 
+**See Also:**
+- `docs/process/CURSOR_BOOT.md` - Complete workflow process
+- `docs/process/TASK_FLOW.md` - Master task flow (C0-C5)
+- `docs/process/CURSOR_WORKFLOW.md` - High-level workflow
+- `docs/cursor/templates/pr.md` - PR template format
+
 ## Dev setup
 - `npm ci`
 - `cp .env.example .env.local` and set Supabase vars
