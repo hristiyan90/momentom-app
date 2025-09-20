@@ -3,6 +3,8 @@
  * Extracts workout data from XML files
  */
 
+import { XMLParser } from 'fast-xml-parser';
+
 export interface ParsedWorkoutData {
   sport: 'run' | 'bike' | 'swim' | 'strength' | 'mobility';
   date: string; // ISO date string
@@ -24,24 +26,40 @@ export interface ParsedWorkoutData {
  */
 export function parseTCX(xmlContent: string): ParsedWorkoutData {
   try {
-    // Basic XML parsing - in production would use proper XML parser
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlContent, 'application/xml');
+    // Parse XML using server-side parser
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: '@_',
+      textNodeName: '#text',
+      ignoreDeclaration: true,
+      removeNSPrefix: true,
+      allowBooleanAttributes: true,
+      parseTag: true,
+      parseAttribute: true,
+      trimValues: true,
+      cdataPropName: '__cdata',
+      isArray: (tagName: string, jPath: string, isLeafNode: boolean) => {
+        // Force certain elements to always be arrays
+        if (['Activity', 'Lap', 'Trackpoint'].includes(tagName)) return true;
+        return isLeafNode;
+      }
+    });
+    
+    const jsonObj = parser.parse(xmlContent);
     
     // Check for parsing errors
-    const parserError = doc.querySelector('parsererror');
-    if (parserError) {
-      throw new Error('Invalid XML format');
+    if (!jsonObj || !jsonObj.TrainingCenterDatabase) {
+      throw new Error('Invalid TCX file format');
     }
     
     // Extract activity data
-    const activity = doc.querySelector('Activity');
+    const activity = jsonObj.TrainingCenterDatabase.Activities?.Activity?.[0];
     if (!activity) {
       throw new Error('No Activity found in TCX file');
     }
     
     // Extract sport - default to 'run' if not specified
-    const sportAttr = activity.getAttribute('Sport')?.toLowerCase();
+    const sportAttr = activity['@_Sport']?.toString().toLowerCase();
     let sport: ParsedWorkoutData['sport'] = 'run';
     
     switch (sportAttr) {
@@ -66,31 +84,35 @@ export function parseTCX(xmlContent: string): ParsedWorkoutData {
     }
     
     // Extract start time
-    const idElement = doc.querySelector('Id');
-    if (!idElement?.textContent) {
+    const idElement = activity.Id;
+    if (!idElement) {
       throw new Error('No start time found in TCX file');
     }
     
-    const startTime = new Date(idElement.textContent);
+    const startTime = new Date(idElement);
     if (isNaN(startTime.getTime())) {
       throw new Error('Invalid start time in TCX file');
     }
     
     // Extract duration from laps or calculate from trackpoints
     let totalDuration = 0;
-    const laps = doc.querySelectorAll('Lap');
+    const laps = activity.Lap || [];
     
-    if (laps.length > 0) {
-      laps.forEach(lap => {
-        const durationSeconds = parseFloat(lap.querySelector('TotalTimeSeconds')?.textContent || '0');
+    if (Array.isArray(laps) && laps.length > 0) {
+      laps.forEach((lap: any) => {
+        const durationSeconds = parseFloat(lap.TotalTimeSeconds || '0');
         totalDuration += durationSeconds;
       });
+    } else if (laps && !Array.isArray(laps)) {
+      // Single lap
+      const durationSeconds = parseFloat(laps.TotalTimeSeconds || '0');
+      totalDuration += durationSeconds;
     } else {
       // Calculate from first and last trackpoint if no laps
-      const trackpoints = doc.querySelectorAll('Trackpoint Time');
-      if (trackpoints.length >= 2) {
-        const firstTime = new Date(trackpoints[0].textContent || '');
-        const lastTime = new Date(trackpoints[trackpoints.length - 1].textContent || '');
+      const trackpoints = activity.Lap?.Track?.Trackpoint || [];
+      if (Array.isArray(trackpoints) && trackpoints.length >= 2) {
+        const firstTime = new Date(trackpoints[0].Time || '');
+        const lastTime = new Date(trackpoints[trackpoints.length - 1].Time || '');
         if (!isNaN(firstTime.getTime()) && !isNaN(lastTime.getTime())) {
           totalDuration = (lastTime.getTime() - firstTime.getTime()) / 1000;
         }
@@ -99,15 +121,21 @@ export function parseTCX(xmlContent: string): ParsedWorkoutData {
     
     // Extract total distance
     let totalDistance = 0;
-    laps.forEach(lap => {
-      const distanceMeters = parseFloat(lap.querySelector('DistanceMeters')?.textContent || '0');
+    if (Array.isArray(laps)) {
+      laps.forEach((lap: any) => {
+        const distanceMeters = parseFloat(lap.DistanceMeters || '0');
+        totalDistance += distanceMeters;
+      });
+    } else if (laps && !Array.isArray(laps)) {
+      const distanceMeters = parseFloat(laps.DistanceMeters || '0');
       totalDistance += distanceMeters;
-    });
+    }
     
     // Extract metadata
-    const creator = doc.querySelector('Creator Name')?.textContent;
-    const version = doc.querySelector('Creator Version')?.textContent;
-    const trackpointCount = doc.querySelectorAll('Trackpoint').length;
+    const creator = jsonObj.TrainingCenterDatabase.Creator?.Name;
+    const version = jsonObj.TrainingCenterDatabase.Creator?.Version;
+    const trackpoints = activity.Lap?.Track?.Trackpoint || [];
+    const trackpointCount = Array.isArray(trackpoints) ? trackpoints.length : 0;
     
     // Generate title
     const title = `${sport.charAt(0).toUpperCase() + sport.slice(1)} - ${startTime.toLocaleDateString()}`;
@@ -136,28 +164,49 @@ export function parseTCX(xmlContent: string): ParsedWorkoutData {
  */
 export function parseGPX(xmlContent: string): ParsedWorkoutData {
   try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlContent, 'application/xml');
+    // Parse XML using server-side parser
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: '@_',
+      textNodeName: '#text',
+      ignoreDeclaration: true,
+      removeNSPrefix: true,
+      allowBooleanAttributes: true,
+      parseTag: true,
+      parseAttribute: true,
+      trimValues: true,
+      cdataPropName: '__cdata',
+      isArray: (tagName: string, jPath: string, isLeafNode: boolean) => {
+        // Force certain elements to always be arrays
+        if (['trk', 'trkseg', 'trkpt'].includes(tagName)) return true;
+        return isLeafNode;
+      }
+    });
+    
+    const jsonObj = parser.parse(xmlContent);
     
     // Check for parsing errors
-    const parserError = doc.querySelector('parsererror');
-    if (parserError) {
-      throw new Error('Invalid XML format');
+    if (!jsonObj || !jsonObj.gpx) {
+      throw new Error('Invalid GPX file format');
     }
     
     // Extract track data
-    const tracks = doc.querySelectorAll('trk');
-    if (tracks.length === 0) {
+    const tracks = jsonObj.gpx.trk || [];
+    if (!Array.isArray(tracks) || tracks.length === 0) {
       throw new Error('No tracks found in GPX file');
     }
     
     // Use first track
     const track = tracks[0];
-    const trackName = track.querySelector('name')?.textContent || 'GPX Workout';
+    const trackName = track.name || 'GPX Workout';
     
     // Extract track segments and points
-    const trackPoints = track.querySelectorAll('trkpt');
-    if (trackPoints.length === 0) {
+    const trackSegments = track.trkseg || [];
+    const trackPoints = Array.isArray(trackSegments) 
+      ? trackSegments.flatMap((seg: any) => seg.trkpt || [])
+      : (trackSegments.trkpt || []);
+    
+    if (!Array.isArray(trackPoints) || trackPoints.length === 0) {
       throw new Error('No track points found in GPX file');
     }
     
@@ -166,9 +215,9 @@ export function parseGPX(xmlContent: string): ParsedWorkoutData {
     let endTime: Date | null = null;
     
     for (const point of trackPoints) {
-      const timeElement = point.querySelector('time');
-      if (timeElement?.textContent) {
-        const pointTime = new Date(timeElement.textContent);
+      const timeElement = point.time;
+      if (timeElement) {
+        const pointTime = new Date(timeElement);
         if (!isNaN(pointTime.getTime())) {
           if (!startTime) startTime = pointTime;
           endTime = pointTime;
@@ -187,9 +236,9 @@ export function parseGPX(xmlContent: string): ParsedWorkoutData {
     let prevLat: number | null = null;
     let prevLon: number | null = null;
     
-    trackPoints.forEach(point => {
-      const lat = parseFloat(point.getAttribute('lat') || '0');
-      const lon = parseFloat(point.getAttribute('lon') || '0');
+    trackPoints.forEach((point: any) => {
+      const lat = parseFloat(point['@_lat'] || '0');
+      const lon = parseFloat(point['@_lon'] || '0');
       
       if (prevLat !== null && prevLon !== null) {
         totalDistance += calculateHaversineDistance(prevLat, prevLon, lat, lon);
@@ -216,8 +265,8 @@ export function parseGPX(xmlContent: string): ParsedWorkoutData {
     }
     
     // Extract metadata
-    const creator = doc.querySelector('creator')?.textContent;
-    const version = doc.querySelector('version')?.textContent;
+    const creator = jsonObj.gpx.creator;
+    const version = jsonObj.gpx.version;
     
     return {
       sport,

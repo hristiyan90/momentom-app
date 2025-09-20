@@ -1,5 +1,5 @@
 import { ParsedWorkoutData } from '@/lib/parsers/workout-files';
-import { serverClient } from '@/lib/supabase/server';
+import { createSupabaseAdmin } from '@/lib/supabase/server';
 import { TABLES } from '@/lib/data/sources';
 
 /**
@@ -58,13 +58,13 @@ export async function createSessionFromParsedData(
   ingestId: string
 ): Promise<{ success: boolean; sessionId?: string; error?: string }> {
   try {
-    const supabase = serverClient();
+    const supabase = createSupabaseAdmin();
     
     const sessionData = mapParsedWorkoutToSession(parsedData, athleteId, ingestId);
     
     const { data, error } = await supabase
-      .from(TABLES.sessions)
-      .insert(sessionData)
+      .from(TABLES.sessions as any)
+      .insert(sessionData as any)
       .select('session_id')
       .single();
     
@@ -90,15 +90,15 @@ export async function updateIngestWithSession(
   status: 'normalized' | 'error' = 'normalized'
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = serverClient();
+    const supabase = createSupabaseAdmin();
     
     const { error } = await supabase
-      .from(TABLES.ingest_staging)
+      .from(TABLES.ingest_staging as any)
       .update({
         session_id: sessionId,
         status: status,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq('ingest_id', ingestId);
     
     if (error) {
@@ -122,15 +122,15 @@ export async function updateIngestWithError(
   errorMessage: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = serverClient();
+    const supabase = createSupabaseAdmin();
     
     const { error } = await supabase
-      .from(TABLES.ingest_staging)
+      .from(TABLES.ingest_staging as any)
       .update({
         status: 'error',
         error_message: errorMessage,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq('ingest_id', ingestId);
     
     if (error) {
@@ -157,7 +157,7 @@ export async function getIngestRecord(
     const supabase = serverClient();
     
     const { data, error } = await supabase
-      .from(TABLES.ingest_staging)
+      .from(TABLES.ingest_staging as any)
       .select('*')
       .eq('ingest_id', ingestId)
       .eq('athlete_id', athleteId) // RLS enforcement
@@ -193,7 +193,7 @@ export async function createIngestRecord(
     const supabase = serverClient();
     
     const { data, error } = await supabase
-      .from(TABLES.ingest_staging)
+      .from(TABLES.ingest_staging as any)
       .insert({
         athlete_id: athleteId,
         filename,
@@ -201,7 +201,7 @@ export async function createIngestRecord(
         file_size: fileSize,
         status: 'received',
         storage_path: storagePath
-      })
+      } as any)
       .select('ingest_id')
       .single();
     
@@ -229,12 +229,12 @@ export async function updateIngestWithParsedData(
     const supabase = serverClient();
     
     const { error } = await supabase
-      .from(TABLES.ingest_staging)
+      .from(TABLES.ingest_staging as any)
       .update({
         status: 'parsed',
         parsed_data: parsedData,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq('ingest_id', ingestId);
     
     if (error) {
