@@ -66,3 +66,19 @@ cURLs (paste the actual runs):
   - ✅ Malformed file → 500 (error handling working)
 CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (test suite: 9/9 passing)
 Follow-ups: UI dropzone component (Phase 4), production deployment
+
+## C0 Entries
+
+C0: B3 — UX Wiring to Live GETs + Screenshot Refresh - Specification Created
+Branch: feat/b3-ux-wiring (proposed)
+Status: ✅ Ready for review
+Scope: Wire existing UI components to live GET endpoints, add loading/error/empty states, capture screenshots with real data
+Dependencies: Existing UI components, live GET endpoints (/api/plan, /api/sessions, /api/readiness, /api/fuel/session/[id], /api/workout-library)
+Constraints: No new API endpoints, maintain responsive design, use Europe/London timezone for screenshots
+Risks: State management complexity, performance impact of live data fetching, screenshot consistency
+Success Criteria: All UI components display live data, proper loading/error/empty states, updated screenshots with real data
+Rollback: Revert to mock data if live data causes issues
+Testing: Test all UI states, verify ETag caching, test responsive behavior, validate screenshots
+Timeline: T-1 to T-4 (2-3 days), T-5 to T-6 (2-3 days), T-7 to T-10 (1-2 days)
+Resources: Access to live Supabase data, screenshot capture tools, mobile/desktop testing devices
+Next Steps: Begin T-1: Audit existing UI components and identify mock data usage

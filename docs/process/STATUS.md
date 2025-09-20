@@ -5,11 +5,14 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1**
-- Active focus: **B2 — Manual Workout Upload (TCX/GPX)**
+- Active focus: **B3a — Loading Components Infrastructure**
 
 ## Recently completed
 - A1–A4 infra, policies in place
 - B1 — Workout Library v0 (seed + GET)
+- B2 — Manual Workout Upload (TCX/GPX) ✅
 
 ## Next up
-- B3 — Readiness UI polish (example)
+- B3b — Cockpit UI wiring
+- B3c — Calendar UI wiring
+- B3d — Progress UI wiring
