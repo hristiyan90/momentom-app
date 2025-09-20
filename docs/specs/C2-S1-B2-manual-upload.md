@@ -2,7 +2,8 @@
 
 **ID:** C2-S1-B2  
 **Title:** Manual Workout Upload (TCX/GPX)  
-**Owner:** Full-Stack (Cursor) • **Status:** Draft
+**Owner:** Full-Stack (Cursor)
+**Status:** `{{status.features.C2-S1-B2}}` (see docs/config/status.yml)
 
 ## 1) User story & outcomes
 - As an athlete, I can upload **.TCX/.GPX** so my completed workout appears in history.
@@ -43,3 +44,13 @@ Errors: too big, wrong type, parse fail (friendly copy).
 
 ## 8) Tasks
 T-1 migration+RLS; T-2 storage helper; T-3 API route; T-4 parsers; T-5 mapper; T-6 UI; T-7 tests; T-8 docs.
+
+## 9) Implementation Notes (Added 2025-09-19)
+- **Completed:** All 8 tasks implemented successfully
+- **Testing:** 100% pass rate across all acceptance checks
+- **Key Decisions:** 
+  - Used Supabase storage with server-side parsing
+  - Inline parsing (no queue) - performs well <2s for 10MB files
+  - TCX sport detection via Activity/@Sport attribute
+  - GPX sport inference from speed/distance patterns
+- **Production Ready:** All cURL tests passing, RLS verified, error handling robust

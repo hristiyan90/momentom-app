@@ -61,7 +61,7 @@ A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md`
 ## Branching, commits, PRs
 - Branches: `feat/<slug>`, `chore/<slug>`, `fix/<slug>`
 - Commit style: `feat: …`, `chore: …`, `fix: …`, `docs: …`
-- PR template: `/.cursor/templates/pr.md`
+- PR template: `/docs/cursor/templates/pr.md`
 
 ---
 

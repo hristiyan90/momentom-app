@@ -40,3 +40,11 @@ At the end of each task/PR, paste an "OPS DIGEST" comment into the PR and update
 
 ## STATUS updates
 For any status banner in README or docs/process/STATUS.md, reflect newly active tasks and sprint progress.
+
+---
+
+## C0 Entries
+
+C0: B2 — Manual Workout Upload (TCX/GPX) - Phase 1
+Branch: feat/b2-manual-upload-phase1 → PR #[pending]
+Plan: Database migration only - create ingest_staging and sessions tables with RLS policies

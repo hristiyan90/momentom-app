@@ -6,7 +6,8 @@ export const TABLES = {
   plan: 'plan',
   sessions: 'sessions', 
   readiness: 'readiness_daily',
-  fuel: 'fuel_sessions'
+  fuel: 'fuel_sessions',
+  ingest_staging: 'ingest_staging'
 } as const;
 
 /**
