@@ -1,7 +1,7 @@
 # PR Title
 
 > **Note:** This template follows the workflow defined in `docs/process/CURSOR_BOOT.md` and `docs/process/TASK_FLOW.md`.  
-> For the complete template format, see: `docs/cursor/templates/pr.md`
+> For the complete template format, see: `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
 ## What
 Brief description of what changed and why.

@@ -6,7 +6,7 @@ A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md`
 - `docs/process/CURSOR_BOOT.md` - Detailed required reading and context digest process
 - `docs/process/CURSOR_WORKFLOW.md` - High-level workflow overview
 - `docs/process/AUTO_LOG.md` - Decision log and task tracking process
-- `docs/cursor/templates/pr.md` - PR template format
+- `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md` - PR template format
 
 ---
 
@@ -74,7 +74,7 @@ A repeatable flow for every dev task. Use with `docs/process/CURSOR_WORKFLOW.md`
 ## Branching, commits, PRs
 - Branches: `feat/<slug>`, `chore/<slug>`, `fix/<slug>`
 - Commit style: `feat: …`, `chore: …`, `fix: …`, `docs: …`
-- PR template: `/docs/cursor/templates/pr.md`
+- PR template: `/docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
 ---
 

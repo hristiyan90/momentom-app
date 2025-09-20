@@ -17,7 +17,7 @@ This is the high-level workflow for Full-Stack development tasks. For detailed p
 - Create context digest (A-J format)
 - Check policy alignment (ETag, Auth, CI Gates)
 - Run dependency scan if needed
-- Create PR draft with template from `docs/cursor/templates/pr.md`
+- Create PR draft with template from `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
 ### Implementation (C1-C4)
 - Follow `docs/process/TASK_FLOW.md` stages C1-C4
@@ -35,7 +35,7 @@ This is the high-level workflow for Full-Stack development tasks. For detailed p
 
 - **Master Process**: `docs/process/TASK_FLOW.md` (C0-C5 stages)
 - **Detailed Steps**: `docs/process/CURSOR_BOOT.md` (required reading, context digest)
-- **PR Template**: `docs/cursor/templates/pr.md`
+- **PR Template**: `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 - **Decision Process**: `docs/process/AUTO_LOG.md` (ADR/RFC process)
 - **Contributing**: `docs/process/CONTRIBUTING.md` (setup and testing)
 

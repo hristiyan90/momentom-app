@@ -10,7 +10,7 @@
 - `docs/process/CURSOR_BOOT.md` - Complete workflow process
 - `docs/process/TASK_FLOW.md` - Master task flow (C0-C5)
 - `docs/process/CURSOR_WORKFLOW.md` - High-level workflow
-- `docs/cursor/templates/pr.md` - PR template format
+- `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md` - PR template format
 
 ## Dev setup
 - `npm ci`
