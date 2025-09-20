@@ -3,6 +3,12 @@
 **Purpose**  
 This file tells Cursor exactly what to read and how to operate before it proposes or changes anything.
 
+**See Also:**
+- `docs/process/TASK_FLOW.md` - Master task flow (C0-C5 stages)
+- `docs/process/CURSOR_WORKFLOW.md` - High-level workflow overview
+- `docs/process/AUTO_LOG.md` - Decision log and task tracking process
+- `docs/process/CONTRIBUTING.md` - Setup and testing guide
+
 ---
 
 ## Golden Rules
@@ -47,7 +53,7 @@ This file tells Cursor exactly what to read and how to operate before it propose
 - `/docs/cursor/rules.md`
 - `/docs/cursor/context.md`
 - `/docs/cursor/operating-agreement.md`
-- `/docs/cursor/templates/pr.md`
+- `/docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
 **Feature Specs (current work)**
 - `docs/specs/README.md` (spec index)
@@ -59,7 +65,7 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ### 1) Branch & Setup
 - Confirm current branch; if not provided, propose one (e.g., `feat/<slug>` or `chore/<slug>`)
-- Create PR draft with template from `/docs/cursor/templates/pr.md`
+- Create PR draft with template from `/docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
 ### 2) Context Digest (A–J)
 Read the required files above and produce a concise digest:
