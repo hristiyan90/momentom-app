@@ -5,6 +5,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { SkeletonCard } from "@/components/ui/skeleton-card"
 import { SkeletonTable } from "@/components/ui/skeleton-table"
 import { LoadingOverlay } from "@/components/ui/loading-overlay"
+import { EmptyWorkouts, EmptySessions, EmptyProgress, EmptyPlan, EmptyLibrary } from "@/components/ui/empty"
 
 export default function TestLoadingPage() {
   const [showOverlay, setShowOverlay] = useState(false)
@@ -30,8 +31,8 @@ export default function TestLoadingPage() {
     <div className="min-h-screen bg-bg-app p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-text-1 mb-2">Loading Components Test</h1>
-          <p className="text-text-2">Testing all B3a loading state components</p>
+          <h1 className="text-3xl font-bold text-text-1 mb-2">Loading, Error & Empty Components Test</h1>
+          <p className="text-text-2">Testing all B3a loading, error, and empty state components</p>
         </div>
 
         {/* LoadingSpinner Tests */}
@@ -196,6 +197,164 @@ export default function TestLoadingPage() {
                     Warning Spinner
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Empty Components */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-text-1">Empty State Components</h2>
+          
+          {/* EmptyWorkouts Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">EmptyWorkouts Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Default</h4>
+                <EmptyWorkouts
+                  onCreateWorkout={() => console.log("Create workout clicked")}
+                  onViewCalendar={() => console.log("View calendar clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Compact</h4>
+                <EmptyWorkouts
+                  variant="compact"
+                  onCreateWorkout={() => console.log("Create workout clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Detailed</h4>
+                <EmptyWorkouts
+                  variant="detailed"
+                  onCreateWorkout={() => console.log("Create workout clicked")}
+                  onViewCalendar={() => console.log("View calendar clicked")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* EmptySessions Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">EmptySessions Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Default</h4>
+                <EmptySessions
+                  dateRange="this week"
+                  onRefresh={() => console.log("Refresh clicked")}
+                  onAdjustFilters={() => console.log("Adjust filters clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Detailed</h4>
+                <EmptySessions
+                  variant="detailed"
+                  dateRange="last month"
+                  onRefresh={() => console.log("Refresh clicked")}
+                  onAdjustFilters={() => console.log("Adjust filters clicked")}
+                  onViewCalendar={() => console.log("View calendar clicked")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* EmptyProgress Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">EmptyProgress Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Progress</h4>
+                <EmptyProgress
+                  dataType="progress"
+                  onCreateSession={() => console.log("Create session clicked")}
+                  onViewPlan={() => console.log("View plan clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Analytics</h4>
+                <EmptyProgress
+                  dataType="analytics"
+                  onCreateSession={() => console.log("Create session clicked")}
+                  onImportData={() => console.log("Import data clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Performance</h4>
+                <EmptyProgress
+                  dataType="performance"
+                  variant="detailed"
+                  onCreateSession={() => console.log("Create session clicked")}
+                  onViewPlan={() => console.log("View plan clicked")}
+                  onImportData={() => console.log("Import data clicked")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* EmptyPlan Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">EmptyPlan Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Training</h4>
+                <EmptyPlan
+                  planType="training"
+                  onCreatePlan={() => console.log("Create plan clicked")}
+                  onBrowseTemplates={() => console.log("Browse templates clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Nutrition</h4>
+                <EmptyPlan
+                  planType="nutrition"
+                  onCreatePlan={() => console.log("Create plan clicked")}
+                  onConfigureGoals={() => console.log("Configure goals clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Recovery</h4>
+                <EmptyPlan
+                  planType="recovery"
+                  variant="detailed"
+                  onCreatePlan={() => console.log("Create plan clicked")}
+                  onBrowseTemplates={() => console.log("Browse templates clicked")}
+                  onConfigureGoals={() => console.log("Configure goals clicked")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* EmptyLibrary Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">EmptyLibrary Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Workouts</h4>
+                <EmptyLibrary
+                  libraryType="workouts"
+                  onCreateWorkout={() => console.log("Create workout clicked")}
+                  onUploadWorkout={() => console.log("Upload workout clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Templates</h4>
+                <EmptyLibrary
+                  libraryType="templates"
+                  onCreateWorkout={() => console.log("Create template clicked")}
+                  onBrowseTemplates={() => console.log("Browse templates clicked")}
+                />
+              </div>
+              <div className="bg-bg-surface border border-border-weak rounded-lg">
+                <h4 className="text-sm font-medium text-text-2 mb-2 p-4 pb-0">Exercises</h4>
+                <EmptyLibrary
+                  libraryType="exercises"
+                  variant="detailed"
+                  onCreateWorkout={() => console.log("Add exercise clicked")}
+                  onUploadWorkout={() => console.log("Upload exercise clicked")}
+                  onSearchWorkouts={() => console.log("Search exercises clicked")}
+                />
               </div>
             </div>
           </div>
