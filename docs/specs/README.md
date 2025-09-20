@@ -12,4 +12,4 @@ Template: `docs/specs/SPECS_TEMPLATE.md`
 | ID | Title | Status | Link |
 |----|-------|--------|------|
 | C2-S1-B2 | Manual Workout Upload | ✅ Implemented | [View](C2-S1-B2-manual-upload.md) |
-| C2-S1-B3 | Next Feature | Draft | [View](C2-S1-B3.md) |
+| C2-S1-B3 | UX Wiring to Live GETs + Screenshot Refresh | Draft | [View](C2-S1-B3.md) |
