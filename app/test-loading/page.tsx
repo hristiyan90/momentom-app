@@ -5,11 +5,17 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { SkeletonCard } from "@/components/ui/skeleton-card"
 import { SkeletonTable } from "@/components/ui/skeleton-table"
 import { LoadingOverlay } from "@/components/ui/loading-overlay"
+import { ErrorState, ErrorCard, NetworkError, ServerError, ErrorBoundary } from "@/components/ui/error"
 import { EmptyWorkouts, EmptySessions, EmptyProgress, EmptyPlan, EmptyLibrary } from "@/components/ui/empty"
 
 export default function TestLoadingPage() {
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayProgress, setOverlayProgress] = useState(0)
+  const [showErrorState, setShowErrorState] = useState(false)
+  const [showErrorCard, setShowErrorCard] = useState(false)
+  const [showNetworkError, setShowNetworkError] = useState(false)
+  const [showServerError, setShowServerError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const simulateProgress = () => {
     setShowOverlay(true)
@@ -52,23 +58,8 @@ export default function TestLoadingPage() {
               <LoadingSpinner size="lg" />
             </div>
             <div className="bg-bg-surface border border-border-weak rounded-lg p-4 text-center">
-              <h3 className="text-sm font-medium text-text-2 mb-2">Extra Large</h3>
-              <LoadingSpinner size="xl" />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="bg-bg-surface border border-border-weak rounded-lg p-4 text-center">
               <h3 className="text-sm font-medium text-text-2 mb-2">With Text</h3>
-              <LoadingSpinner text="Loading data..." />
-            </div>
-            <div className="bg-bg-surface border border-border-weak rounded-lg p-4 text-center">
-              <h3 className="text-sm font-medium text-text-2 mb-2">Success Variant</h3>
-              <LoadingSpinner variant="success" text="Saving..." />
-            </div>
-            <div className="bg-bg-surface border border-border-weak rounded-lg p-4 text-center">
-              <h3 className="text-sm font-medium text-text-2 mb-2">Warning Variant</h3>
-              <LoadingSpinner variant="warning" text="Processing..." />
+              <LoadingSpinner size="md" text="Loading..." />
             </div>
           </div>
         </section>
@@ -83,23 +74,19 @@ export default function TestLoadingPage() {
             </div>
             <div>
               <h3 className="text-sm font-medium text-text-2 mb-2">With Avatar</h3>
-              <SkeletonCard showAvatar lines={4} />
+              <SkeletonCard showAvatar />
             </div>
             <div>
               <h3 className="text-sm font-medium text-text-2 mb-2">With Buttons</h3>
-              <SkeletonCard showButtons buttonCount={3} lines={2} />
+              <SkeletonCard showButtons buttonCount={2} />
             </div>
             <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Large Size</h3>
-              <SkeletonCard size="lg" lines={5} showAvatar showButtons />
+              <h3 className="text-sm font-medium text-text-2 mb-2">Custom Lines</h3>
+              <SkeletonCard lines={4} />
             </div>
             <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Surface Variant</h3>
-              <SkeletonCard variant="surface" lines={3} />
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Small Size</h3>
-              <SkeletonCard size="sm" lines={2} />
+              <h3 className="text-sm font-medium text-text-2 mb-2">Full Featured</h3>
+              <SkeletonCard showAvatar showButtons buttonCount={3} lines={5} />
             </div>
           </div>
         </section>
@@ -109,24 +96,16 @@ export default function TestLoadingPage() {
           <h2 className="text-xl font-semibold text-text-1">SkeletonTable Component</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Basic Table (4 columns, 5 rows)</h3>
+              <h3 className="text-sm font-medium text-text-2 mb-2">Basic Table</h3>
               <SkeletonTable />
             </div>
             <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Large Table (6 columns, 8 rows)</h3>
-              <SkeletonTable columns={6} rows={8} />
+              <h3 className="text-sm font-medium text-text-2 mb-2">Custom Columns/Rows</h3>
+              <SkeletonTable columns={5} rows={4} />
             </div>
             <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Striped Table</h3>
-              <SkeletonTable striped />
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">No Header</h3>
-              <SkeletonTable showHeader={false} />
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-text-2 mb-2">Minimal Variant</h3>
-              <SkeletonTable variant="minimal" />
+              <h3 className="text-sm font-medium text-text-2 mb-2">With Header</h3>
+              <SkeletonTable showHeader />
             </div>
           </div>
         </section>
@@ -138,66 +117,128 @@ export default function TestLoadingPage() {
             <div className="flex gap-4">
               <button
                 onClick={() => setShowOverlay(true)}
-                className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors"
+                className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-hover transition-colors"
               >
-                Show Basic Overlay
+                Show Overlay
               </button>
               <button
                 onClick={simulateProgress}
-                className="px-4 py-2 bg-status-success text-white rounded-lg hover:bg-status-success/90 transition-colors"
+                className="px-4 py-2 bg-bg-raised text-text-1 rounded-lg hover:bg-bg-surface transition-colors"
               >
-                Show Progress Overlay
+                Simulate Progress
               </button>
             </div>
-            
+            <div className="bg-bg-surface border border-border-weak rounded-lg p-4">
+              <h3 className="text-sm font-medium text-text-2 mb-2">Overlay Controls</h3>
+              <p className="text-text-2 text-sm">
+                Use the buttons above to test the loading overlay. The progress simulation will show a progress bar.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Error Components */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-text-1">Error Components</h2>
+          
+          {/* ErrorCard Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ErrorCard Component</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Default Error</h4>
+                  <ErrorCard
+                    title="Validation Error"
+                    message="Please check your input and try again."
+                    onRetry={() => console.log("Retry clicked")}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">With Icon</h4>
+                  <ErrorCard
+                    title="Network Error"
+                    message="Unable to connect to the server."
+                    variant="error"
+                    onRetry={() => console.log("Retry clicked")}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Warning</h4>
+                  <ErrorCard
+                    title="Warning"
+                    message="This action cannot be undone."
+                    variant="warning"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-text-2 mb-2">Info</h4>
+                  <ErrorCard
+                    title="Information"
+                    message="Please review the changes before proceeding."
+                    variant="info"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* NetworkError Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">NetworkError Component</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-bg-surface border border-border-weak rounded-lg p-4">
-                <h3 className="text-sm font-medium text-text-2 mb-2">Overlay Variants</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      setShowOverlay(true)
-                      setTimeout(() => setShowOverlay(false), 2000)
-                    }}
-                    className="w-full px-3 py-2 text-sm bg-bg-raised border border-border-weak rounded hover:bg-bg-surface transition-colors"
-                  >
-                    Default Overlay
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowOverlay(true)
-                      setTimeout(() => setShowOverlay(false), 2000)
-                    }}
-                    className="w-full px-3 py-2 text-sm bg-bg-raised border border-border-weak rounded hover:bg-bg-surface transition-colors"
-                  >
-                    Opaque Overlay
-                  </button>
-                </div>
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Default</h4>
+                <NetworkError onRetry={() => console.log("Network retry clicked")} />
               </div>
-              
-              <div className="bg-bg-surface border border-border-weak rounded-lg p-4">
-                <h3 className="text-sm font-medium text-text-2 mb-2">Spinner Variants</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => {
-                      setShowOverlay(true)
-                      setTimeout(() => setShowOverlay(false), 2000)
-                    }}
-                    className="w-full px-3 py-2 text-sm bg-bg-raised border border-border-weak rounded hover:bg-bg-surface transition-colors"
-                  >
-                    Success Spinner
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowOverlay(true)
-                      setTimeout(() => setShowOverlay(false), 2000)
-                    }}
-                    className="w-full px-3 py-2 text-sm bg-bg-raised border border-border-weak rounded hover:bg-bg-surface transition-colors"
-                  >
-                    Warning Spinner
-                  </button>
-                </div>
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Custom Message</h4>
+                <NetworkError 
+                  message="Connection timeout. Please check your internet connection."
+                  onRetry={() => console.log("Network retry clicked")}
+                />
               </div>
+            </div>
+          </div>
+
+          {/* ServerError Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ServerError Component</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Default</h4>
+                <ServerError onRetry={() => console.log("Server retry clicked")} />
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-text-2 mb-2">Custom Message</h4>
+                <ServerError 
+                  message="Internal server error. Our team has been notified."
+                  onRetry={() => console.log("Server retry clicked")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ErrorState Tests */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-1">ErrorState Component</h3>
+            <div className="space-y-4">
+              <button
+                onClick={() => setShowErrorState(!showErrorState)}
+                className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-hover transition-colors"
+              >
+                {showErrorState ? "Hide" : "Show"} Error State
+              </button>
+              {showErrorState && (
+                <ErrorState
+                  title="Something went wrong"
+                  message="We encountered an unexpected error. Please try again."
+                  onRetry={() => {
+                    console.log("Error state retry clicked")
+                    setShowErrorState(false)
+                  }}
+                />
+              )}
             </div>
           </div>
         </section>

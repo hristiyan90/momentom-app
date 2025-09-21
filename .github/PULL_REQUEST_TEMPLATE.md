@@ -1,10 +1,20 @@
 # PR Title
 
-## Summary
-- What changed and why.
+> **Note:** This template follows the workflow defined in `docs/process/CURSOR_BOOT.md` and `docs/process/TASK_FLOW.md`.  
+> For the complete template format, see: `docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
+
+## What
+Brief description of what changed and why.
 - **Spec:** docs/specs/<feature>.md
 
-## Checklist
+## Why
+Business justification and context for the change.
+
+## How
+Technical approach and implementation details.
+
+## Tests (cURLs + expected)
+Verification steps with actual cURL commands and expected responses.
 - [ ] Contract fidelity: no schema/shape changes to existing responses.
 - [ ] RLS enforced: queries scoped to `athlete_id`.
 - [ ] Keyset pagination: `next_cursor` stable; filters co-exist.
@@ -13,13 +23,13 @@
 - [ ] Headers intact: correlation/security & cache-control as per policy.
 - [ ] Tests: OpenAPI diff ✅; Newman ✅; H1–H7 smoke ✅.
 
-## Evidence
-- Paste 3–5 cURL calls proving acceptance (200 + ETag, 304 path, auth paths, pagination).
-- Link to Postman run or CI artifacts.
-
-## Risk & Rollback
+## Risks / Rollback
+Potential issues and how to undo the changes if needed.
 - Risk level:
 - Rollback plan:
+
+## Follow-ups
+Next steps or related work that should be done.
 
 ---
 
