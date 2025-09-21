@@ -81,23 +81,23 @@ Follow-ups: UI dropzone component (Phase 4), production deployment
 
 ## C0 Entries
 
-C0: B3a T-2 — Error State Components Infrastructure - Implementation Complete
-Branch: feat/b3a-error-components
-Status: ✅ Ready for review (PR #15)
-Scope: Create reusable error state components for B3a state management infrastructure
-Dependencies: Existing UI design system patterns, React error boundary patterns, TypeScript interfaces
-Constraints: T-2 ONLY - no T-3 (empty states) or API work, must be reusable across cockpit/calendar/progress pages
-Risks: Error boundary implementation complexity, accessibility compliance for error states, performance overhead
-Success Criteria: All error components render correctly, comprehensive test page working, full TypeScript support
-Rollback: Remove error component files, revert test page changes, remove error exports
-Testing: Test page at /test-loading with all error component examples, interactive functionality verified
-Timeline: T-2 completed in single implementation cycle
-Resources: Existing design system, React patterns, accessibility guidelines
-Next Steps: T-3 empty state components (next phase of B3a)
+C0: B3a — State Management Infrastructure - Specification Created
+Branch: feat/b3a-loading-components (T-1), feat/b3a-error-components (T-2), feat/b3a-empty-components (T-3)
+Status: ✅ Completed (T-1, T-2, T-3)
+Scope: Create reusable state management components (loading, error, empty states) for infrastructure
+Dependencies: Existing design system patterns, TypeScript interfaces, accessibility requirements
+Constraints: T-1/T-2/T-3 only, no API integration, no data fetching, components must work in isolation
+Risks: Component consistency, accessibility compliance, TypeScript type safety
+Success Criteria: All state components work in isolation, comprehensive test coverage, full documentation
+Rollback: Remove component files and revert test page changes
+Testing: Test page at /test-loading, TypeScript compilation, linting, accessibility testing
+Timeline: T-1 (1 day), T-2 (1 day), T-3 (1 day) - Completed
+Resources: Design system patterns, TypeScript interfaces, accessibility guidelines
+Next Steps: B3b/B3c/B3d for actual UI wiring to live endpoints
 
-C0: B3 — UX Wiring to Live GETs + Screenshot Refresh - Specification Created
+C0: B3 — UX Wiring to Live GETs + Screenshot Refresh - Specification Created (Superseded by B3a/B3b/B3c/B3d)
 Branch: feat/b3-ux-wiring (proposed)
-Status: ✅ Ready for review
+Status: 📝 Draft (re-scoped into B3a/B3b/B3c/B3d)
 Scope: Wire existing UI components to live GET endpoints, add loading/error/empty states, capture screenshots with real data
 Dependencies: Existing UI components, live GET endpoints (/api/plan, /api/sessions, /api/readiness, /api/fuel/session/[id], /api/workout-library)
 Constraints: No new API endpoints, maintain responsive design, use Europe/London timezone for screenshots
@@ -107,4 +107,4 @@ Rollback: Revert to mock data if live data causes issues
 Testing: Test all UI states, verify ETag caching, test responsive behavior, validate screenshots
 Timeline: T-1 to T-4 (2-3 days), T-5 to T-6 (2-3 days), T-7 to T-10 (1-2 days)
 Resources: Access to live Supabase data, screenshot capture tools, mobile/desktop testing devices
-Next Steps: Begin T-1: Audit existing UI components and identify mock data usage
+Next Steps: B3a completed, proceed with B3b/B3c/B3d for UI wiring

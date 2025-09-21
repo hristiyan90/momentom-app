@@ -7,7 +7,11 @@ Cycle 2 Sprint 1:
   C2-S1-A4: "implemented"
   C2-S1-B1: "implemented"  
   C2-S1-B2: "implemented"
-  C2-S1-B3: "draft" 
+  C2-S1-B3a: "implemented"  # State Management Infrastructure (T-1, T-2, T-3)
+  C2-S1-B3b: "planned"      # Cockpit UI Wiring
+  C2-S1-B3c: "planned"      # Calendar UI Wiring  
+  C2-S1-B3d: "planned"      # Progress UI Wiring
+  C2-S1-B3: "draft"         # Original B3 spec (superseded by B3a/B3b/B3c/B3d)
   C2-S2-C1: "planned"
 
 policies:
