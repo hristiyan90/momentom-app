@@ -63,6 +63,25 @@ Plan: Database migration only - create ingest_staging and sessions tables with R
 
 ## C5 Entries
 
+C5: B3b — Cockpit UI Wiring to Live APIs - Complete Implementation
+Branch: feat/b3b-cockpit-wiring → PR #18
+Status: ✅ Ready for review
+Contract: OpenAPI change? no - Using existing endpoints
+Policies: X-Athlete-Id header authentication for dev mode
+API Integration: GET /api/plan, GET /api/sessions, GET /api/readiness
+State Management: B3a LoadingSpinner, ErrorState, EmptyWorkouts
+Verification:
+  - ✅ GET /api/plan → 200 (plan data displays in week focus section)
+  - ✅ GET /api/sessions → 200 (session data displays in today's workouts)
+  - ✅ GET /api/readiness → 200 (readiness data displays in capacity section)
+  - ✅ LoadingSpinner → Shows during data fetch with proper messaging
+  - ✅ ErrorState → Handles API failures with retry functionality
+  - ✅ EmptyWorkouts → Shows when no sessions with helpful CTAs
+  - ✅ Responsive design → Maintained across mobile/desktop
+  - ✅ Authentication → X-Athlete-Id header pattern working
+CI: All API endpoints verified working, B3b spec included, no linting errors
+Follow-ups: B3c Calendar page wiring, B3d Progress page wiring
+
 C5: B2 — Manual Workout Upload (TCX/GPX) - Complete Implementation
 Branch: feat/b2-manual-upload-phase3 → PR #12
 Status: ✅ Ready for review
@@ -80,6 +99,20 @@ CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (test suite: 9/9 passing)
 Follow-ups: UI dropzone component (Phase 4), production deployment
 
 ## C0 Entries
+
+C0: B3b — Cockpit UI Wiring to Live APIs - Specification Created
+Branch: feat/b3b-cockpit-wiring
+Status: ✅ Completed (T-1 through T-10)
+Scope: Wire cockpit page to live API endpoints (/api/plan, /api/sessions, /api/readiness) using B3a components
+Dependencies: B3a state management components, working API endpoints, X-Athlete-Id authentication
+Constraints: B3b ONLY - cockpit page integration only, no calendar/progress pages, exclude 404 endpoints
+Risks: API integration complexity, state management with live data, authentication pattern implementation
+Success Criteria: Cockpit loads live data with proper loading/error/empty states, responsive design maintained
+Rollback: Revert to mock data implementation, remove API client and hooks
+Testing: API endpoint verification, component integration, loading/error/empty states, responsive design
+Timeline: All tasks completed in single implementation cycle
+Resources: Live API endpoints, B3a components, existing cockpit UI structure
+Next Steps: B3c Calendar page wiring, B3d Progress page wiring
 
 C0: B3a — State Management Infrastructure - Specification Created
 Branch: feat/b3a-loading-components (T-1), feat/b3a-error-components (T-2), feat/b3a-empty-components (T-3)
