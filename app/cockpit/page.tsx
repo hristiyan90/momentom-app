@@ -5,162 +5,13 @@ import { SideWidgets } from "@/components/dashboard/side-widgets"
 import { Coffee, Zap, TrendingUp, Calendar, Target, Wifi, WifiOff, RefreshCw, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { useCockpitData } from "@/lib/hooks/useCockpitData"
+import { mapSessionsToWorkouts, mapReadinessToCapacity, mapPlanToWeekFocus } from "@/lib/utils/cockpitMappers"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { ErrorState } from "@/components/ui/error-state"
+import { EmptyWorkouts } from "@/components/ui/empty-workouts"
 
-const mockCockpitData = {
-  todayWorkouts: [
-    {
-      title: "Endurance Base Build",
-      sport: "bike" as const,
-      stress: "Medium",
-      time: "90 min",
-      duration: "1:30:00",
-      load: 85,
-      workoutType: "Endurance",
-      segments: [
-        { zone: 1, duration: 15 },
-        { zone: 2, duration: 45 },
-        { zone: 3, duration: 20 },
-        { zone: 1, duration: 10 },
-      ],
-      targets: {
-        power: { min: 200, max: 250 },
-        hr: { min: 140, max: 160 },
-      },
-      fueling: ["1 bottle/hour", "60g carbs/hour", "Electrolytes"],
-      completed: false,
-    },
-    {
-      title: "Recovery Swim",
-      sport: "swim" as const,
-      stress: "Low",
-      time: "45 min",
-      duration: "0:45:00",
-      load: 35,
-      workoutType: "Recovery",
-      segments: [
-        { zone: 1, duration: 10 },
-        { zone: 2, duration: 25 },
-        { zone: 1, duration: 10 },
-      ],
-      targets: {
-        pace: { min: "2:00", max: "2:30" },
-        hr: { min: 120, max: 140 },
-      },
-      fueling: ["Hydration only"],
-      completed: true,
-      compliance: { duration: 95 },
-    },
-    {
-      title: "Tempo Run",
-      sport: "run" as const,
-      stress: "High",
-      time: "60 min",
-      duration: "1:00:00",
-      load: 95,
-      workoutType: "Tempo",
-      segments: [
-        { zone: 1, duration: 15 },
-        { zone: 3, duration: 30 },
-        { zone: 1, duration: 15 },
-      ],
-      targets: {
-        pace: { min: "4:30", max: "5:00" },
-        hr: { min: 160, max: 180 },
-      },
-      fueling: ["Sports drink", "Gel at 30min"],
-      completed: false,
-    },
-  ],
-  capacity: {
-    score: 78,
-    status: "Good" as const,
-    hrv: {
-      current: 38,
-      sevenDayAvg: 42,
-      lastWeekTrend: "down" as const,
-      trendPercentage: -9,
-    },
-    sleep: {
-      lastNight: {
-        total: 6.8,
-        deep: 1.2,
-        rem: 1.8,
-        light: 3.8,
-      },
-      sevenDayAvg: 7.2,
-      lastWeekTrend: "down" as const,
-      trendPercentage: -6,
-    },
-    rhr: {
-      current: 52,
-      sevenDayAvg: 49,
-      lastWeekTrend: "up" as const,
-      trendPercentage: 6,
-    },
-    strain: {
-      current: 68,
-      sevenDayAvg: 62,
-      lastWeekTrend: "up" as const,
-      trendPercentage: 12,
-    },
-    soreness: {
-      current: 25,
-      sevenDayAvg: 32,
-      lastWeekTrend: "down" as const,
-      trendPercentage: -8,
-    },
-    context: {
-      current: 72,
-      sevenDayAvg: 68,
-      lastWeekTrend: "up" as const,
-      trendPercentage: 5,
-    },
-    advice: {
-      message:
-        "Your capacity is good but trending down. Consider prioritizing sleep quality and managing training stress.",
-      action: "take-easy" as const,
-      showAdaptation: true,
-    },
-    lastSync: {
-      source: "Garmin Forerunner 965",
-      time: "6:45 AM",
-      date: "Today",
-    },
-  },
-  constraints: ["Pool maintenance", "Weather advisory"],
-  races: [
-    {
-      id: "race-a",
-      name: "Ironman 70.3 World Championship",
-      date: "Dec 15, 2024",
-      location: "Lake Placid, NY",
-      distance: "1.9k/90k/21k",
-      days: 28,
-    },
-  ],
-  status: {
-    planProgress: 65,
-    onTrack: true,
-    weeksCompleted: 10,
-    totalWeeks: 16,
-  },
-  fuelling: {
-    preWorkout: "Banana + Coffee (30min before)",
-    duringWorkout: "60g carbs/hour via sports drink",
-    postWorkout: "Protein shake within 30min",
-    hydration: "500ml/hour + electrolytes",
-  },
-  adaptation: {
-    type: "Recovery Focus",
-    message: "Your body is adapting well to the current training load",
-    metrics: {
-      hrv: { value: 45, trend: "stable" as const },
-      rhr: { value: 52, trend: "down" as const },
-      sleep: { value: 7.5, trend: "up" as const },
-    },
-  },
-}
-
+// Mock data for sections not covered by live APIs
 const mockHeaderData = {
   nextRace: {
     name: "Ironman 70.3 World Championship",
@@ -175,7 +26,7 @@ const mockHeaderData = {
 }
 
 const mockAdaptationData = {
-  hasAdaptations: true,
+  hasAdaptations: false, // Would come from adaptation API
   editCount: 3,
   focus: "Recovery Focus" as const,
   status: "recovery" as const,
@@ -259,23 +110,22 @@ const mockConditionsData = {
   aqi: null,
 }
 
-const mockWeekFocusData = {
-  hasAdaptations: true,
-  weekType: "Push Week" as const,
-  description: "Building volume and intensity to improve aerobic capacity",
-  adaptationStatus: {
-    focus: "Recovery Focus" as const,
-    triggers: ["Long illness", "Low readiness"],
-    planChanges: [
-      { type: "negative", text: "Week 12-14 → Recovery weeks" },
-      { type: "negative", text: "Race postponed 4 weeks" },
-      { type: "positive", text: "Rebuild phase added" },
-      { type: "negative", text: "Volume reduced 40%" },
-    ],
-    explanation:
-      "Due to long illness lasting 10+ days, we've incorporated a short rebuild phase to get you back on track safely. Your race has been postponed to allow proper recovery and fitness restoration.",
-  },
+const mockFuellingData = {
+  preWorkout: "Banana + Coffee (30min before)",
+  duringWorkout: "60g carbs/hour via sports drink",
+  postWorkout: "Protein shake within 30min",
+  hydration: "500ml/hour + electrolytes",
 }
+
+const mockStatusData = {
+  planProgress: 65,
+  onTrack: true,
+  weeksCompleted: 10,
+  totalWeeks: 16,
+}
+
+// Dev athlete ID for testing - in production this would come from auth
+const DEV_ATHLETE_ID = "123e4567-e89b-12d3-a456-426614174000";
 
 function getDaysUntilRace(raceDate: Date): number {
   const today = new Date()
@@ -292,6 +142,9 @@ export default function CockpitPage() {
   })
 
   const daysUntilRace = getDaysUntilRace(mockHeaderData.nextRace.date)
+
+  // Load live data using our hooks
+  const cockpitData = useCockpitData(DEV_ATHLETE_ID);
 
   const getPrimaryDevice = () => {
     const { syncStatus } = mockHeaderData
@@ -441,6 +294,36 @@ export default function CockpitPage() {
       </div>
     </div>
   )
+
+  // Handle loading state
+  if (cockpitData.loading) {
+    return (
+      <div className="min-h-screen bg-bg-app flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" text="Loading cockpit data..." />
+          <p className="text-text-2 mt-4">Fetching your training information</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (cockpitData.hasError) {
+    return (
+      <div className="min-h-screen bg-bg-app p-8">
+        <ErrorState
+          title="Unable to load cockpit data"
+          message={`Failed to load: ${Object.values(cockpitData.errors).filter(Boolean).join(', ')}`}
+          onRetry={cockpitData.refetchAll}
+        />
+      </div>
+    );
+  }
+
+  // Map live data to cockpit format
+  const todayWorkouts = cockpitData.sessions.data?.items ? mapSessionsToWorkouts(cockpitData.sessions.data.items) : [];
+  const capacity = cockpitData.readiness.data ? mapReadinessToCapacity(cockpitData.readiness.data) : null;
+  const weekFocusData = cockpitData.plan.data ? mapPlanToWeekFocus(cockpitData.plan.data) : null;
 
   return (
     <>
@@ -600,7 +483,22 @@ export default function CockpitPage() {
 
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-8 space-y-8">
-          <TodayWorkoutHero workouts={mockCockpitData.todayWorkouts} readinessLow={false} adaptationApplied={false} />
+          {/* Today's Workouts with live data */}
+          {todayWorkouts.length === 0 ? (
+            <EmptyWorkouts
+              title="No workouts scheduled for today"
+              message="You don't have any workouts planned for today. Your training plan might have a rest day or you may need to create today's workout."
+              onCreateWorkout={() => console.log("Navigate to workout creation")}
+              onViewCalendar={() => console.log("Navigate to calendar")}
+            />
+          ) : (
+            <TodayWorkoutHero 
+              workouts={todayWorkouts} 
+              readinessLow={capacity?.band === 'red'} 
+              adaptationApplied={mockAdaptationData.hasAdaptations} 
+            />
+          )}
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-bg-surface border border-border-weak rounded-lg p-6">
               <h3 className="text-text-1 font-medium mb-4 flex items-center gap-2">
@@ -613,33 +511,35 @@ export default function CockpitPage() {
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span className="text-text-1 text-sm font-medium">Pre-Workout</span>
                   </div>
-                  <p className="text-text-2 text-sm">{mockCockpitData.fuelling.preWorkout}</p>
+                  <p className="text-text-2 text-sm">{mockFuellingData.preWorkout}</p>
                 </div>
                 <div className="p-3 bg-bg-raised rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     <span className="text-text-1 text-sm font-medium">During Workout</span>
                   </div>
-                  <p className="text-text-2 text-sm">{mockCockpitData.fuelling.duringWorkout}</p>
+                  <p className="text-text-2 text-sm">{mockFuellingData.duringWorkout}</p>
                 </div>
                 <div className="p-3 bg-bg-raised rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                     <span className="text-text-1 text-sm font-medium">Post-Workout</span>
                   </div>
-                  <p className="text-text-2 text-sm">{mockCockpitData.fuelling.postWorkout}</p>
+                  <p className="text-text-2 text-sm">{mockFuellingData.postWorkout}</p>
                 </div>
                 <div className="p-3 bg-brand/10 border border-brand/20 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 bg-brand rounded-full"></div>
                     <span className="text-brand text-sm font-medium">Hydration</span>
                   </div>
-                  <p className="text-text-2 text-sm">{mockCockpitData.fuelling.hydration}</p>
+                  <p className="text-text-2 text-sm">{mockFuellingData.hydration}</p>
                 </div>
               </div>
             </div>
+            
+            {/* Week Focus with live plan data */}
             <div className="bg-bg-surface border border-border-weak rounded-lg p-6">
-              {!mockWeekFocusData.hasAdaptations ? (
+              {weekFocusData && !weekFocusData.hasAdaptations ? (
                 <>
                   <h3 className="text-text-1 font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-brand" />
@@ -648,10 +548,10 @@ export default function CockpitPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="chip chip-zone-z3">
-                        {mockWeekFocusData.weekType}
+                        {weekFocusData.weekType}
                       </span>
                     </div>
-                    <p className="text-text-2 text-sm leading-relaxed">{mockWeekFocusData.description}</p>
+                    <p className="text-text-2 text-sm leading-relaxed">{weekFocusData.description}</p>
                   </div>
                 </>
               ) : (
@@ -663,29 +563,29 @@ export default function CockpitPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="text-lg font-medium text-text-1">
-                        {mockWeekFocusData.adaptationStatus.focus}
+                        {mockAdaptationData.focus}
                       </span>
                       <span className="badge badge-ok">
-                        {mockWeekFocusData.adaptationStatus.triggers.join(" + ")}
+                        Low readiness + Missed session
                       </span>
                     </div>
 
                     <div className="space-y-2">
                       <span className="text-text-1 text-sm font-medium">Plan Changes:</span>
                       <div className="flex flex-wrap gap-1">
-                        {mockWeekFocusData.adaptationStatus.planChanges.map((change, index) => (
+                        {mockAdaptationData.changes.map((change, index) => (
                           <span
                             key={index}
-                            className={`badge ${change.type === "negative" ? "badge-critical" : "badge-good"}`}
+                            className={`badge ${change.changeType === "negative" ? "badge-critical" : "badge-good"}`}
                           >
-                            {change.text}
+                            {change.original}→{change.modified}
                           </span>
                         ))}
                       </div>
                     </div>
 
                     <p className="text-text-2 text-sm leading-relaxed">
-                      {mockWeekFocusData.adaptationStatus.explanation}
+                      Training adapted based on your current readiness and recent session data.
                     </p>
 
                     <div className="space-y-3 pt-2 border-t border-border-weak">
@@ -749,6 +649,7 @@ export default function CockpitPage() {
             </div>
           </div>
         </div>
+        
         <div className="col-span-4">
           <div className="space-y-6">
             <div className="bg-bg-surface border border-border-weak rounded-lg p-4">
@@ -813,16 +714,26 @@ export default function CockpitPage() {
               </div>
             </div>
 
-            <SideWidgets
-              readiness={mockCockpitData.capacity}
-              constraints={mockCockpitData.constraints}
-              races={mockCockpitData.races}
-              status={mockCockpitData.status}
-              adaptationApplied={false}
-              onPreviewAdaptation={() => console.log("Preview adaptation")}
-              onRevert={() => console.log("Revert adaptation")}
-              syncStatus={mockHeaderData.syncStatus}
-            />
+            {/* Side widgets with live readiness data */}
+            {capacity && (
+              <SideWidgets
+                readiness={capacity}
+                constraints={[]} // Mock - would come from blockers API
+                races={[{
+                  id: "race-a",
+                  name: "Ironman 70.3 World Championship",
+                  date: "Dec 15, 2024",
+                  location: "Lake Placid, NY",
+                  distance: "1.9k/90k/21k",
+                  days: 28,
+                }]}
+                status={mockStatusData}
+                adaptationApplied={false}
+                onPreviewAdaptation={() => console.log("Preview adaptation")}
+                onRevert={() => console.log("Revert adaptation")}
+                syncStatus={mockHeaderData.syncStatus}
+              />
+            )}
           </div>
         </div>
       </div>
