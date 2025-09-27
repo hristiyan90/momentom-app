@@ -357,7 +357,7 @@ describe('wellnessTransform', () => {
           efficiency: 97.9,
           score: 88
         },
-        source_type: 'garmin'
+        source_type: 'garmin' as const
       }
 
       const result = validateWellnessData(sleepData)
@@ -382,7 +382,7 @@ describe('wellnessTransform', () => {
           efficiency: 65, // Low efficiency
           score: 45
         },
-        source_type: 'garmin'
+        source_type: 'garmin' as const
       }
 
       const result = validateWellnessData(poorSleepData)
@@ -401,10 +401,10 @@ describe('wellnessTransform', () => {
         data_type: 'rhr' as const,
         value_json: {
           bpm: 85, // High RHR
-          quality: 'poor',
-          trend: 'declining'
+          quality: 'poor' as const,
+          trend: 'declining' as const
         },
-        source_type: 'garmin'
+        source_type: 'garmin' as const
       }
 
       const result = validateWellnessData(rhrData)
@@ -421,7 +421,7 @@ describe('wellnessTransform', () => {
         date: '',
         data_type: 'sleep' as const,
         value_json: {},
-        source_type: 'garmin'
+        source_type: 'garmin' as const
       }
 
       const result = validateWellnessData(invalidData)
