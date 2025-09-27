@@ -1,0 +1,16 @@
+#!/bin/sh
+# Pre-commit hook to auto-sync README.md when STATUS.md changes
+
+# Check if STATUS.md is being committed
+if git diff --cached --name-only | grep -q "docs/process/STATUS.md"; then
+    echo "📝 STATUS.md changed, auto-syncing README.md..."
+    
+    # Run status update
+    npm run status:update
+    
+    # Add README.md if it was updated
+    if [ -f README.md ]; then
+        git add README.md
+        echo "✅ README.md synced and staged"
+    fi
+fi

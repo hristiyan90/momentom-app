@@ -189,9 +189,11 @@ Run **after implementation** is complete.
 - [ ] Update status in `docs/config/status.yml`
 - [ ] Add Decision Log entry to `docs/decisions/DECISION_LOG.md`
 - [ ] Update spec with implementation notes
-- [ ] Run `npm run status:update` to sync README.md
+- [ ] **CRITICAL**: Run `npm run status:update` to sync README.md (prevents CI failures)
+- [ ] Verify CI status-check will pass by running `npm run status:check`
 
 ### 5.3 PR Creation & Evidence
+- [ ] **BEFORE PUSHING**: Ensure `npm run status:update` was run if STATUS.md changed
 - [ ] Create PR with descriptive title following [template](../cursor/templates/PULL_REQUEST_TEMPLATE.md)
 - [ ] Include comprehensive evidence (cURLs, screenshots, CI results)
 - [ ] Reference relevant specs and decisions

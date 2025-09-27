@@ -1,0 +1,52 @@
+name: Auto-sync README.md
+
+on:
+  push:
+    paths:
+      - 'docs/process/STATUS.md'
+    branches:
+      - main
+      - 'feat/**'
+
+jobs:
+  sync-readme:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-readme-sync]')"
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check if README needs update
+        id: check
+        run: |
+          if npm run status:check | grep -q "README.md needs update"; then
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          else
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Sync README.md
+        if: steps.check.outputs.needs_update == 'true'
+        run: npm run status:update
+      
+      - name: Commit changes
+        if: steps.check.outputs.needs_update == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: Auto-sync README.md with STATUS.md [skip-readme-sync]"
+          git push
