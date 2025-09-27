@@ -3,7 +3,7 @@
  * Orchestrates the complete import process with filtering, transformation, and progress tracking
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { serverClient } from '@/lib/supabase/server'
 import { SqliteReader, type ReadResult } from './sqliteReader'
 import { ProgressTracker, type ProgressCallback, type ProgressUpdate } from './progressTracker'
 import { applyFilters, type FilterOptions, DEFAULT_FILTER_OPTIONS, getFilterStats } from './dataFilters'
@@ -98,7 +98,7 @@ function parseDurationToMinutes(timeString: string): number {
  * Main bulk import service class
  */
 export class BulkImportService {
-  private supabase = createClient()
+  private supabase = serverClient()
   private progressTracker?: ProgressTracker
 
   /**

@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { serverClient } from '@/lib/supabase/server'
 import { BulkImportService, type BulkImportOptions } from '@/lib/garmin/bulkImport'
 import { DEFAULT_FILTER_OPTIONS, type FilterOptions } from '@/lib/garmin/dataFilters'
 import { getGarminDbPaths } from '@/lib/garmin/sqliteReader'
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const body: BulkImportRequest = await request.json()
     
     // Get athlete_id from auth (using existing auth pattern)
-    const supabase = createClient()
+    const supabase = serverClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     
     if (authError || !user) {
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // Get athlete_id from auth
-    const supabase = createClient()
+    const supabase = serverClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     
     if (authError || !user) {
