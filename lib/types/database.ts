@@ -159,6 +159,41 @@ export interface Database {
           explainability_id?: string | null;
         };
       };
+      wellness_data: {
+        Row: {
+          wellness_id: string;
+          athlete_id: string;
+          date: string;
+          data_type: 'sleep' | 'rhr' | 'weight';
+          value_json: unknown;
+          source_type: string;
+          metadata: unknown | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          wellness_id?: string;
+          athlete_id: string;
+          date: string;
+          data_type: 'sleep' | 'rhr' | 'weight';
+          value_json: unknown;
+          source_type?: string;
+          metadata?: unknown | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          wellness_id?: string;
+          athlete_id?: string;
+          date?: string;
+          data_type?: 'sleep' | 'rhr' | 'weight';
+          value_json?: unknown;
+          source_type?: string;
+          metadata?: unknown | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

@@ -45,6 +45,102 @@ export interface MomentomSession {
   }
 }
 
+// GarminDB wellness data structures (from monitoring databases)
+export interface GarminSleepRecord {
+  day: string // YYYY-MM-DD
+  total_sleep: string | null // HH:MM:SS format
+  deep_sleep: string | null
+  light_sleep: string | null
+  rem_sleep: string | null
+  awake: string | null
+  sleep_score: number | null
+  bedtime: string | null // HH:MM:SS
+  wake_time: string | null // HH:MM:SS
+}
+
+export interface GarminRHRRecord {
+  day: string // YYYY-MM-DD
+  resting_hr: number | null
+}
+
+export interface GarminWeightRecord {
+  day: string // YYYY-MM-DD
+  weight: number | null // kg
+  body_fat: number | null // percentage
+  muscle_mass: number | null // kg
+  bone_mass: number | null // kg
+  body_water: number | null // percentage
+}
+
+// Momentom wellness data structure (target format)
+export interface MomentomWellnessData {
+  wellness_id: string // UUID
+  athlete_id: string // UUID
+  date: string // YYYY-MM-DD
+  data_type: 'sleep' | 'rhr' | 'weight'
+  value_json: SleepData | RHRData | WeightData
+  source_type: 'garmin'
+  metadata?: {
+    garmin_record_id?: string
+    quality_score?: number
+    [key: string]: any
+  }
+  created_at?: string
+  updated_at?: string
+}
+
+// Wellness data value structures
+export interface SleepData {
+  total_minutes: number
+  deep_minutes: number | null
+  light_minutes: number | null
+  rem_minutes: number | null
+  awake_minutes: number | null
+  efficiency: number | null // percentage
+  score: number | null // 0-100
+  bedtime?: string // HH:MM format
+  wake_time?: string // HH:MM format
+}
+
+export interface RHRData {
+  bpm: number
+  quality: 'excellent' | 'good' | 'fair' | 'poor'
+  trend: 'improving' | 'stable' | 'declining' | null
+}
+
+export interface WeightData {
+  weight_kg: number
+  body_fat_percent: number | null
+  muscle_mass_kg: number | null
+  bone_mass_kg: number | null
+  body_water_percent: number | null
+  bmi?: number
+}
+
+// Wellness transformation result
+export interface WellnessTransformResult {
+  success: boolean
+  data?: MomentomWellnessData
+  warnings: string[]
+  errors: string[]
+}
+
+// Wellness batch processing result
+export interface WellnessBatchResult {
+  total_processed: number
+  successful_imports: number
+  failed_imports: number
+  sleep_records: number
+  rhr_records: number
+  weight_records: number
+  processing_time_ms: number
+  errors: Array<{
+    record_id: string
+    error: string
+    data_type: string
+  }>
+}
+
 // Performance metrics structure
 export interface PerformanceMetrics {
   heart_rate?: {
