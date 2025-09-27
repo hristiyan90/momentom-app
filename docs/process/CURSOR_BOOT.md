@@ -80,11 +80,11 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ## C0 Kickoff (what you must do first)
 
-### 1) Branch & Setup
+### C0.1) Branch & Setup
 - Confirm current branch; if not provided, propose one (e.g., `feat/<slug>` or `chore/<slug>`)
 - Create PR draft with template from `/docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
-### 2) Context Digest (A–J)
+### C0.2) Context Digest (A–J)
 Read the required files above and produce a concise digest:
 
 **A) Scope:** Task summary (one line)  
@@ -98,13 +98,13 @@ Read the required files above and produce a concise digest:
 **I) Risks:** What could go wrong + rollback plan  
 **J) Open Questions:** Explicit asks for clarification  
 
-### 3) Policy Alignment Check
+### C0.3) Policy Alignment Check
 Confirm these apply to your changes:
 - **ETag**: GET endpoints only; POST/PATCH = `no-store`; vary by `X-Client-Timezone`; dev vary by `X-Athlete-Id` only if env-gated
 - **Auth**: JWT→`athlete_id` mapping; RLS on all data operations; dev header override gated by env
 - **CI Gates**: OpenAPI diff, Newman, H1–H7 smoke must pass
 
-### 4) Dependency Scan
+### C0.4) Dependency Scan
 Create table of inputs needed from other roles:
 
 | Role | Needed Item | Path/Link | Blocking? | Due | Notes |
@@ -114,7 +114,7 @@ Create table of inputs needed from other roles:
 | UX | Microcopy & error states (if UI) | docs/ux/* | No | — | Defaults allowed |
 | Ops | Env values (limits/buckets/flags) | .env.local.example | **Yes** | — | Provide defaults if unknown |
 
-### 5) Implementation Plan
+### C0.5) Implementation Plan
 - **Files to touch:** Exact paths
 - **Functions/endpoints:** What you'll create/modify
 - **Database changes:** Tables, RLS policies, migrations
@@ -139,6 +139,7 @@ Run **after implementation** is complete.
 
 ### 5.2 Documentation Updates
 - [ ] Update status in `docs/process/STATUS.md`
+- [ ] Update status in `docs/config/status.yml`
 - [ ] Add Decision Log entry to `docs/decisions/DECISION_LOG.md`
 - [ ] Update spec with implementation notes
 - [ ] Run `npm run status:update` to sync README.md
