@@ -5,7 +5,7 @@
  */
 
 import { serverClient } from '@/lib/supabase/server'
-import { BackgroundSyncOptions, GarminSyncHistory, SyncResult } from './types'
+import { BackgroundSyncOptions, SyncResult } from './types'
 
 export class BackgroundSyncService {
   
@@ -45,6 +45,7 @@ export class BackgroundSyncService {
     }
 
     const syncId = syncRecord.sync_id
+    // eslint-disable-next-line prefer-const
     let result: SyncResult = {
       sync_id: syncId,
       success: false,
@@ -61,14 +62,14 @@ export class BackgroundSyncService {
     try {
       // Perform the actual sync operations
       if (options.data_types.includes('activities')) {
-        const activityResult = await this.syncActivities(options, syncId)
+        const activityResult = await this.syncActivities(options)
         result.activities_imported = activityResult.imported
         result.activities_skipped = activityResult.skipped
         result.errors.push(...activityResult.errors)
       }
 
       if (options.data_types.includes('wellness')) {
-        const wellnessResult = await this.syncWellnessData(options, syncId)
+        const wellnessResult = await this.syncWellnessData(options)
         result.wellness_records_imported = wellnessResult.imported
         result.wellness_skipped = wellnessResult.skipped
         result.errors.push(...wellnessResult.errors)
@@ -129,8 +130,7 @@ export class BackgroundSyncService {
    * Sync activities using the existing bulk-import API
    */
   private async syncActivities(
-    options: BackgroundSyncOptions, 
-    syncId: string
+    options: BackgroundSyncOptions
   ): Promise<{ imported: number; skipped: number; errors: string[] }> {
     try {
       // Prepare bulk import request
@@ -175,8 +175,7 @@ export class BackgroundSyncService {
    * Sync wellness data using the existing wellness-import logic
    */
   private async syncWellnessData(
-    options: BackgroundSyncOptions, 
-    syncId: string
+    options: BackgroundSyncOptions
   ): Promise<{ imported: number; skipped: number; errors: string[] }> {
     try {
       // Prepare wellness import request

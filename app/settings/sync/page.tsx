@@ -6,14 +6,11 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Loader2, RefreshCw, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
+import { Loader2, RefreshCw, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
 import { GarminSyncConfig, SyncStatus, GarminSyncHistory } from '@/lib/garmin/types'
 import { SyncConfigForm } from '@/components/garmin/SyncConfigForm'
 import { SyncHistoryTable } from '@/components/garmin/SyncHistoryTable'
@@ -37,7 +34,7 @@ export default function SyncSettingsPage() {
       const interval = setInterval(fetchSyncStatus, 5000) // Poll every 5 seconds
       return () => clearInterval(interval)
     }
-  }, [status?.is_running])
+  }, [status?.is_running, fetchSyncStatus])
 
   const fetchSyncData = async () => {
     try {
@@ -71,7 +68,7 @@ export default function SyncSettingsPage() {
     }
   }
 
-  const fetchSyncStatus = async () => {
+  const fetchSyncStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/garmin/sync/status')
       if (response.ok) {
@@ -86,7 +83,7 @@ export default function SyncSettingsPage() {
     } catch (err) {
       console.error('Failed to fetch sync status:', err)
     }
-  }
+  }, [status?.is_running])
 
   const fetchSyncHistory = async () => {
     try {

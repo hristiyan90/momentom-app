@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { RefreshCw, Play, Loader2 } from 'lucide-react'
+import { Play, Loader2 } from 'lucide-react'
 import { GarminSyncConfig } from '@/lib/garmin/types'
 
 interface ManualSyncButtonProps {
