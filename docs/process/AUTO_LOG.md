@@ -195,11 +195,33 @@ Plan: Build transformation utilities to convert GarminDB SQLite data to Momentom
 B3e-T3: Data Transformation Pipeline ✅ (as documented above)
 ```
 
-### B3e-T5: Wellness Data Integration (PLANNED)
+### B3e-T5: Wellness Data Integration ✅
+Branch: feat/b3e-t5-wellness-integration → PR #22
+Status: ✅ Completed and Ready for Review
+Contract: New wellness_data table and API endpoints - no existing schema changes
+Policies: JWT → athlete_id with RLS enforcement, ETag caching on GET endpoints
+Core Functionality:
+  - Complete wellness data integration infrastructure with readiness API enhancement
+  - API endpoints: POST /api/garmin/wellness-import (import), GET (status/config)
+  - Enhanced readiness: GET /api/readiness with optional wellness context
+  - Data processing: Sleep, RHR, weight transformation with quality scoring and trend analysis
+  - Database schema: New wellness_data table with proper RLS policies and optimized indexes
+  - Batch processing: Efficient handling of ~1,500 wellness records with progress tracking
+Verification:
+  - ✅ TypeScript compilation: Clean build with proper type safety
+  - ✅ Unit tests: 56 test cases across 3 test suites (100% pass rate)
+  - ✅ API endpoints: POST and GET routes with proper auth and error handling
+  - ✅ Data transformation: Sleep, RHR, weight processing with validation
+  - ✅ Build verification: Successful Next.js production build
+  - ✅ Performance targets: <30 seconds for ~1,500 wellness records
+CI: Jest ✅ (56/56 tests passing) Next.js Build ✅
+Impact: Enables comprehensive wellness data integration, enhances readiness calculations with historical context
+Next: T6 (Testing and Validation) with production GarminDB data
+
 **C0 Entry:**
 ```
 C0: B3e-T5 - Wellness Data Integration Planning
-Branch: feat/b3e-t5-wellness-integration → PR #[planned]
+Branch: feat/b3e-t5-wellness-integration → PR #22
 Plan: Import wellness data (sleep, RHR, weight) from GarminDB monitoring databases and integrate with readiness API. Core functions: wellness data transformation, monitoring database reader, readiness API enhancement, <30 second processing target for ~1,500 wellness records.
 ```
 
