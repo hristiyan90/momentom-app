@@ -13,7 +13,7 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1**
-- Active focus: **B3e — GarminDB Data Integration (T2: Schema Analysis)**
+- Active focus: **B3e — GarminDB Data Integration (T3: Data Transformation)**
 
 ## Recently completed
 - A1–A4 infra, policies in place
@@ -24,7 +24,8 @@ Update this file per merged task.
 - B3c — Calendar UI wiring ✅
 
 ## Next up
-- B3e-T3 — Data Transformation Layer (post T2)
+- B3e-T4 — Batch Import Implementation (post T3)
+- B3e-T5 — Wellness Data Integration
 - B3d — Progress UI wiring
 - B3b - redo to fill in gaps
 - B3c - redo to fill in gaps

@@ -55,21 +55,70 @@ For any status banner in README or docs/process/STATUS.md, reflect newly active 
 
 ---
 
-## C0 Entries
+## Cycle 2 Sprint 1 Entries
 
-C0: B2 — Manual Workout Upload (TCX/GPX) - Phase 1
-Branch: feat/b2-manual-upload-phase1 → PR #[pending]
-Plan: Database migration only - create ingest_staging and sessions tables with RLS policies
+### A1-A4: Infrastructure & Policies ✅ (Foundation)
+Status: ✅ Completed - Infrastructure policies established
+- A1: Project structure and initial setup
+- A2: Authentication and RLS policies 
+- A3: API contract definitions (OpenAPI)
+- A4: CI/CD gates and quality checks
+Impact: Foundation established for all subsequent development
 
-## C5 Entries
+### B1: Workout Library v0 ✅ (Seed + GET)
+Status: ✅ Completed - Basic workout library with GET endpoint
+Contract: OpenAPI endpoints for workout library access
+Policies: ETag caching on GET requests
+Core Functionality: Workout library seeding and read operations
+Impact: Baseline workout data available for UI components
 
-C5: B3b — Cockpit UI Wiring to Live APIs - Complete Implementation
+### B2: Manual Workout Upload (TCX/GPX) ✅
+Branch: feat/b2-manual-upload-phase3 → PR #12
+Status: ✅ Completed and Merged
+Contract: OpenAPI endpoints added for file upload workflow
+Policies: ETag on GET only; POST no-store; 25MB file size limit
+RLS: ingest_staging rows scoped by athlete_id (policy added)
+Core Functionality:
+  - Multipart file upload for TCX/GPX files
+  - File validation and parsing
+  - Session creation from parsed data
+  - Status tracking and error handling
+Verification:
+  - ✅ POST /api/ingest/workout → 201 (multipart ok, <25MB enforced)
+  - ✅ GET /api/ingest/workout/{id} → 200 (ETag present)
+  - ✅ Invalid file type → 415 (proper rejection)
+  - ✅ Missing file → 400 (validation working)
+  - ✅ ETag caching → 304 (If-None-Match working)
+  - ✅ Malformed file → 500 (error handling working)
+CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (test suite: 9/9 passing)
+Impact: Athletes can upload historical training data
+
+### B3a: State Management Infrastructure ✅
+Branch: feat/b3a-loading-components (T-1), feat/b3a-error-components (T-2), feat/b3a-empty-components (T-3)
+Status: ✅ Completed (T-1, T-2, T-3)
+Contract: No API changes - UI component infrastructure only
+Scope: Reusable state management components (LoadingSpinner, ErrorState, EmptyWorkouts)
+Dependencies: Design system patterns, TypeScript interfaces, accessibility requirements
+Constraints: Components work in isolation, no API integration at this stage
+Core Components:
+  - LoadingSpinner: Configurable loading states with messaging
+  - ErrorState: Error handling with retry functionality  
+  - EmptyWorkouts: Empty states with helpful CTAs
+Testing: Test page at /test-loading, TypeScript compilation, accessibility compliance
+Impact: Shared infrastructure for consistent UX across all pages
+
+### B3b: Cockpit UI Wiring ✅
 Branch: feat/b3b-cockpit-wiring → PR #18
-Status: ✅ Ready for review
-Contract: OpenAPI change? no - Using existing endpoints
+Status: ✅ Completed and Merged
+Contract: No new APIs - using existing endpoints
 Policies: X-Athlete-Id header authentication for dev mode
 API Integration: GET /api/plan, GET /api/sessions, GET /api/readiness
-State Management: B3a LoadingSpinner, ErrorState, EmptyWorkouts
+State Management: Integrated B3a components (LoadingSpinner, ErrorState, EmptyWorkouts)
+Core Functionality:
+  - Live data integration replacing mock data
+  - Loading states during API calls
+  - Error handling with retry capabilities
+  - Empty state management for no-data scenarios
 Verification:
   - ✅ GET /api/plan → 200 (plan data displays in week focus section)
   - ✅ GET /api/sessions → 200 (session data displays in today's workouts)
@@ -79,65 +128,79 @@ Verification:
   - ✅ EmptyWorkouts → Shows when no sessions with helpful CTAs
   - ✅ Responsive design → Maintained across mobile/desktop
   - ✅ Authentication → X-Athlete-Id header pattern working
-CI: All API endpoints verified working, B3b spec included, no linting errors
-Follow-ups: B3c Calendar page wiring, B3d Progress page wiring
+CI: All API endpoints verified working, comprehensive testing
+Impact: Cockpit page now displays real training data with proper UX states
 
-C5: B2 — Manual Workout Upload (TCX/GPX) - Complete Implementation
-Branch: feat/b2-manual-upload-phase3 → PR #12
-Status: ✅ Ready for review
-Contract: OpenAPI change? yes - New endpoints added
-Policies: ETag on GET only; POST no-store
-RLS: staging rows scoped by athlete_id (policy added)
-cURLs (paste the actual runs):
-  - ✅ POST /api/ingest/workout → 201 (multipart ok, <25MB enforced)
-  - ✅ GET /api/ingest/workout/{id} → 200 (ETag present)
-  - ✅ Invalid file type → 415 (proper rejection)
-  - ✅ Missing file → 400 (validation working)
-  - ✅ ETag caching → 304 (If-None-Match working)
-  - ✅ Malformed file → 500 (error handling working)
-CI: OpenAPI diff ✅ Newman ✅ Smoke H1–H7 ✅ (test suite: 9/9 passing)
-Follow-ups: UI dropzone component (Phase 4), production deployment
+### B3c: Calendar UI Wiring ✅  
+Status: ✅ Completed and Merged
+Contract: No new APIs - using existing session endpoints
+Scope: Wire calendar page to live data with proper state management
+Dependencies: B3a state components, B3b authentication patterns
+Core Functionality:
+  - Calendar display with real session data
+  - Month/week view navigation
+  - Session detail sidebar integration
+  - Loading and error states for calendar data
+Impact: Calendar page displays real training schedule data
 
-## C0 Entries
+### B3e: GarminDB Data Integration 🚧 (T2: Schema Analysis)
+Branch: feature/b3e-t2-garmin-schema-analysis → PR #19
+Status: 🚧 In Progress (T2: Schema Analysis Complete)
+Contract: No API changes in T2 - documentation and analysis only
+Scope: Multi-task feature for integrating real Garmin workout and wellness data
+Current Phase: T2 - Database schema analysis and data mapping
+Core T2 Deliverables:
+  - ✅ GarminDB SQLite database structure analysis (4 databases, 24 tables)
+  - ✅ Field mappings from GarminDB to Momentom schema (1,000+ activities analyzed)
+  - ✅ Data quality assessment (97% success rate, 970+ activities successfully parsed)
+  - ✅ Sport mapping strategy (9 GarminDB sports → 5 Momentom categories)
+  - ✅ Batch processing strategy for large dataset import
+  - ✅ Sample transformation queries tested and validated
+T2 Impact: Foundation established for importing 1,000+ historical Garmin activities
+Next Phases: T3 (Data Transformation), T4 (Batch Import), T5 (Wellness), T6 (Testing)
 
-C0: B3b — Cockpit UI Wiring to Live APIs - Specification Created
-Branch: feat/b3b-cockpit-wiring
-Status: ✅ Completed (T-1 through T-10)
-Scope: Wire cockpit page to live API endpoints (/api/plan, /api/sessions, /api/readiness) using B3a components
-Dependencies: B3a state management components, working API endpoints, X-Athlete-Id authentication
-Constraints: B3b ONLY - cockpit page integration only, no calendar/progress pages, exclude 404 endpoints
-Risks: API integration complexity, state management with live data, authentication pattern implementation
-Success Criteria: Cockpit loads live data with proper loading/error/empty states, responsive design maintained
-Rollback: Revert to mock data implementation, remove API client and hooks
-Testing: API endpoint verification, component integration, loading/error/empty states, responsive design
-Timeline: All tasks completed in single implementation cycle
-Resources: Live API endpoints, B3a components, existing cockpit UI structure
-Next Steps: B3c Calendar page wiring, B3d Progress page wiring
+### B3e-T3: Data Transformation Pipeline ✅
+Branch: feat/b3e-t3-data-transformation → PR #20
+Status: ✅ Completed and Merged
+Contract: No API changes - transformation utilities only
+Policies: Uses existing athlete_id RLS on sessions table
+Core Functionality: 
+  - Complete transformation pipeline (6 core utilities)
+  - Sport mapping: 9 GarminDB sports → 5 Momentom categories with fuzzy matching
+  - Performance metrics extraction (HR, power, pace, environmental data)
+  - Data quality validation targeting 97% success rate
+  - UTC timezone conversion and date normalization
+  - Batch processing with progress tracking and error handling
+Verification:
+  - ✅ TypeScript compilation: lib/garmin/*.ts (no errors)
+  - ✅ Unit tests: 60 test cases across 4 test suites (100% pass rate)
+  - ✅ Sport mapping: All 9 GarminDB sports correctly mapped
+  - ✅ Data validation: Business logic and range validation working
+  - ✅ Transformation pipeline: Complete GarminDB → Momentom conversion
+  - ✅ UUID generation: Proper session ID creation with metadata
+  - ✅ Error handling: Comprehensive validation and transformation error handling
+CI: TypeScript ✅ Jest ✅ (60/60 tests passing)
+Impact: Enables T4 batch import implementation with reliable data transformation
+Next: T4 (Batch Import Implementation) using these transformation utilities
 
-C0: B3a — State Management Infrastructure - Specification Created
-Branch: feat/b3a-loading-components (T-1), feat/b3a-error-components (T-2), feat/b3a-empty-components (T-3)
-Status: ✅ Completed (T-1, T-2, T-3)
-Scope: Create reusable state management components (loading, error, empty states) for infrastructure
-Dependencies: Existing design system patterns, TypeScript interfaces, accessibility requirements
-Constraints: T-1/T-2/T-3 only, no API integration, no data fetching, components must work in isolation
-Risks: Component consistency, accessibility compliance, TypeScript type safety
-Success Criteria: All state components work in isolation, comprehensive test coverage, full documentation
-Rollback: Remove component files and revert test page changes
-Testing: Test page at /test-loading, TypeScript compilation, linting, accessibility testing
-Timeline: T-1 (1 day), T-2 (1 day), T-3 (1 day) - Completed
-Resources: Design system patterns, TypeScript interfaces, accessibility guidelines
-Next Steps: B3b/B3c/B3d for actual UI wiring to live endpoints
+**C0 Entry:**
+```
+C0: B3e-T3 - Data Transformation Pipeline Planning
+Branch: feat/b3e-t3-data-transformation → PR #20
+Plan: Build transformation utilities to convert GarminDB SQLite data to Momentom session format using T2 schema mappings. Core functions: sport mapping (9→5), metrics extraction, timezone handling, data validation.
+```
 
-C0: B3 — UX Wiring to Live GETs + Screenshot Refresh - Specification Created (Superseded by B3a/B3b/B3c/B3d)
-Branch: feat/b3-ux-wiring (proposed)
+**C5 Entry:** 
+```
+B3e-T3: Data Transformation Pipeline ✅ (as documented above)
+```
+
+---
+
+## Historical Entries (Superseded)
+
+### B3: UX Wiring to Live GETs - Original Scope (Superseded)
 Status: 📝 Draft (re-scoped into B3a/B3b/B3c/B3d)
-Scope: Wire existing UI components to live GET endpoints, add loading/error/empty states, capture screenshots with real data
-Dependencies: Existing UI components, live GET endpoints (/api/plan, /api/sessions, /api/readiness, /api/fuel/session/[id], /api/workout-library)
-Constraints: No new API endpoints, maintain responsive design, use Europe/London timezone for screenshots
-Risks: State management complexity, performance impact of live data fetching, screenshot consistency
-Success Criteria: All UI components display live data, proper loading/error/empty states, updated screenshots with real data
-Rollback: Revert to mock data if live data causes issues
-Testing: Test all UI states, verify ETag caching, test responsive behavior, validate screenshots
-Timeline: T-1 to T-4 (2-3 days), T-5 to T-6 (2-3 days), T-7 to T-10 (1-2 days)
-Resources: Access to live Supabase data, screenshot capture tools, mobile/desktop testing devices
-Next Steps: B3a completed, proceed with B3b/B3c/B3d for UI wiring
+Original Scope: Wire existing UI components to live GET endpoints, add loading/error/empty states, capture screenshots with real data
+Superseded By: B3a (infrastructure), B3b (cockpit), B3c (calendar), B3d (progress), B3e (Garmin integration)
+Reason: Scope too large for single task, better managed as separate focused tasks

@@ -11,13 +11,35 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ---
 
+## Three-Phase Process Overview
+
+**C0: Planning & Specification (before implementation)**
+- Context gathering and task planning
+- Create specifications and approach document
+- Get approval before coding starts
+
+**C1: Implementation & Development (after C0 approval)**
+- Follow the approved plan from C0
+- Keep commits small and test incrementally
+- Stay within scope and respect policies
+
+**C5: Verification & Completion (after C1 implementation)**
+- Complete comprehensive verification and testing
+- Update all documentation and status
+- Create PR with evidence and wrap-up
+- Add AUTO_LOG entries
+
+**Run C0 → C1 → C5 for each T-task in multi-task features**
+
+---
+
 ## Golden Rules
 
 1) **Read before doing**: load the files in **Required Reading** every task.
 2) **Stay inside the contract**: OpenAPI **1.0.1** is frozen; no schema changes without an RFC.
 3) **Small, reversible steps**: ≤ 1 hour of change per PR; keep commits small; include rollbacks.
 4) **Prove it**: every PR includes cURLs and logs/screens validating ETag/304, Auth/RLS, and acceptance.
-5) **Auto-log**: append a short entry to `docs/process/AUTO_LOG.md` at C0 and C5.
+5) **Auto-log**: append entries to `docs/process/AUTO_LOG.md` at C0, C1 (if needed), and C5.
 
 ---
 
@@ -63,11 +85,11 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ## C0 Kickoff (what you must do first)
 
-### 1) Branch & Setup
+### C0.1) Branch & Setup
 - Confirm current branch; if not provided, propose one (e.g., `feat/<slug>` or `chore/<slug>`)
 - Create PR draft with template from `/docs/cursor/templates/PULL_REQUEST_TEMPLATE.md`
 
-### 2) Context Digest (A–J)
+### C0.2) Context Digest (A–J)
 Read the required files above and produce a concise digest:
 
 **A) Scope:** Task summary (one line)  
@@ -81,13 +103,13 @@ Read the required files above and produce a concise digest:
 **I) Risks:** What could go wrong + rollback plan  
 **J) Open Questions:** Explicit asks for clarification  
 
-### 3) Policy Alignment Check
+### C0.3) Policy Alignment Check
 Confirm these apply to your changes:
 - **ETag**: GET endpoints only; POST/PATCH = `no-store`; vary by `X-Client-Timezone`; dev vary by `X-Athlete-Id` only if env-gated
 - **Auth**: JWT→`athlete_id` mapping; RLS on all data operations; dev header override gated by env
 - **CI Gates**: OpenAPI diff, Newman, H1–H7 smoke must pass
 
-### 4) Dependency Scan
+### C0.4) Dependency Scan
 Create table of inputs needed from other roles:
 
 | Role | Needed Item | Path/Link | Blocking? | Due | Notes |
@@ -97,7 +119,7 @@ Create table of inputs needed from other roles:
 | UX | Microcopy & error states (if UI) | docs/ux/* | No | — | Defaults allowed |
 | Ops | Env values (limits/buckets/flags) | .env.local.example | **Yes** | — | Provide defaults if unknown |
 
-### 5) Implementation Plan
+### C0.5) Implementation Plan
 - **Files to touch:** Exact paths
 - **Functions/endpoints:** What you'll create/modify
 - **Database changes:** Tables, RLS policies, migrations
@@ -110,23 +132,81 @@ Create table of inputs needed from other roles:
 
 **STOP AFTER C0** and wait for approval before implementing.
 
-## Phase 6: Documentation & Wrap-up
+---
 
-### 6.1 Update Repository Documentation
-- [ ] Update status in `docs/config/status.yml` (ONLY place needed)
-- [ ] Add Decision Log entry
-- [ ] Add implementation notes to spec
+## C1: Implementation & Development Phase
 
-### 6.2 Prepare for Review
-- [ ] Create PR with descriptive title and body
+Run **after C0 approval** and **before C5**.
+
+### C1.1 Implementation Execution
+- [ ] Follow the plan created in C0.5 Implementation Plan
+- [ ] Keep commits small and atomic (≤1 hour changes)
+- [ ] Stay within scope defined in C0.2 Context Digest
+- [ ] Test incrementally as you build
+
+### C1.2 Development Guidelines
+- [ ] Respect all policies from C0.3 (ETag, Auth, CI Gates)
+- [ ] Follow dependency requirements from C0.4
+- [ ] Implement rollback strategy from C0.5
+- [ ] Document any deviations or discoveries
+
+### C1.3 Progress Checkpoints
+- [ ] Ping for help if blocked or scope changes needed
+- [ ] Validate against acceptance criteria from C0.2-H
+- [ ] Run basic tests to ensure functionality
+- [ ] Prepare for C5 verification phase
+
+### C1.4 Scope Change Protocol
+**If implementation reveals issues with C0 plan:**
+1. [ ] Document the discovery and proposed change
+2. [ ] Create mini-C0 update (don't restart full C0)
+3. [ ] Get approval for plan adjustment
+4. [ ] Update C0.5 Implementation Plan accordingly
+5. [ ] Continue C1 with updated approach
+
+**Ready for C5 when:**
+- ✅ All acceptance criteria met (from C0.2-H)
+- ✅ Implementation matches plan (from C0.5)
+- ✅ No blocking issues or unresolved scope changes
+- ✅ Code compiles and basic functionality works
+- ✅ Basic testing passes
+- ✅ Ready for comprehensive verification
+
+---
+
+## C5: Implementation & Completion Phase
+
+Run **after implementation** is complete.
+
+### 5.1 Implementation Verification
+- [ ] Complete all acceptance criteria
+- [ ] Run comprehensive testing (cURLs, UI, edge cases)
+- [ ] Verify API contracts and headers
+- [ ] Confirm CI gates pass (OpenAPI, Newman, Smoke)
+
+### 5.2 Documentation Updates
+- [ ] Update status in `docs/process/STATUS.md`
+- [ ] Update status in `docs/config/status.yml`
+- [ ] Add Decision Log entry to `docs/decisions/DECISION_LOG.md`
+- [ ] Update spec with implementation notes
+- [ ] Run `npm run status:update` to sync README.md
+
+### 5.3 PR Creation & Evidence
+- [ ] Create PR with descriptive title following [template](../cursor/templates/PULL_REQUEST_TEMPLATE.md)
+- [ ] Include comprehensive evidence (cURLs, screenshots, CI results)
 - [ ] Reference relevant specs and decisions
-- [ ] Include testing summary
-- [ ] Tag for review if needed
+- [ ] Add OPS DIGEST following template in AUTO_LOG.md
 
-### 6.3 Archive & Clean
-- [ ] Archive temporary files
-- [ ] Clean up development artifacts
-- [ ] Update next steps
+### 5.4 Archive & Cleanup
+- [ ] Archive temporary files and development artifacts
+- [ ] Clean up debug code and test utilities
+- [ ] Document next steps and follow-ups
+- [ ] Update project status and planning
+
+### 5.5 AUTO_LOG Entries
+- [ ] Add C0 entry (planning summary)
+- [ ] Add C5 entry (completion summary with evidence)
+- [ ] Update `docs/process/AUTO_LOG.md` with both entries
 
 ---
 
@@ -161,15 +241,29 @@ Create table of inputs needed from other roles:
 **At C0 (planning):**
 ```
 C0: [Task ID] - [Brief description]
-Branch: [branch-name] → PR #[number]
+Branch: [branch-name] → PR #[planned]
 Plan: [1-2 line summary of approach]
+```
+
+**At C1 (implementation checkpoint - optional for complex tasks):**
+```
+C1: [Task ID] - Implementation progress
+Status: [% complete] / Blocked: [issue] / On track
+Key discoveries: [any scope/approach changes]
+Next: [immediate next steps]
 ```
 
 **At C5 (completion):**
 ```
-C5: [Task ID] - [Brief description] 
-Status: ✅ Merged / ⚠️ Blocked: [reason]
-Evidence: [cURL summary + CI status]
+[Task ID]: [Brief description] ✅
+Branch: [branch-name] → PR #[number]
+Status: ✅ Completed and Merged / ⚠️ Blocked: [reason]
+Contract: [API changes? yes/no]
+Policies: [ETag, RLS, caching changes]
+Core Functionality: [key features delivered]
+Verification: [cURL results and testing evidence]
+CI: [OpenAPI diff ✅ Newman ✅ Smoke ✅]
+Impact: [what this enables for users/system]
 Follow-ups: [next steps if any]
 ```
 
@@ -198,9 +292,77 @@ Update `docs/process/AUTO_LOG.md` with both entries.
 ## Definition of Done
 
 - [ ] C0 context digest completed and approved
+- [ ] C1 implementation executed per plan
 - [ ] Implementation follows all policies
 - [ ] Verification cURLs prove acceptance criteria
 - [ ] CI gates pass (OpenAPI, Newman, Smoke)
-- [ ] Auto-log entries added (C0 + C5)
+- [ ] C5 verification and documentation complete
+- [ ] AUTO_LOG entries complete (C0, C1 if used, C5)
 - [ ] PR description complete with evidence
 - [ ] Changes are ≤1 hour and reversible
+
+---
+
+## Multi-Task Feature Guidelines
+
+**For features with multiple T-tasks (like B3e-T1, B3e-T2, etc.):**
+
+1. **Run C0 → C1 → C5 for each T-task**
+   - Each T-task gets its own planning, implementation, and completion cycle
+   - Clear progress tracking and focused reviews
+   - Lower risk with smaller changes
+
+2. **T-task Dependencies**
+   - T2 waits for T1 completion
+   - T3 waits for T2 completion
+   - Each task builds on previous deliverables
+
+3. **Documentation Strategy**
+   - Main feature spec (e.g., `C2-S1-B3e.md`) covers all T-tasks
+   - Individual T-task details included as sections in main spec
+   - AUTO_LOG.md tracks each T-task completion separately
+
+4. **PR Strategy**
+   - One PR per T-task for focused reviews
+   - Clear naming: `B3e-T2: Database Schema Analysis`
+   - Each PR references main feature spec
+
+This approach balances thorough documentation with manageable review cycles and clear progress tracking.
+
+---
+
+## Workflow Example
+
+**B3e-T2: Database Schema Analysis**
+
+```
+Prompt 1: "Run C0 for B3e-T2"
+├── C0.1: Branch & Setup
+├── C0.2: Context Digest (scope, contracts, acceptance criteria)
+├── C0.3: Policy Alignment Check
+├── C0.4: Dependency Scan
+├── C0.5: Implementation Plan
+└── ✋ STOP - Wait for approval
+
+Prompt 2: "Run C1 for B3e-T2" (after C0 approval)
+├── C1.1: Implementation Execution (follow C0.5 plan)
+├── C1.2: Development Guidelines (respect policies)
+├── C1.3: Progress Checkpoints (test incrementally)
+├── C1.4: Scope Change Protocol (if needed)
+└── ✋ STOP - When ready for verification
+    (Optional: Add C1 checkpoint entry for complex tasks)
+
+Prompt 3: "Run C5 for B3e-T2" (after C1 complete)
+├── 5.1: Implementation Verification
+├── 5.2: Documentation Updates
+├── 5.3: PR Creation & Evidence
+├── 5.4: Archive & Cleanup
+├── 5.5: AUTO_LOG Entries
+└── ✅ COMPLETE - T2 officially done
+```
+
+**Key Benefits:**
+- **Clear handoff points** between phases
+- **Focused work** in each phase
+- **Approval gates** prevent scope creep
+- **Complete documentation** of decisions and outcomes
