@@ -225,12 +225,34 @@ Branch: feat/b3e-t5-wellness-integration → PR #22
 Plan: Import wellness data (sleep, RHR, weight) from GarminDB monitoring databases and integrate with readiness API. Core functions: wellness data transformation, monitoring database reader, readiness API enhancement, <30 second processing target for ~1,500 wellness records.
 ```
 
-### B3e-T6: Scheduled Sync and Automation (C0 Planning)
+### B3e-T6: Scheduled Sync and Automation ✅
+
+Branch: feat/b3e-t6-scheduled-sync → PR #23
+Status: ✅ Completed and Ready for Review
+Contract: New sync automation tables and UI dashboard - no existing schema changes
+Policies: JWT → athlete_id with RLS enforcement, ETag caching on GET endpoints, no-store on POST
+Core Functionality:
+  - Complete scheduled sync automation with cron job scheduler and background processing
+  - API endpoints: GET/PUT /api/garmin/sync-config, POST /api/garmin/sync/trigger, GET /api/garmin/sync/status, GET /api/garmin/sync/history
+  - UI Dashboard: /settings/sync with real-time status, manual triggers, and comprehensive history
+  - Database schema: garmin_sync_config and garmin_sync_history tables with proper RLS and indexes
+  - Integration: Seamless leverage of existing T4/T5 bulk-import and wellness-import infrastructure
+  - Automation: Daily/weekly scheduling with concurrent limiting and error recovery
+Verification:
+  - ✅ TypeScript compilation: Clean build with proper type safety throughout
+  - ✅ Next.js build: Successful production build with all new routes functional
+  - ✅ API endpoints: All 4 sync endpoints with proper auth, ETag, and error handling
+  - ✅ UI components: Complete dashboard with real-time updates and responsive design
+  - ✅ Database integration: RLS policies, indexes, and proper athlete_id scoping
+  - ✅ Policy compliance: ETag caching, JWT authentication, no-store POST verified
+CI: Next.js Build ✅ TypeScript ✅ (warnings expected for auth routes)
+Impact: Completes B3e GarminDB Data Integration feature with full automation capabilities
+Next: B3e feature complete - ready for production use with automated sync
 
 **C0 Entry:**
 ```
 C0: B3e-T6 - Scheduled Sync and Automation Planning
-Branch: feat/b3e-t6-scheduled-sync → PR TBD
+Branch: feat/b3e-t6-scheduled-sync → PR #23
 Plan: Add automated sync scheduling and manual sync UI controls to complete GarminDB integration. Core functions: cron job scheduler for daily/weekly sync, sync configuration management, sync history tracking, dashboard UI for manual triggers and monitoring. Database: garmin_sync_config and garmin_sync_history tables. APIs: sync config management, manual sync trigger, sync history. Dependencies: node-cron library, existing bulk-import/wellness-import APIs (T4/T5). Target: <5 minute setup time, reliable daily automation.
 ```
 
