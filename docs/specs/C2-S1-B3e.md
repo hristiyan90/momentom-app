@@ -57,7 +57,7 @@ GarminDB SQLite DBs → Analysis Layer → Transform Layer → Momentom Database
 ### T2: Database Schema Analysis and Data Mapping ✅ COMPLETE
 - **Objective**: Comprehensive analysis of GarminDB structure and mapping to Momentom
 - **Deliverables**: Schema documentation, field mappings, sample queries
-- **Status**: Complete - See [T2 Analysis Document](B3e-T2-database-analysis.md)
+- **Status**: Complete - See Section 6 below
 - **Key Results**:
   - **4 databases analyzed**: 24 tables with activity and wellness data
   - **97% data quality**: 970+ activities successfully parsed from 1,000 total
@@ -113,37 +113,89 @@ GarminDB SQLite DBs → Analysis Layer → Transform Layer → Momentom Database
 - **Parse Errors**: ~3% (25-30 FIT files with timezone/format issues)
 - **Data Integrity**: Heart rate zones, power data, GPS tracks preserved
 
-## 6) T2 Analysis Results Summary
+## 6) T2 Database Schema Analysis (Complete)
 
-**Completed Analysis:**
-✅ **Database Structure**: 4 primary databases with 24 tables analyzed  
-✅ **Field Mapping**: 57 activity fields mapped to Momentom schema  
-✅ **Data Quality**: 97% success rate (970+ of 1,000 activities)  
-✅ **Sample Queries**: Transformation queries tested and validated  
-✅ **Sport Mapping**: 9 GarminDB sports mapped to 5 Momentom categories  
+### 6.1 GarminDB Structure Analysis
 
-**Key Datasets Identified:**
-- **Activities**: 1,000 records with full performance metrics
-- **Activity Laps**: 8,592 interval records for detailed analysis  
-- **Activity Records**: 3.6M+ GPS/sensor data points
-- **Sleep Data**: ~1,000 nights of sleep tracking
-- **Wellness Data**: RHR, weight, stress monitoring
+**Database Overview:**
+- **`garmin_activities.db`** (448 MB): 1,000 activities with performance metrics
+- **`garmin_monitoring.db`** (113 MB): Daily wellness monitoring data  
+- **`garmin.db`** (74 MB): Sleep, weight, RHR, device information
+- **`garmin_summary.db`** (6.8 MB): Aggregated statistics by day/week/month
 
-**Target Momentom Schema (Confirmed):**
+**Key Tables & Data Volume:**
+- **`activities`**: 1,000 records (57 columns) - core activity data
+- **`activity_laps`**: 8,592 records - interval/lap data for detailed analysis
+- **`activity_records`**: 3,612,524 records - GPS/sensor data (second-by-second)
+- **`sleep`**: ~1,000 records - nightly sleep tracking
+- **`resting_hr`**, **`weight`**: ~500 records each - wellness monitoring
+
+### 6.2 Field Mapping Strategy
+
+**Core Session Mapping (GarminDB → Momentom):**
+
+| Momentom Field | GarminDB Source | Transformation |
+|----------------|-----------------|----------------|
+| `session_id` | `activities.activity_id` | Generate UUID, store original in metadata |
+| `date` | `activities.start_time` | DATE(start_time) with timezone handling |
+| `sport` | `activities.sport` | Map 9 GarminDB sports → 5 Momentom categories |
+| `title` | `activities.name` | Direct copy or generate from sport + date |
+| `actual_duration_min` | `activities.moving_time` | Convert TIME to integer minutes |
+| `actual_distance_m` | `activities.distance` | Multiply by 1000 (km → meters) |
+| `status` | *Static* | 'completed' (all historical data) |
+
+**Sport Mapping (9 → 5 categories):**
+- `running`, `walking`, `hiking` → `run`
+- `cycling` → `bike`  
+- `swimming` → `swim`
+- `fitness_equipment`, `snowboarding`, `rock_climbing` → `strength`
+- `UnknownEnumValue_54` → `strength` (fallback)
+
+### 6.3 Data Quality Assessment
+
+**Quality Metrics:**
+- ✅ **97% Success Rate**: 970+ of 1,000 activities successfully parsed
+- ✅ **Complete Date Range**: 2021-09-10 to 2025-08-29 (4+ years)
+- ✅ **Rich Performance Data**: HR zones, training effect, pace, power available
+- ⚠️ **Minor Issues**: 20 activities with NULL names (2%), 30 parse errors (3%)
+
+**Performance Metrics Available:**
+- Heart rate (avg, max, zones 1-5 time distribution)
+- Training effect (aerobic + anaerobic)
+- Speed/pace, cadence, power (cycling)
+- Environmental (temperature, elevation gain/loss)
+- GPS tracking (lat/long, altitude)
+
+### 6.4 Batch Processing Strategy
+
+**Processing Architecture:**
+1. **Extraction**: Query GarminDB SQLite files for activities and wellness data
+2. **Transformation**: Apply sport mapping, time conversions, metadata generation
+3. **Validation**: Check data quality, handle NULL values and edge cases
+4. **Import**: Batch insert to Momentom PostgreSQL (100-500 records/batch)
+
+**Estimated Processing Time:** 20-30 minutes for complete 1,000+ activity import
+
+**Sample Transformation Query:**
 ```sql
--- sessions table (validated mapping target)
-sessions (
-  session_id uuid PRIMARY KEY,
-  athlete_id uuid NOT NULL,
-  date date NOT NULL,
-  sport text NOT NULL, -- mapped from 9 GarminDB sports to 5 categories
-  title text NOT NULL, -- from activity.name or generated
-  actual_duration_min integer, -- from moving_time conversion
-  actual_distance_m integer, -- from distance * 1000
-  source_file_type text, -- 'garmin' for imports
-  created_at timestamptz,
-  updated_at timestamptz
-)
+-- Extract core session data from GarminDB
+SELECT 
+  activity_id as garmin_activity_id,
+  CASE WHEN name IS NOT NULL THEN name
+       ELSE sport || ' - ' || DATE(start_time) END as title,
+  DATE(start_time) as session_date,
+  CASE sport
+    WHEN 'running' THEN 'run'
+    WHEN 'walking' THEN 'run' 
+    WHEN 'cycling' THEN 'bike'
+    WHEN 'swimming' THEN 'swim'
+    ELSE 'strength'
+  END as mapped_sport,
+  CAST((CAST(strftime('%H', moving_time) AS INTEGER) * 60 +
+        CAST(strftime('%M', moving_time) AS INTEGER)) AS INTEGER) as duration_minutes,
+  CAST(distance * 1000 AS INTEGER) as distance_meters
+FROM activities WHERE start_time IS NOT NULL
+ORDER BY start_time;
 ```
 
 ## 7) Success Metrics
@@ -156,7 +208,7 @@ sessions (
 - [x] Batch processing strategy documented  
 - [x] Edge case identification and handling plan  
 
-**T2 Status:** ✅ **COMPLETE** - All deliverables documented in [T2 Analysis](B3e-T2-database-analysis.md)
+**T2 Status:** ✅ **COMPLETE** - All deliverables documented in Section 6
 
 **Overall B3e Success Metrics:**
 - Data import success rate ≥95%
