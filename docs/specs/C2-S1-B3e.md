@@ -91,10 +91,11 @@ GarminDB SQLite DBs → Analysis Layer → Transform Layer → Momentom Database
 - **Dependencies**: T4 completion
 - **Status**: Complete - Wellness data integration and readiness API enhancement implemented
 
-### T6: Testing and Validation (PLANNED)
-- **Objective**: Comprehensive testing with production data
-- **Scope**: Data quality validation, performance testing, edge case handling
-- **Dependencies**: T5 completion
+### T6: Scheduled Sync and Automation (IN PROGRESS - C0 COMPLETE)
+- **Objective**: Add automated sync scheduling and manual sync UI controls
+- **Scope**: Cron jobs for scheduled sync, dashboard for sync management, sync history tracking
+- **Dependencies**: T5 completion (✅ Complete)
+- **Status**: C0 Planning Complete - Awaiting C1 Implementation Approval
 
 ## 5) T1 Implementation Summary
 

@@ -225,6 +225,15 @@ Branch: feat/b3e-t5-wellness-integration → PR #22
 Plan: Import wellness data (sleep, RHR, weight) from GarminDB monitoring databases and integrate with readiness API. Core functions: wellness data transformation, monitoring database reader, readiness API enhancement, <30 second processing target for ~1,500 wellness records.
 ```
 
+### B3e-T6: Scheduled Sync and Automation (C0 Planning)
+
+**C0 Entry:**
+```
+C0: B3e-T6 - Scheduled Sync and Automation Planning
+Branch: feat/b3e-t6-scheduled-sync → PR TBD
+Plan: Add automated sync scheduling and manual sync UI controls to complete GarminDB integration. Core functions: cron job scheduler for daily/weekly sync, sync configuration management, sync history tracking, dashboard UI for manual triggers and monitoring. Database: garmin_sync_config and garmin_sync_history tables. APIs: sync config management, manual sync trigger, sync history. Dependencies: node-cron library, existing bulk-import/wellness-import APIs (T4/T5). Target: <5 minute setup time, reliable daily automation.
+```
+
 ---
 
 ## Historical Entries (Superseded)
