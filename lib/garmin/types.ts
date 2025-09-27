@@ -1,6 +1,7 @@
 /**
- * TypeScript interfaces for GarminDB data transformation
+ * TypeScript interfaces for GarminDB data transformation and sync automation
  * Based on T2 schema analysis in docs/specs/C2-S1-B3e.md
+ * T6: Added sync configuration and history types
  */
 
 // GarminDB raw activity structure (from T2 analysis)
@@ -206,4 +207,106 @@ export interface ValidationResult {
 export interface TimezoneOptions {
   sourceTimezone?: string
   targetTimezone: 'UTC'
+}
+
+// ============================================================================
+// T6: SYNC AUTOMATION TYPES
+// ============================================================================
+
+// Sync configuration (matches database schema)
+export interface GarminSyncConfig {
+  config_id: string
+  athlete_id: string
+  enabled: boolean
+  frequency: 'daily' | 'weekly' | 'manual_only'
+  preferred_time: string // HH:MM:SS format
+  data_types: ('activities' | 'wellness')[]
+  garmin_db_path?: string | null
+  garmin_monitoring_db_path?: string | null
+  last_sync_at?: string | null // ISO timestamp
+  next_sync_at?: string | null // ISO timestamp
+  created_at: string
+  updated_at: string
+}
+
+// Sync configuration input (for API requests)
+export interface SyncConfigInput {
+  enabled?: boolean
+  frequency?: 'daily' | 'weekly' | 'manual_only'
+  preferred_time?: string // HH:MM:SS format
+  data_types?: ('activities' | 'wellness')[]
+  garmin_db_path?: string | null
+  garmin_monitoring_db_path?: string | null
+}
+
+// Sync history record (matches database schema)
+export interface GarminSyncHistory {
+  sync_id: string
+  athlete_id: string
+  sync_type: 'scheduled' | 'manual'
+  data_types: ('activities' | 'wellness')[]
+  status: 'running' | 'completed' | 'failed' | 'cancelled'
+  started_at: string // ISO timestamp
+  completed_at?: string | null // ISO timestamp
+  duration_ms?: number | null
+  activities_imported: number
+  wellness_records_imported: number
+  activities_skipped: number
+  wellness_skipped: number
+  errors: string[] // JSON array of error messages
+  metadata: Record<string, any> // Additional sync metadata
+  created_at: string
+}
+
+// Sync operation request
+export interface SyncRequest {
+  sync_type: 'manual' // Only manual triggers via API
+  data_types?: ('activities' | 'wellness')[]
+  force_refresh?: boolean // Ignore last_sync_at and sync all data
+  dry_run?: boolean // Test sync without importing
+}
+
+// Sync operation result
+export interface SyncResult {
+  sync_id: string
+  success: boolean
+  status: 'running' | 'completed' | 'failed' | 'cancelled'
+  started_at: string
+  completed_at?: string
+  duration_ms?: number
+  activities_imported: number
+  wellness_records_imported: number
+  activities_skipped: number
+  wellness_skipped: number
+  errors: string[]
+  metadata: Record<string, any>
+}
+
+// Sync status response (for polling)
+export interface SyncStatus {
+  sync_id?: string
+  is_running: boolean
+  current_sync?: GarminSyncHistory
+  last_completed_sync?: GarminSyncHistory
+  next_scheduled_sync?: string | null // ISO timestamp
+  config: GarminSyncConfig
+}
+
+// Sync scheduler options
+export interface SchedulerOptions {
+  enabled: boolean
+  check_interval_minutes?: number // How often to check for due syncs
+  max_concurrent_syncs?: number // Limit concurrent sync operations
+  retry_failed_syncs?: boolean
+  retry_delay_minutes?: number
+}
+
+// Background sync service options
+export interface BackgroundSyncOptions {
+  athlete_id: string
+  sync_type: 'scheduled' | 'manual'
+  data_types: ('activities' | 'wellness')[]
+  force_refresh?: boolean
+  dry_run?: boolean
+  config?: GarminSyncConfig // Pre-fetched config to avoid extra DB call
 }
