@@ -76,11 +76,11 @@ describe('validation', () => {
     })
 
     it('should warn about unusual values', () => {
-      const unusualActivity = { ...mockValidActivity, avg_hr: 250 }
+      const unusualActivity = { ...mockValidActivity, avg_hr: 250, max_hr: 260 } // Both high but consistent
       const result = validateActivityData(unusualActivity)
       
       expect(result.isValid).toBe(true)
-      expect(result.warnings.some(w => w.includes('HR out of typical range'))).toBe(true)
+      expect(result.warnings.some(w => w.includes('Average HR out of typical range'))).toBe(true)
     })
 
     it('should catch data inconsistencies', () => {
@@ -120,7 +120,7 @@ describe('validation', () => {
   })
 
   describe('validateAthleteId', () => {
-    const validUUID = '11111111-1111-4111-1111-111111111111'
+    const validUUID = '11111111-1111-4111-a111-111111111111' // Valid UUID v4
 
     it('should validate correct UUID', () => {
       const result = validateAthleteId(validUUID)

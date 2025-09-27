@@ -148,6 +148,11 @@ export function parseDurationToMinutes(movingTime: string | null): number {
     // Handle formats like "1:23:45" or "23:45" or "45"
     const parts = movingTime.split(':').map(p => parseInt(p, 10))
     
+    // Check for invalid numbers
+    if (parts.some(p => isNaN(p))) {
+      throw new Error(`Invalid numeric values in time string: ${movingTime}`)
+    }
+    
     if (parts.length === 3) {
       // HH:MM:SS
       const [hours, minutes, seconds] = parts
