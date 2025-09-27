@@ -11,6 +11,23 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ---
 
+## Two-Phase Process Overview
+
+**C0: Planning & Specification (before implementation)**
+- Context gathering and task planning
+- Create specifications and approach document
+- Get approval before coding starts
+
+**C5: Implementation & Completion (after implementation)**
+- Complete implementation with verification
+- Update all documentation and status
+- Create PR with evidence and wrap-up
+- Add AUTO_LOG entries
+
+**Run C0 + C5 for each T-task in multi-task features**
+
+---
+
 ## Golden Rules
 
 1) **Read before doing**: load the files in **Required Reading** every task.
@@ -110,23 +127,38 @@ Create table of inputs needed from other roles:
 
 **STOP AFTER C0** and wait for approval before implementing.
 
-## Phase 6: Documentation & Wrap-up
+## C5: Implementation & Completion Phase
 
-### 6.1 Update Repository Documentation
-- [ ] Update status in `docs/config/status.yml` (ONLY place needed)
-- [ ] Add Decision Log entry
-- [ ] Add implementation notes to spec
+Run **after implementation** is complete.
 
-### 6.2 Prepare for Review
-- [ ] Create PR with descriptive title and body
+### 5.1 Implementation Verification
+- [ ] Complete all acceptance criteria
+- [ ] Run comprehensive testing (cURLs, UI, edge cases)
+- [ ] Verify API contracts and headers
+- [ ] Confirm CI gates pass (OpenAPI, Newman, Smoke)
+
+### 5.2 Documentation Updates
+- [ ] Update status in `docs/process/STATUS.md`
+- [ ] Add Decision Log entry to `docs/decisions/DECISION_LOG.md`
+- [ ] Update spec with implementation notes
+- [ ] Run `npm run status:update` to sync README.md
+
+### 5.3 PR Creation & Evidence
+- [ ] Create PR with descriptive title following template
+- [ ] Include comprehensive evidence (cURLs, screenshots, CI results)
 - [ ] Reference relevant specs and decisions
-- [ ] Include testing summary
-- [ ] Tag for review if needed
+- [ ] Add OPS DIGEST following template in AUTO_LOG.md
 
-### 6.3 Archive & Clean
-- [ ] Archive temporary files
-- [ ] Clean up development artifacts
-- [ ] Update next steps
+### 5.4 Archive & Cleanup
+- [ ] Archive temporary files and development artifacts
+- [ ] Clean up debug code and test utilities
+- [ ] Document next steps and follow-ups
+- [ ] Update project status and planning
+
+### 5.5 AUTO_LOG Entries
+- [ ] Add C0 entry (planning summary)
+- [ ] Add C5 entry (completion summary with evidence)
+- [ ] Update `docs/process/AUTO_LOG.md` with both entries
 
 ---
 
@@ -161,15 +193,21 @@ Create table of inputs needed from other roles:
 **At C0 (planning):**
 ```
 C0: [Task ID] - [Brief description]
-Branch: [branch-name] → PR #[number]
+Branch: [branch-name] → PR #[planned]
 Plan: [1-2 line summary of approach]
 ```
 
 **At C5 (completion):**
 ```
-C5: [Task ID] - [Brief description] 
-Status: ✅ Merged / ⚠️ Blocked: [reason]
-Evidence: [cURL summary + CI status]
+[Task ID]: [Brief description] ✅
+Branch: [branch-name] → PR #[number]
+Status: ✅ Completed and Merged / ⚠️ Blocked: [reason]
+Contract: [API changes? yes/no]
+Policies: [ETag, RLS, caching changes]
+Core Functionality: [key features delivered]
+Verification: [cURL results and testing evidence]
+CI: [OpenAPI diff ✅ Newman ✅ Smoke ✅]
+Impact: [what this enables for users/system]
 Follow-ups: [next steps if any]
 ```
 
@@ -201,6 +239,34 @@ Update `docs/process/AUTO_LOG.md` with both entries.
 - [ ] Implementation follows all policies
 - [ ] Verification cURLs prove acceptance criteria
 - [ ] CI gates pass (OpenAPI, Newman, Smoke)
-- [ ] Auto-log entries added (C0 + C5)
+- [ ] C5 documentation and AUTO_LOG entries complete
 - [ ] PR description complete with evidence
 - [ ] Changes are ≤1 hour and reversible
+
+---
+
+## Multi-Task Feature Guidelines
+
+**For features with multiple T-tasks (like B3e-T1, B3e-T2, etc.):**
+
+1. **Run C0 + C5 for each T-task**
+   - Each T-task gets its own specification and PR
+   - Clear progress tracking and focused reviews
+   - Lower risk with smaller changes
+
+2. **T-task Dependencies**
+   - T2 waits for T1 completion
+   - T3 waits for T2 completion
+   - Each task builds on previous deliverables
+
+3. **Documentation Strategy**
+   - Main feature spec (e.g., `C2-S1-B3e.md`) covers all T-tasks
+   - Individual T-task details included as sections in main spec
+   - AUTO_LOG.md tracks each T-task completion separately
+
+4. **PR Strategy**
+   - One PR per T-task for focused reviews
+   - Clear naming: `B3e-T2: Database Schema Analysis`
+   - Each PR references main feature spec
+
+This approach balances thorough documentation with manageable review cycles and clear progress tracking.
