@@ -195,6 +195,14 @@ Plan: Build transformation utilities to convert GarminDB SQLite data to Momentom
 B3e-T3: Data Transformation Pipeline ✅ (as documented above)
 ```
 
+### B3e-T5: Wellness Data Integration (PLANNED)
+**C0 Entry:**
+```
+C0: B3e-T5 - Wellness Data Integration Planning
+Branch: feat/b3e-t5-wellness-integration → PR #[planned]
+Plan: Import wellness data (sleep, RHR, weight) from GarminDB monitoring databases and integrate with readiness API. Core functions: wellness data transformation, monitoring database reader, readiness API enhancement, <30 second processing target for ~1,500 wellness records.
+```
+
 ---
 
 ## Historical Entries (Superseded)
