@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Generate ETag and check for conditional request
-    const { etag, body } = etagFor(response)
+    const { etag } = etagFor(response)
     const ifNoneMatch = request.headers.get('if-none-match')
     
     if (ifNoneMatch && ifNoneMatch === etag) {
