@@ -11,20 +11,25 @@ This file tells Cursor exactly what to read and how to operate before it propose
 
 ---
 
-## Two-Phase Process Overview
+## Three-Phase Process Overview
 
 **C0: Planning & Specification (before implementation)**
 - Context gathering and task planning
 - Create specifications and approach document
 - Get approval before coding starts
 
-**C5: Implementation & Completion (after implementation)**
-- Complete implementation with verification
+**C1: Implementation & Development (after C0 approval)**
+- Follow the approved plan from C0
+- Keep commits small and test incrementally
+- Stay within scope and respect policies
+
+**C5: Verification & Completion (after C1 implementation)**
+- Complete comprehensive verification and testing
 - Update all documentation and status
 - Create PR with evidence and wrap-up
 - Add AUTO_LOG entries
 
-**Run C0 + C5 for each T-task in multi-task features**
+**Run C0 → C1 → C5 for each T-task in multi-task features**
 
 ---
 
@@ -126,6 +131,38 @@ Create table of inputs needed from other roles:
 > No schema changes. Changes are ≤1 hour and reversible.
 
 **STOP AFTER C0** and wait for approval before implementing.
+
+---
+
+## C1: Implementation & Development Phase
+
+Run **after C0 approval** and **before C5**.
+
+### C1.1 Implementation Execution
+- [ ] Follow the plan created in C0.5 Implementation Plan
+- [ ] Keep commits small and atomic (≤1 hour changes)
+- [ ] Stay within scope defined in C0.2 Context Digest
+- [ ] Test incrementally as you build
+
+### C1.2 Development Guidelines
+- [ ] Respect all policies from C0.3 (ETag, Auth, CI Gates)
+- [ ] Follow dependency requirements from C0.4
+- [ ] Implement rollback strategy from C0.5
+- [ ] Document any deviations or discoveries
+
+### C1.3 Progress Checkpoints
+- [ ] Ping for help if blocked or scope changes needed
+- [ ] Validate against acceptance criteria from C0.2-H
+- [ ] Run basic tests to ensure functionality
+- [ ] Prepare for C5 verification phase
+
+**Ready for C5 when:**
+- ✅ All acceptance criteria met (from C0.2-H)
+- ✅ Implementation matches plan (from C0.5)
+- ✅ Basic testing passes
+- ✅ Ready for comprehensive verification
+
+---
 
 ## C5: Implementation & Completion Phase
 
@@ -250,8 +287,8 @@ Update `docs/process/AUTO_LOG.md` with both entries.
 
 **For features with multiple T-tasks (like B3e-T1, B3e-T2, etc.):**
 
-1. **Run C0 + C5 for each T-task**
-   - Each T-task gets its own specification and PR
+1. **Run C0 → C1 → C5 for each T-task**
+   - Each T-task gets its own planning, implementation, and completion cycle
    - Clear progress tracking and focused reviews
    - Lower risk with smaller changes
 
@@ -271,3 +308,39 @@ Update `docs/process/AUTO_LOG.md` with both entries.
    - Each PR references main feature spec
 
 This approach balances thorough documentation with manageable review cycles and clear progress tracking.
+
+---
+
+## Workflow Example
+
+**B3e-T2: Database Schema Analysis**
+
+```
+Prompt 1: "Run C0 for B3e-T2"
+├── C0.1: Branch & Setup
+├── C0.2: Context Digest (scope, contracts, acceptance criteria)
+├── C0.3: Policy Alignment Check
+├── C0.4: Dependency Scan
+├── C0.5: Implementation Plan
+└── ✋ STOP - Wait for approval
+
+Prompt 2: "Run C1 for B3e-T2" (after C0 approval)
+├── C1.1: Implementation Execution (follow C0.5 plan)
+├── C1.2: Development Guidelines (respect policies)
+├── C1.3: Progress Checkpoints (test incrementally)
+└── ✋ STOP - When ready for verification
+
+Prompt 3: "Run C5 for B3e-T2" (after C1 complete)
+├── 5.1: Implementation Verification
+├── 5.2: Documentation Updates
+├── 5.3: PR Creation & Evidence
+├── 5.4: Archive & Cleanup
+├── 5.5: AUTO_LOG Entries
+└── ✅ COMPLETE - T2 officially done
+```
+
+**Key Benefits:**
+- **Clear handoff points** between phases
+- **Focused work** in each phase
+- **Approval gates** prevent scope creep
+- **Complete documentation** of decisions and outcomes
