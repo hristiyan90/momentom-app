@@ -4,6 +4,7 @@ import { X, ExternalLink, Play, Edit, Send, ChevronDown, ChevronRight, Clock, Za
 import { Waves, Bike, Footprints } from "lucide-react"
 import type { DayAggregate } from "./MonthCell"
 import { IntensityBar } from "@/components/training/intensity-bar"
+import { CompletedWorkoutSummary } from "./CompletedWorkoutSummary"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 
@@ -86,6 +87,13 @@ export function CalendarSidebar({ date, dayData, onClose }: CalendarSidebarProps
           const hours = Math.floor(session.minutes / 60)
           const mins = session.minutes % 60
           const duration = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
+          
+          // Calculate actual duration for completed sessions
+          const actualMinutes = session.actualMinutes || session.minutes
+          const actualHours = Math.floor(actualMinutes / 60)
+          const actualMins = actualMinutes % 60
+          const actualDuration = actualHours > 0 ? `${actualHours}h ${actualMins}m` : `${actualMins}m`
+          
           const isExpanded = expandedSessions.has(session.id)
 
           const mockIntensitySegments = [
@@ -159,6 +167,13 @@ export function CalendarSidebar({ date, dayData, onClose }: CalendarSidebarProps
                 <div className="mb-4">
                   <IntensityBar segments={mockIntensitySegments} />
                 </div>
+                
+                {/* Show workout summary for completed sessions */}
+                {isCompleted && !isExpanded && (
+                  <div className="mb-4">
+                    <CompletedWorkoutSummary session={session} />
+                  </div>
+                )}
               </div>
 
               {isExpanded && (
@@ -180,7 +195,7 @@ export function CalendarSidebar({ date, dayData, onClose }: CalendarSidebarProps
                             </div>
                             <div className="text-xs">
                               <div className="font-semibold text-text-1">
-                                {hours > 0 ? `${hours}h ${mins + 5}m` : `${mins + 5}m`}
+                                {actualDuration}
                               </div>
                               <div className="text-text-3">Completed</div>
                             </div>

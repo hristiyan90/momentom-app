@@ -5,7 +5,7 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1**
-- Active focus: **B3c — Calendar UI wiring**
+- Active focus: **B3e — GarminDB Data Integration (T2: Schema Analysis)**
 
 ## Recently completed
 - A1–A4 infra, policies in place
@@ -13,7 +13,11 @@ Update this file per merged task.
 - B2 — Manual Workout Upload (TCX/GPX) ✅
 - B3a — State Management Infrastructure ✅
 - B3b — Cockpit UI wiring ✅
+- B3c — Calendar UI wiring ✅
 
 ## Next up
-- B3c — Calendar UI wiring
+- B3e-T3 — Data Transformation Layer (post T2)
 - B3d — Progress UI wiring
+- B3b - redo to fill in gaps
+- B3c - redo to fill in gaps
+- C2-S2-C1 — Next sprint planning
