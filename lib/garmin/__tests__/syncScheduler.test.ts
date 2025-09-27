@@ -24,7 +24,7 @@ const mockSupabase = {
   eq: jest.fn().mockReturnThis(),
   neq: jest.fn().mockReturnThis(),
   or: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
+  limit: jest.fn().mockResolvedValue({ data: [], error: null }),
   update: jest.fn().mockReturnThis(),
   single: jest.fn()
 }

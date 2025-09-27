@@ -22,7 +22,18 @@ const mockSupabase = {
   eq: jest.fn().mockReturnThis(),
   limit: jest.fn().mockReturnThis(),
   update: jest.fn().mockReturnThis(),
-  single: jest.fn()
+  single: jest.fn().mockResolvedValue({
+    data: {
+      sync_id: 'sync-1',
+      athlete_id: 'athlete-1',
+      sync_type: 'manual',
+      data_types: ['activities', 'wellness'],
+      status: 'running',
+      started_at: new Date().toISOString(),
+      metadata: {}
+    },
+    error: null
+  })
 }
 
 const mockBulkImportService = {
