@@ -3,6 +3,7 @@ import { getAthleteId, addStandardHeaders, setCacheHint, getAuthFlags, addAuthDe
 import { getReadiness, isMissingRelation } from '@/lib/data/reads';
 import { generateCorrelationId } from '@/lib/utils';
 import { etagFor } from '@/lib/http/etag';
+import { getWellnessContext, enhanceReadinessWithWellness } from '@/lib/garmin/wellnessContext';
 
 export async function GET(req: NextRequest) { 
   const correlationId = generateCorrelationId();
@@ -25,6 +26,20 @@ export async function GET(req: NextRequest) {
     // Use current date as default, could be made configurable
     const date = searchParams.get('date') || '2025-09-06';
     let readinessData = await getReadiness(athleteId, { date });
+    
+    // Enhance with wellness context if available
+    const includeWellness = searchParams.get('includeWellness') !== 'false'; // Default to true
+    if (includeWellness) {
+      try {
+        const wellnessContext = await getWellnessContext(athleteId, date);
+        if (wellnessContext) {
+          readinessData = enhanceReadinessWithWellness(readinessData, wellnessContext);
+        }
+      } catch (wellnessError) {
+        // Log wellness error but don't fail the request
+        console.warn('Failed to get wellness context:', wellnessError);
+      }
+    }
     
     // Apply partial mode logic (simulates missing drivers)
     if (isPartialMode) {
