@@ -159,6 +159,42 @@ Core T2 Deliverables:
 T2 Impact: Foundation established for importing 1,000+ historical Garmin activities
 Next Phases: T3 (Data Transformation), T4 (Batch Import), T5 (Wellness), T6 (Testing)
 
+### B3e-T3: Data Transformation Pipeline ✅
+Branch: feat/b3e-t3-data-transformation → PR #20
+Status: ✅ Completed and Merged
+Contract: No API changes - transformation utilities only
+Policies: Uses existing athlete_id RLS on sessions table
+Core Functionality: 
+  - Complete transformation pipeline (6 core utilities)
+  - Sport mapping: 9 GarminDB sports → 5 Momentom categories with fuzzy matching
+  - Performance metrics extraction (HR, power, pace, environmental data)
+  - Data quality validation targeting 97% success rate
+  - UTC timezone conversion and date normalization
+  - Batch processing with progress tracking and error handling
+Verification:
+  - ✅ TypeScript compilation: lib/garmin/*.ts (no errors)
+  - ✅ Unit tests: 60 test cases across 4 test suites (100% pass rate)
+  - ✅ Sport mapping: All 9 GarminDB sports correctly mapped
+  - ✅ Data validation: Business logic and range validation working
+  - ✅ Transformation pipeline: Complete GarminDB → Momentom conversion
+  - ✅ UUID generation: Proper session ID creation with metadata
+  - ✅ Error handling: Comprehensive validation and transformation error handling
+CI: TypeScript ✅ Jest ✅ (60/60 tests passing)
+Impact: Enables T4 batch import implementation with reliable data transformation
+Next: T4 (Batch Import Implementation) using these transformation utilities
+
+**C0 Entry:**
+```
+C0: B3e-T3 - Data Transformation Pipeline Planning
+Branch: feat/b3e-t3-data-transformation → PR #20
+Plan: Build transformation utilities to convert GarminDB SQLite data to Momentom session format using T2 schema mappings. Core functions: sport mapping (9→5), metrics extraction, timezone handling, data validation.
+```
+
+**C5 Entry:** 
+```
+B3e-T3: Data Transformation Pipeline ✅ (as documented above)
+```
+
 ---
 
 ## Historical Entries (Superseded)
