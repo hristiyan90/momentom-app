@@ -39,7 +39,7 @@ This file tells Cursor exactly what to read and how to operate before it propose
 2) **Stay inside the contract**: OpenAPI **1.0.1** is frozen; no schema changes without an RFC.
 3) **Small, reversible steps**: ≤ 1 hour of change per PR; keep commits small; include rollbacks.
 4) **Prove it**: every PR includes cURLs and logs/screens validating ETag/304, Auth/RLS, and acceptance.
-5) **Auto-log**: append a short entry to `docs/process/AUTO_LOG.md` at C0 and C5.
+5) **Auto-log**: append entries to `docs/process/AUTO_LOG.md` at C0, C1 (if needed), and C5.
 
 ---
 
@@ -156,9 +156,19 @@ Run **after C0 approval** and **before C5**.
 - [ ] Run basic tests to ensure functionality
 - [ ] Prepare for C5 verification phase
 
+### C1.4 Scope Change Protocol
+**If implementation reveals issues with C0 plan:**
+1. [ ] Document the discovery and proposed change
+2. [ ] Create mini-C0 update (don't restart full C0)
+3. [ ] Get approval for plan adjustment
+4. [ ] Update C0.5 Implementation Plan accordingly
+5. [ ] Continue C1 with updated approach
+
 **Ready for C5 when:**
 - ✅ All acceptance criteria met (from C0.2-H)
 - ✅ Implementation matches plan (from C0.5)
+- ✅ No blocking issues or unresolved scope changes
+- ✅ Code compiles and basic functionality works
 - ✅ Basic testing passes
 - ✅ Ready for comprehensive verification
 
@@ -182,7 +192,7 @@ Run **after implementation** is complete.
 - [ ] Run `npm run status:update` to sync README.md
 
 ### 5.3 PR Creation & Evidence
-- [ ] Create PR with descriptive title following template
+- [ ] Create PR with descriptive title following [template](../cursor/templates/PULL_REQUEST_TEMPLATE.md)
 - [ ] Include comprehensive evidence (cURLs, screenshots, CI results)
 - [ ] Reference relevant specs and decisions
 - [ ] Add OPS DIGEST following template in AUTO_LOG.md
@@ -235,6 +245,14 @@ Branch: [branch-name] → PR #[planned]
 Plan: [1-2 line summary of approach]
 ```
 
+**At C1 (implementation checkpoint - optional for complex tasks):**
+```
+C1: [Task ID] - Implementation progress
+Status: [% complete] / Blocked: [issue] / On track
+Key discoveries: [any scope/approach changes]
+Next: [immediate next steps]
+```
+
 **At C5 (completion):**
 ```
 [Task ID]: [Brief description] ✅
@@ -274,10 +292,12 @@ Update `docs/process/AUTO_LOG.md` with both entries.
 ## Definition of Done
 
 - [ ] C0 context digest completed and approved
+- [ ] C1 implementation executed per plan
 - [ ] Implementation follows all policies
 - [ ] Verification cURLs prove acceptance criteria
 - [ ] CI gates pass (OpenAPI, Newman, Smoke)
-- [ ] C5 documentation and AUTO_LOG entries complete
+- [ ] C5 verification and documentation complete
+- [ ] AUTO_LOG entries complete (C0, C1 if used, C5)
 - [ ] PR description complete with evidence
 - [ ] Changes are ≤1 hour and reversible
 
@@ -328,7 +348,9 @@ Prompt 2: "Run C1 for B3e-T2" (after C0 approval)
 ├── C1.1: Implementation Execution (follow C0.5 plan)
 ├── C1.2: Development Guidelines (respect policies)
 ├── C1.3: Progress Checkpoints (test incrementally)
+├── C1.4: Scope Change Protocol (if needed)
 └── ✋ STOP - When ready for verification
+    (Optional: Add C1 checkpoint entry for complex tasks)
 
 Prompt 3: "Run C5 for B3e-T2" (after C1 complete)
 ├── 5.1: Implementation Verification
