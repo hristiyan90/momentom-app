@@ -316,15 +316,19 @@ export class BulkImportService {
 
   /**
    * Checks if an activity has already been imported
+   * Uses title pattern matching since metadata column doesn't exist in current schema
    */
   private async checkForDuplicate(activityId: number, athleteId: string): Promise<boolean> {
     try {
+      // Since metadata column doesn't exist, we'll use a combination of:
+      // 1. source_file_type = 'garmin' 
+      // 2. title contains the activity ID (garmin activities include ID in title)
       const { data, error } = await this.supabase
         .from('sessions')
         .select('session_id')
         .eq('athlete_id', athleteId)
         .eq('source_file_type', 'garmin')
-        .contains('metadata', { garmin_activity_id: activityId })
+        .ilike('title', `%${activityId}%`)
         .limit(1)
 
       if (error) {
