@@ -61,6 +61,37 @@ export default function SyncSettingsPage() {
         fetch('/api/garmin/sync/history?limit=10')
       ])
 
+      // Handle authentication errors specifically
+      if (configRes.status === 401 || statusRes.status === 401 || historyRes.status === 401) {
+        setError('Authentication required. Please log in to access sync settings.')
+        // Set default/empty state for UI
+        setConfig({
+          config_id: 'default',
+          athlete_id: '',
+          enabled: true,
+          frequency: 'daily',
+          preferred_time: '06:00:00',
+          data_types: ['activities', 'wellness'],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        setStatus({
+          is_running: false,
+          config: {
+            config_id: 'default',
+            athlete_id: '',
+            enabled: true,
+            frequency: 'daily',
+            preferred_time: '06:00:00',
+            data_types: ['activities', 'wellness'],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        })
+        setHistory([])
+        return
+      }
+
       if (!configRes.ok || !statusRes.ok || !historyRes.ok) {
         throw new Error('Failed to fetch sync data')
       }
@@ -172,11 +203,22 @@ export default function SyncSettingsPage() {
       </div>
 
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/50 bg-destructive/10">
           <CardContent className="pt-4">
-            <div className="flex items-center gap-2 text-red-600">
-              <AlertTriangle className="h-4 w-4" />
-              <span>{error}</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <span>{error}</span>
+              </div>
+              {error.includes('Authentication') && (
+                <div className="text-sm text-muted-foreground">
+                  <p>To test the sync functionality:</p>
+                  <ol className="list-decimal list-inside mt-2 space-y-1">
+                    <li>Log in to your account, or</li>
+                    <li>Use dev mode by adding the header: <code className="bg-muted px-1 rounded">X-Athlete-Id: 00000000-0000-0000-0000-000000000001</code></li>
+                  </ol>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
