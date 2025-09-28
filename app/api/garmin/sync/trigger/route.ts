@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { serverClient } from '@/lib/supabase/server'
-import { addStandardHeaders, setCacheHint } from '@/lib/auth/athlete'
+import { addStandardHeaders, setCacheHint, getAthleteId } from '@/lib/auth/athlete'
 import { generateCorrelationId } from '@/lib/utils'
 import { SyncRequest, GarminSyncConfig } from '@/lib/garmin/types'
 import { BackgroundSyncService } from '@/lib/garmin/backgroundSync'
@@ -21,9 +21,9 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = serverClient()
     
-    // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    // Get authenticated athlete ID (supports dev mode)
+    const athleteId = await getAthleteId(request)
+    if (!athleteId) {
       return NextResponse.json(
         { error: 'authentication_required', message: 'Valid JWT token required' },
         { 
@@ -36,8 +36,6 @@ export async function POST(request: NextRequest) {
         }
       )
     }
-
-    const athleteId = user.id
 
     // Parse request body
     const syncRequest: SyncRequest = await request.json()
