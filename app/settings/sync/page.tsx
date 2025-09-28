@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -31,10 +31,23 @@ export default function SyncSettingsPage() {
   // Poll for status updates when sync is running
   useEffect(() => {
     if (status?.is_running) {
-      const interval = setInterval(fetchSyncStatus, 5000) // Poll every 5 seconds
+      const interval = setInterval(() => {
+        fetch('/api/garmin/sync/status')
+          .then(response => response.ok ? response.json() : null)
+          .then(statusData => {
+            if (statusData) {
+              setStatus(statusData)
+              // If sync completed, refresh history
+              if (!statusData.is_running && status?.is_running) {
+                fetchSyncHistory()
+              }
+            }
+          })
+          .catch(err => console.error('Failed to fetch sync status:', err))
+      }, 5000)
       return () => clearInterval(interval)
     }
-  }, [status?.is_running, fetchSyncStatus])
+  }, [status?.is_running])
 
   const fetchSyncData = async () => {
     try {
@@ -68,22 +81,6 @@ export default function SyncSettingsPage() {
     }
   }
 
-  const fetchSyncStatus = useCallback(async () => {
-    try {
-      const response = await fetch('/api/garmin/sync/status')
-      if (response.ok) {
-        const statusData = await response.json()
-        setStatus(statusData)
-        
-        // If sync completed, refresh history
-        if (!statusData.is_running && status?.is_running) {
-          fetchSyncHistory()
-        }
-      }
-    } catch (err) {
-      console.error('Failed to fetch sync status:', err)
-    }
-  }, [status?.is_running])
 
   const fetchSyncHistory = async () => {
     try {
@@ -113,7 +110,10 @@ export default function SyncSettingsPage() {
       setConfig(updatedConfig)
       
       // Refresh status to get updated next_sync_at
-      fetchSyncStatus()
+      fetch('/api/garmin/sync/status')
+        .then(response => response.ok ? response.json() : null)
+        .then(statusData => statusData && setStatus(statusData))
+        .catch(err => console.error('Failed to refresh sync status:', err))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update configuration')
     }
@@ -136,7 +136,10 @@ export default function SyncSettingsPage() {
       }
 
       // Refresh status immediately
-      fetchSyncStatus()
+      fetch('/api/garmin/sync/status')
+        .then(response => response.ok ? response.json() : null)
+        .then(statusData => statusData && setStatus(statusData))
+        .catch(err => console.error('Failed to refresh sync status:', err))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to trigger sync')
     }
