@@ -23,6 +23,18 @@ export default function SyncSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Helper function to create fetch options with dev mode headers
+  const createFetchOptions = (options: RequestInit = {}): RequestInit => {
+    return {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Athlete-Id': '00000000-0000-0000-0000-000000000001', // Dev mode athlete ID
+        ...options.headers,
+      },
+    }
+  }
+
   // Fetch initial data
   useEffect(() => {
     fetchSyncData()
@@ -32,7 +44,7 @@ export default function SyncSettingsPage() {
   useEffect(() => {
     if (status?.is_running) {
       const interval = setInterval(() => {
-        fetch('/api/garmin/sync/status')
+        fetch('/api/garmin/sync/status', createFetchOptions())
           .then(response => response.ok ? response.json() : null)
           .then(statusData => {
             if (statusData) {
@@ -56,9 +68,9 @@ export default function SyncSettingsPage() {
       
       // Fetch config, status, and recent history in parallel
       const [configRes, statusRes, historyRes] = await Promise.all([
-        fetch('/api/garmin/sync-config'),
-        fetch('/api/garmin/sync/status'),
-        fetch('/api/garmin/sync/history?limit=10')
+        fetch('/api/garmin/sync-config', createFetchOptions()),
+        fetch('/api/garmin/sync/status', createFetchOptions()),
+        fetch('/api/garmin/sync/history?limit=10', createFetchOptions())
       ])
 
       // Handle authentication errors specifically
@@ -115,7 +127,7 @@ export default function SyncSettingsPage() {
 
   const fetchSyncHistory = async () => {
     try {
-      const response = await fetch('/api/garmin/sync/history?limit=10')
+      const response = await fetch('/api/garmin/sync/history?limit=10', createFetchOptions())
       if (response.ok) {
         const historyData = await response.json()
         setHistory(historyData.history || [])
@@ -127,11 +139,10 @@ export default function SyncSettingsPage() {
 
   const handleConfigUpdate = async (updates: Partial<GarminSyncConfig>) => {
     try {
-      const response = await fetch('/api/garmin/sync-config', {
+      const response = await fetch('/api/garmin/sync-config', createFetchOptions({
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
-      })
+      }))
 
       if (!response.ok) {
         throw new Error('Failed to update configuration')
@@ -141,7 +152,7 @@ export default function SyncSettingsPage() {
       setConfig(updatedConfig)
       
       // Refresh status to get updated next_sync_at
-      fetch('/api/garmin/sync/status')
+      fetch('/api/garmin/sync/status', createFetchOptions())
         .then(response => response.ok ? response.json() : null)
         .then(statusData => statusData && setStatus(statusData))
         .catch(err => console.error('Failed to refresh sync status:', err))
@@ -152,14 +163,13 @@ export default function SyncSettingsPage() {
 
   const handleManualSync = async (dataTypes?: string[]) => {
     try {
-      const response = await fetch('/api/garmin/sync/trigger', {
+      const response = await fetch('/api/garmin/sync/trigger', createFetchOptions({
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sync_type: 'manual',
           data_types: dataTypes
         })
-      })
+      }))
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -167,7 +177,7 @@ export default function SyncSettingsPage() {
       }
 
       // Refresh status immediately
-      fetch('/api/garmin/sync/status')
+      fetch('/api/garmin/sync/status', createFetchOptions())
         .then(response => response.ok ? response.json() : null)
         .then(statusData => statusData && setStatus(statusData))
         .catch(err => console.error('Failed to refresh sync status:', err))
