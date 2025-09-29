@@ -150,7 +150,8 @@ export class BackgroundSyncService {
         dbPath: options.config?.garmin_db_path || this.getDefaultGarminDbPath(),
         filters: importRequest.filters,
         batchSize: importRequest.batchSize,
-        dryRun: importRequest.dryRun
+        dryRun: importRequest.dryRun,
+        supabaseClient: this.supabase // Pass authenticated client
       }
 
       const result = await importService.importActivities(importOptions)
