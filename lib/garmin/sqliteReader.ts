@@ -3,6 +3,7 @@
  * Reads activities and wellness data from GarminDB SQLite files
  */
 
+import Database from 'better-sqlite3'
 import { FilterOptions, generateSqlFilter, type GarminActivity } from './dataFilters'
 
 export interface SqliteReaderOptions {
@@ -41,14 +42,46 @@ export class SqliteReader {
     const startTime = Date.now()
     
     try {
-      // TODO: Replace with actual SQLite integration
-      // For now, return mock data structure
-      const mockActivities = this.generateMockActivities(filters)
+      // Open SQLite database connection
+      const db = new Database(this.dbPath, { readonly: true, fileMustExist: true })
+      
+      // Build SQL query with filters
+      const { whereClause, params } = generateSqlFilter(filters)
+      const sql = `
+        SELECT 
+          activity_id,
+          name,
+          sport,
+          start_time,
+          moving_time,
+          distance,
+          avg_hr,
+          max_hr,
+          calories,
+          ascent,
+          descent,
+          avg_temperature
+        FROM activities
+        ${whereClause ? `WHERE ${whereClause}` : ''}
+        ORDER BY start_time DESC
+        ${filters?.limit ? `LIMIT ${filters.limit}` : ''}
+      `
+      
+      // Execute query
+      const stmt = db.prepare(sql)
+      const rows = stmt.all(params) as GarminActivity[]
+      
+      // Get total count without limit
+      const countSql = `SELECT COUNT(*) as count FROM activities ${whereClause ? `WHERE ${whereClause}` : ''}`
+      const countStmt = db.prepare(countSql)
+      const countResult = countStmt.get(params) as { count: number }
+      
+      db.close()
       
       const result: ReadResult = {
-        activities: mockActivities,
-        totalCount: 1000, // Mock total from GarminDB
-        filteredCount: mockActivities.length,
+        activities: rows,
+        totalCount: countResult.count,
+        filteredCount: rows.length,
         executionTime: Date.now() - startTime
       }
 
@@ -110,16 +143,36 @@ export class SqliteReader {
     dateRange: { start: string; end: string }
     sports: string[]
   }> {
-    // TODO: Replace with actual database introspection
-    return {
-      path: this.dbPath,
-      size: 448 * 1024 * 1024, // Mock 448MB from T2 analysis
-      activityCount: 1000,
-      dateRange: {
-        start: '2021-09-10',
-        end: '2025-08-29'
-      },
-      sports: ['running', 'walking', 'cycling', 'swimming', 'fitness_equipment', 'hiking', 'snowboarding', 'rock_climbing']
+    try {
+      const db = new Database(this.dbPath, { readonly: true, fileMustExist: true })
+      
+      // Get activity count
+      const countResult = db.prepare('SELECT COUNT(*) as count FROM activities').get() as { count: number }
+      
+      // Get date range
+      const dateRangeResult = db.prepare('SELECT MIN(start_time) as start, MAX(start_time) as end FROM activities').get() as { start: string; end: string }
+      
+      // Get distinct sports
+      const sportsResult = db.prepare('SELECT DISTINCT sport FROM activities WHERE sport IS NOT NULL').all() as { sport: string }[]
+      
+      // Get file size
+      const fs = require('fs')
+      const stats = fs.statSync(this.dbPath)
+      
+      db.close()
+      
+      return {
+        path: this.dbPath,
+        size: stats.size,
+        activityCount: countResult.count,
+        dateRange: {
+          start: dateRangeResult.start?.split(' ')[0] || '',
+          end: dateRangeResult.end?.split(' ')[0] || ''
+        },
+        sports: sportsResult.map(r => r.sport)
+      }
+    } catch (error) {
+      throw new Error(`Failed to get database info: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
