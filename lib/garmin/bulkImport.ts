@@ -80,10 +80,8 @@ function mockTransformActivity(activity: GarminActivity, athleteId: string): Moc
     actual_duration_min: durationMin,
     actual_distance_m: distanceM,
     status: 'completed',
-    source_file_type: 'garmin',
-    metadata: {
-      garmin_activity_id: activity.activity_id
-    }
+    source_file_type: 'garmin'
+    // Note: metadata field omitted - current sessions table schema doesn't support it
   }
 }
 

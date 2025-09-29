@@ -159,7 +159,7 @@ export class BackgroundSyncService {
       return {
         imported: result.summary.successfulImports,
         skipped: result.summary.duplicateSkips + result.summary.filteredOut,
-        errors: result.errors.map(e => `Activity import: ${e instanceof Error ? e.message : String(e)}`)
+        errors: result.errors.map(e => `Activity import: ${e.error}`)
       }
 
     } catch (error) {
