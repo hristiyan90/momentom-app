@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/page-header"
 import { MonthGrid } from "@/components/calendar/MonthGrid"
 import { WeekLane } from "@/components/week-lane"
@@ -10,6 +10,7 @@ import { CalendarSidebar } from "@/components/calendar/CalendarSidebar"
 import { LifeBlockerSidebar } from "@/components/calendar/LifeBlockerSidebar"
 import { RaceDetailsSidebar } from "@/components/calendar/RaceDetailsSidebar"
 import type { DayAggregate } from "@/components/calendar/MonthCell"
+import { apiClient } from "@/lib/api/client"
 
 type ViewMode = "month" | "week"
 
@@ -33,17 +34,6 @@ interface Race {
   description?: string
 }
 
-// Add a deterministic random number generator
-const deterministicRandom = (seed: string): number => {
-  let hash = 0
-  for (let i = 0; i < seed.length; i++) {
-    const char = seed.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32-bit integer
-  }
-  return Math.abs(hash) / 2147483647 // Normalize to 0-1
-}
-
 export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("month")
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -61,8 +51,51 @@ export default function CalendarPage() {
   const [raceDetailsSidebarOpen, setRaceDetailsSidebarOpen] = useState(false)
   const [selectedRace, setSelectedRace] = useState<Race | null>(null)
 
+  // NEW: State for real sessions data
+  const [sessionsData, setSessionsData] = useState<Record<string, any[]>>({})
+  const [loading, setLoading] = useState(false)
+
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
+
+  // NEW: Function to fetch sessions for a month
+  const fetchSessionsForMonth = async (year: number, month: number) => {
+    setLoading(true)
+    try {
+      // Set athlete ID for dev mode
+      apiClient.setAthleteId('00000000-0000-0000-0000-000000000001')
+      
+      const startDate = new Date(year, month, 1).toISOString().split('T')[0]
+      const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0]
+      
+      const response = await apiClient.getSessions({
+        start: startDate,
+        end: endDate,
+        limit: 1000 // Get all sessions for the month
+      })
+      
+      if (response.data?.items) {
+        // Group sessions by date
+        const groupedSessions: Record<string, any[]> = {}
+        response.data.items.forEach(session => {
+          if (!groupedSessions[session.date]) {
+            groupedSessions[session.date] = []
+          }
+          groupedSessions[session.date].push(session)
+        })
+        setSessionsData(groupedSessions)
+      }
+    } catch (error) {
+      console.error('Failed to fetch sessions:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // NEW: Fetch data when month changes
+  useEffect(() => {
+    fetchSessionsForMonth(currentYear, currentMonth)
+  }, [currentYear, currentMonth])
 
   const getWeekStart = (date: Date) => {
     const weekStart = new Date(date)
@@ -74,10 +107,35 @@ export default function CalendarPage() {
     setCurrentDate(new Date(year, month, 1))
   }
 
+  // UPDATED: Use real data instead of mock data
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)
-    const dayData = generateMockData(date)
-    if (dayData) {
+    const dateStr = date.toISOString().split('T')[0]
+    const daySessions = sessionsData[dateStr] || []
+    
+    if (daySessions.length > 0) {
+      // Convert API sessions to DayAggregate format
+      const sessions = daySessions.map(session => ({
+        id: session.session_id,
+        dateISO: session.date,
+        sport: session.sport,
+        title: session.title,
+        minutes: session.planned_duration_min || session.actual_duration_min || 60,
+        intensity: session.planned_zone_primary || 'z2',
+        load: session.planned_load || 50,
+      }))
+      
+      const bySportMinutes = sessions.reduce((acc, session) => {
+        acc[session.sport] = (acc[session.sport] || 0) + session.minutes
+        return acc
+      }, {} as Record<string, number>)
+      
+      const dayData: DayAggregate = {
+        dateISO: dateStr,
+        bySportMinutes,
+        sessions
+      }
+      
       setSelectedDayData(dayData)
       setSidebarOpen(true)
     }
@@ -140,191 +198,6 @@ export default function CalendarPage() {
     setSelectedDayData(null)
   }
 
-  const generateMockData = (date: Date): DayAggregate | undefined => {
-    const dayOfWeek = (date.getDay() + 6) % 7 // 0=Monday, 1=Tuesday, etc.
-    const today = new Date()
-    const isThisWeek = Math.abs(date.getTime() - today.getTime()) < 7 * 24 * 60 * 60 * 1000
-
-    if (dayOfWeek === 0) return undefined // Monday rest day
-
-    const sessions = []
-    const bySportMinutes: Partial<Record<"swim" | "bike" | "run" | "strength", number>> = {}
-
-    if (isThisWeek) {
-      switch (dayOfWeek) {
-        case 1: // Tuesday
-          if (date < today) {
-            sessions.push({
-              id: `${date.toISOString()}-missed`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "bike" as const,
-              title: "Sweet Spot Intervals",
-              minutes: 75,
-              intensity: "tempo" as const,
-              load: 0, // Missed workout - no load
-            })
-            bySportMinutes.bike = 75
-          }
-          break
-        case 2: // Wednesday
-          if (date <= today) {
-            sessions.push(
-              {
-                id: `${date.toISOString()}-swim`,
-                dateISO: date.toISOString().split("T")[0],
-                sport: "swim" as const,
-                title: "Easy Recovery",
-                minutes: 45,
-                intensity: "recovery" as const,
-                load: 95, // Good compliance - green field
-              },
-              {
-                id: `${date.toISOString()}-bike`,
-                dateISO: date.toISOString().split("T")[0],
-                sport: "bike" as const,
-                title: "Tempo Intervals",
-                minutes: 90,
-                intensity: "tempo" as const,
-                load: 45, // Low compliance - yellow field
-              },
-            )
-            bySportMinutes.swim = 45
-            bySportMinutes.bike = 90
-          }
-          break
-        case 3: // Thursday
-          sessions.push(
-            {
-              id: `${date.toISOString()}-swim`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "swim" as const,
-              title: "Threshold 400s",
-              minutes: 75,
-              intensity: "threshold" as const,
-              load: 195,
-            },
-            {
-              id: `${date.toISOString()}-bike`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "bike" as const,
-              title: "FTP Test",
-              minutes: 90,
-              intensity: "vo2" as const,
-              load: 285,
-            },
-          )
-          bySportMinutes.swim = 75
-          bySportMinutes.bike = 90
-          break
-        case 4: // Friday
-          sessions.push({
-            id: `${date.toISOString()}-run`,
-            dateISO: date.toISOString().split("T")[0],
-            sport: "run" as const,
-            title: "Recovery Run",
-            minutes: 40,
-            intensity: "recovery" as const,
-            load: 45,
-          })
-          bySportMinutes.run = 40
-          break
-        case 5: // Saturday
-          sessions.push(
-            {
-              id: `${date.toISOString()}-swim`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "swim" as const,
-              title: "Open Water Prep",
-              minutes: 90,
-              intensity: "endurance" as const,
-              load: 125,
-            },
-            {
-              id: `${date.toISOString()}-strength`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "strength" as const,
-              title: "Core & Stability",
-              minutes: 45,
-              intensity: "endurance" as const,
-              load: 35,
-            },
-          )
-          bySportMinutes.swim = 90
-          bySportMinutes.strength = 45
-          break
-        case 6: // Sunday
-          sessions.push(
-            {
-              id: `${date.toISOString()}-brick`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "bike" as const,
-              title: "Brick Workout",
-              minutes: 150,
-              intensity: "tempo" as const,
-              load: 225,
-            },
-            {
-              id: `${date.toISOString()}-run`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "run" as const,
-              title: "Transition Run",
-              minutes: 30,
-              intensity: "tempo" as const,
-              load: 65,
-            },
-            {
-              id: `${date.toISOString()}-strength`,
-              dateISO: date.toISOString().split("T")[0],
-              sport: "strength" as const,
-              title: "Recovery Yoga",
-              minutes: 30,
-              intensity: "recovery" as const,
-              load: 15,
-            },
-          )
-          bySportMinutes.bike = 150
-          bySportMinutes.run = 30
-          bySportMinutes.strength = 30
-          break
-      }
-    } else {
-      const random = Math.random()
-      if (random < 0.15) return undefined
-
-      const sessionCount = Math.floor(Math.random() * 3) + 1
-      const sports = ["swim", "bike", "run", "strength"] as const
-      const intensities = ["recovery", "endurance", "tempo", "threshold", "vo2"] as const
-
-      for (let i = 0; i < sessionCount; i++) {
-        const sport = sports[Math.floor(deterministicRandom(`${date.toISOString()}-sport-${i}`) * sports.length)]
-        const intensity = intensities[Math.floor(deterministicRandom(`${date.toISOString()}-intensity-${i}`) * intensities.length)]
-        const minutes = sport === "strength" 
-          ? Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 60) + 30 
-          : Math.floor(deterministicRandom(`${date.toISOString()}-minutes-${i}`) * 120) + 45
-
-        sessions.push({
-          id: `${date.toISOString()}-${i}`,
-          dateISO: date.toISOString().split("T")[0],
-          sport,
-          title: `${sport.charAt(0).toUpperCase() + sport.slice(1)} Session`,
-          minutes,
-          intensity,
-          load: Math.floor(deterministicRandom(`${date.toISOString()}-load-${i}`) * 150) + 50,
-        })
-
-        bySportMinutes[sport] = (bySportMinutes[sport] || 0) + minutes
-      }
-    }
-
-    return sessions.length > 0
-      ? {
-          dateISO: date.toISOString().split("T")[0],
-          bySportMinutes,
-          sessions,
-        }
-      : undefined
-  }
-
   const weekSummaryData = {
     loadBySport: {
       swim: 180,
@@ -342,8 +215,6 @@ export default function CalendarPage() {
     planned: 8,
     completed: 5,
   }
-
-  // Race data is now handled by MonthGrid component
 
   const handleRaceClick = (race: Race) => {
     setSelectedRace(race)
@@ -403,6 +274,8 @@ export default function CalendarPage() {
             selectedDateRange={selectedDateRange}
             onLifeBlockerClick={handleLifeBlockerClick}
             onRaceClick={handleRaceClick}
+            sessionsData={sessionsData}
+            loading={loading}
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -425,6 +298,7 @@ export default function CalendarPage() {
               <WeekLane
                 weekStart={getWeekStart(currentDate)}
                 onSessionClick={(session) => console.log("Session clicked:", session)}
+                sessionsData={sessionsData}
               />
             </div>
 

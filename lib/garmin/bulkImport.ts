@@ -72,7 +72,7 @@ function mockTransformActivity(activity: GarminActivity, athleteId: string): Moc
   const distanceM = activity.distance ? Math.round(activity.distance * 1000) : null
 
   return {
-    session_id: `garmin-${activity.activity_id}-${Date.now()}`, // Mock UUID
+    session_id: crypto.randomUUID(), // Generate proper UUID
     athlete_id: athleteId,
     date: activity.start_time.split(' ')[0], // Extract date part
     sport,

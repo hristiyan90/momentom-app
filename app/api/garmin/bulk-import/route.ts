@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { serverClient } from '@/lib/supabase/server'
+import { getAthleteId } from '@/lib/auth/athlete'
 import { BulkImportService, type BulkImportOptions } from '@/lib/garmin/bulkImport'
 import { DEFAULT_FILTER_OPTIONS, type FilterOptions } from '@/lib/garmin/dataFilters'
 import { getGarminDbPaths } from '@/lib/garmin/sqliteReader'

@@ -26,9 +26,29 @@ interface WeekLaneProps {
   weekStart: Date
   onSessionClick?: (session: WeekSession) => void
   adaptations?: { [key: string]: boolean } // Date string -> has adaptation
+  sessionsData?: Record<string, any[]> // ADD THIS LINE
 }
 
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+// Helper function to convert API sessions to WeekSession format
+const convertApiSessionToWeekSession = (session: any): WeekSession => {
+  const duration = session.planned_duration_min || session.actual_duration_min || 60
+  const hours = Math.floor(duration / 60)
+  const minutes = duration % 60
+  const durationStr = `${hours}:${minutes.toString().padStart(2, '0')}`
+  
+  return {
+    id: session.session_id,
+    sport: session.sport as "swim" | "bike" | "run",
+    title: session.title,
+    duration: durationStr,
+    intensity: session.planned_zone_primary ? parseInt(session.planned_zone_primary.replace('z', '')) : 3,
+    time: "6:00 AM", // Default time since we don't have this in the API
+    completed: session.status === 'completed',
+    compliance: session.planned_load || 100
+  }
+}
 
 const generateWeekSessions = (date: Date): WeekSession[] => {
   const sessions: WeekSession[] = []
@@ -259,7 +279,7 @@ const getSessionCardColor = (session: WeekSession): string => {
   return "border-border-weak bg-bg-raised"
 }
 
-export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLaneProps) {
+export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessionsData = {} }: WeekLaneProps) {
   // Generate week days
   const weekDays: WeekDay[] = []
 
@@ -267,7 +287,9 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
     const date = new Date(weekStart)
     date.setDate(date.getDate() + i)
 
-    const sessions = generateWeekSessions(date)
+    const dateStr = date.toISOString().split('T')[0]
+    const daySessions = sessionsData[dateStr] || []
+    const sessions = daySessions.map(convertApiSessionToWeekSession)
     const totalLoad = sessions.reduce((acc, session) => {
       const minutes =
         Number.parseInt(session.duration.split(":")[0]) * 60 + Number.parseInt(session.duration.split(":")[1])
