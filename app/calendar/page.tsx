@@ -14,6 +14,18 @@ import { apiClient } from "@/lib/api/client"
 
 type ViewMode = "month" | "week"
 
+interface SessionData {
+  session_id: string
+  date: string
+  sport: 'swim' | 'bike' | 'run' | 'strength' | 'mobility'
+  title: string
+  planned_duration_min?: number
+  actual_duration_min?: number
+  planned_zone_primary?: string
+  planned_load?: number
+  status: string
+}
+
 interface LifeBlocker {
   id: string
   startDate: Date
@@ -52,7 +64,7 @@ export default function CalendarPage() {
   const [selectedRace, setSelectedRace] = useState<Race | null>(null)
 
   // NEW: State for real sessions data
-  const [sessionsData, setSessionsData] = useState<Record<string, any[]>>({})
+  const [sessionsData, setSessionsData] = useState<Record<string, SessionData[]>>({})
   const [loading, setLoading] = useState(false)
 
   const currentYear = currentDate.getFullYear()
@@ -76,12 +88,12 @@ export default function CalendarPage() {
       
       if (response.data?.items) {
         // Group sessions by date
-        const groupedSessions: Record<string, any[]> = {}
+        const groupedSessions: Record<string, SessionData[]> = {}
         response.data.items.forEach(session => {
           if (!groupedSessions[session.date]) {
             groupedSessions[session.date] = []
           }
-          groupedSessions[session.date].push(session)
+          groupedSessions[session.date].push(session as SessionData)
         })
         setSessionsData(groupedSessions)
       }
@@ -115,15 +127,26 @@ export default function CalendarPage() {
     
     if (daySessions.length > 0) {
       // Convert API sessions to DayAggregate format
-      const sessions = daySessions.map(session => ({
-        id: session.session_id,
-        dateISO: session.date,
-        sport: session.sport,
-        title: session.title,
-        minutes: session.planned_duration_min || session.actual_duration_min || 60,
-        intensity: session.planned_zone_primary || 'z2',
-        load: session.planned_load || 50,
-      }))
+      const sessions = daySessions.map(session => {
+        // Map zone numbers to intensity names
+        const zoneToIntensity: Record<string, 'recovery' | 'endurance' | 'tempo' | 'threshold' | 'vo2'> = {
+          '1': 'recovery',
+          '2': 'endurance', 
+          '3': 'tempo',
+          '4': 'threshold',
+          '5': 'vo2'
+        }
+        
+        return {
+          id: session.session_id,
+          dateISO: session.date,
+          sport: session.sport as 'swim' | 'bike' | 'run' | 'strength',
+          title: session.title,
+          minutes: session.planned_duration_min || session.actual_duration_min || 60,
+          intensity: zoneToIntensity[session.planned_zone_primary?.replace('z', '') || '2'] || 'endurance',
+          load: session.planned_load || 50,
+        }
+      })
       
       const bySportMinutes = sessions.reduce((acc, session) => {
         acc[session.sport] = (acc[session.sport] || 0) + session.minutes
