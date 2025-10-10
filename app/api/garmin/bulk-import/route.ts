@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
  * GET /api/garmin/bulk-import
  * Returns information about available import options and database status
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get athlete_id from auth
     const supabase = serverClient()
