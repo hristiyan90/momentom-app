@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
  * GET /api/garmin/bulk-import
  * Returns information about available import options and database status
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get athlete_id from auth
     const supabase = serverClient()
@@ -213,6 +213,15 @@ export async function GET(request: NextRequest) {
       console.warn('Failed to query existing sessions:', queryError)
     }
 
+    // Type the existing sessions properly
+    const typedExistingSessions = existingSessions as Array<{
+      session_id: string
+      date: string
+      sport: string
+      source_file_type: string
+      metadata?: { garmin_activity_id?: number }
+    }> || []
+
     const garminDbPaths = getGarminDbPaths()
     
     const responseData = {
@@ -221,10 +230,10 @@ export async function GET(request: NextRequest) {
       allowedSports: ['running', 'cycling', 'swimming', 'walking', 'hiking', 'fitness_equipment'],
       expectedDbPaths: garminDbPaths,
       existingImports: {
-        count: existingSessions?.length || 0,
-        latestDate: existingSessions?.[0]?.date || null,
-        sports: [...new Set(existingSessions?.map(s => s.sport) || [])],
-        recentSessions: existingSessions?.slice(0, 5).map(s => ({
+        count: typedExistingSessions?.length || 0,
+        latestDate: typedExistingSessions?.[0]?.date || null,
+        sports: [...new Set(typedExistingSessions?.map(s => s.sport) || [])],
+        recentSessions: typedExistingSessions?.slice(0, 5).map(s => ({
           date: s.date,
           sport: s.sport,
           garminId: s.metadata?.garmin_activity_id

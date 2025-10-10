@@ -69,14 +69,14 @@ export function transformGarminActivity(
     const performanceMetrics = extractPerformanceMetrics(activity, sport)
     const environmentalData = extractEnvironmentalData(activity)
     
-    // Step 9: Build metadata object
+    // Step 9: Build metadata object (for future use when schema supports it)
     const metadata = {
       garmin_activity_id: activity.activity_id,
       ...(performanceMetrics && { performance_metrics: performanceMetrics }),
       ...(environmentalData && { environmental: environmentalData })
     }
     
-    // Step 10: Construct Momentom session
+    // Step 10: Construct Momentom session (without metadata field - not supported in current schema)
     const session: MomentomSession = {
       session_id: sessionId,
       athlete_id: athleteId,
@@ -86,8 +86,8 @@ export function transformGarminActivity(
       actual_duration_min: actualDurationMin,
       actual_distance_m: actualDistanceM,
       status: 'completed',
-      source_file_type: 'garmin',
-      metadata
+      source_file_type: 'garmin'
+      // Note: metadata field omitted - current sessions table schema doesn't support it
     }
     
     // Step 11: Validate transformed session

@@ -24,187 +24,45 @@ interface WeekDay {
 
 interface WeekLaneProps {
   weekStart: Date
-  onSessionClick?: (session: WeekSession) => void
   adaptations?: { [key: string]: boolean } // Date string -> has adaptation
+  sessionsData?: Record<string, SessionData[]>
+}
+
+interface SessionData {
+  session_id: string
+  date: string
+  sport: string
+  title: string
+  planned_duration_min?: number
+  actual_duration_min?: number
+  planned_zone_primary?: string
+  planned_load?: number
+  status: string
 }
 
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-const generateWeekSessions = (date: Date): WeekSession[] => {
-  const sessions: WeekSession[] = []
-  const dayOfWeek = (date.getDay() + 6) % 7 // 0=Monday, 1=Tuesday, etc.
-  const today = new Date()
-  const isThisWeek = Math.abs(date.getTime() - today.getTime()) < 7 * 24 * 60 * 60 * 1000
-
-  if (isThisWeek) {
-    // This week's specific schedule (14 hours, 11 sessions)
-    switch (dayOfWeek) {
-      case 0: // Monday - Rest day
-        break
-      case 1: // Tuesday - Missed workout
-        sessions.push({
-          id: `tue-bike-missed`,
-          sport: "bike",
-          title: "Sweet Spot Intervals",
-          duration: "1:15", // Fixed from 75:00 to realistic 1h 15min
-          intensity: 3,
-          time: "6:30 PM",
-          completed: false,
-          missed: true,
-        })
-        break
-      case 2: // Wednesday - Lower compliance
-        sessions.push(
-          {
-            id: `wed-swim`,
-            sport: "swim",
-            title: "Easy Recovery",
-            duration: "0:45", // Fixed from 45:00 to 45min
-            intensity: 1,
-            time: "6:00 AM",
-            completed: true,
-            compliance: 98,
-          },
-          {
-            id: `wed-bike`,
-            sport: "bike",
-            title: "Tempo Intervals",
-            duration: "1:30", // Fixed from 90:00 to 1h 30min
-            intensity: 4,
-            time: "6:00 PM",
-            completed: true,
-            compliance: 72,
-          },
-        )
-        break
-      case 3: // Thursday - Today
-        sessions.push(
-          {
-            id: `thu-swim`,
-            sport: "swim",
-            title: "Threshold 400s",
-            duration: "1:15", // Fixed from 75:00 to 1h 15min
-            intensity: 4,
-            time: "6:00 AM",
-            completed: false,
-          },
-          {
-            id: `thu-bike`,
-            sport: "bike",
-            title: "FTP Test",
-            duration: "1:30", // Fixed from 90:00 to 1h 30min
-            intensity: 5,
-            time: "6:30 PM",
-            completed: false,
-          },
-        )
-        break
-      case 4: // Friday
-        sessions.push({
-          id: `fri-run`,
-          sport: "run",
-          title: "Recovery Run",
-          duration: "0:40", // Fixed from 40:00 to 40min
-          intensity: 1,
-          time: "7:00 AM",
-          completed: false,
-        })
-        break
-      case 5: // Saturday
-        sessions.push(
-          {
-            id: `sat-swim`,
-            sport: "swim",
-            title: "Open Water Prep",
-            duration: "1:30", // Fixed from 90:00 to 1h 30min
-            intensity: 3,
-            time: "8:00 AM",
-            completed: false,
-          },
-          {
-            id: `sat-strength`,
-            sport: "run", // Using run icon for strength
-            title: "Core & Stability",
-            duration: "0:45", // Fixed from 45:00 to 45min
-            intensity: 2,
-            time: "10:00 AM",
-            completed: false,
-          },
-        )
-        break
-      case 6: // Sunday - Brick workout
-        sessions.push(
-          {
-            id: `sun-brick`,
-            sport: "bike",
-            title: "Brick Workout",
-            duration: "2:30", // Fixed from 150:00 to 2h 30min
-            intensity: 4,
-            time: "9:00 AM",
-            completed: date < today,
-          },
-          {
-            id: `sun-run`,
-            sport: "run",
-            title: "Transition Run",
-            duration: "0:30", // Fixed from 30:00 to 30min
-            intensity: 3,
-            time: "11:30 AM",
-            completed: date < today,
-          },
-          {
-            id: `sun-strength`,
-            sport: "run", // Using run icon for strength
-            title: "Recovery Yoga",
-            duration: "0:30", // Fixed from 30:00 to 30min
-            intensity: 1,
-            time: "1:00 PM",
-            completed: date < today,
-          },
-        )
-        break
-    }
-  } else {
-    // Generate varied sessions for other weeks
-    if (dayOfWeek === 0) return sessions // Monday rest
-
-    const sessionTypes = [
-      {
-        sport: "swim" as const,
-        titles: ["Technique Focus", "Endurance Set", "Sprint Work"],
-        durations: ["1:00", "1:15", "0:45"], // Fixed unrealistic durations
-      },
-      {
-        sport: "bike" as const,
-        titles: ["Interval Training", "Endurance Ride", "Recovery Spin"],
-        durations: ["1:30", "2:00", "1:00"], // Fixed unrealistic durations
-      },
-      {
-        sport: "run" as const,
-        titles: ["Tempo Run", "Long Run", "Track Work"],
-        durations: ["0:45", "1:45", "1:00"], // Fixed unrealistic durations
-      },
-    ]
-
-    const sessionCount = Math.random() < 0.3 ? 1 : Math.random() < 0.7 ? 2 : 3
-    for (let i = 0; i < sessionCount; i++) {
-      const type = sessionTypes[Math.floor(Math.random() * sessionTypes.length)]
-      const titleIndex = Math.floor(Math.random() * type.titles.length)
-
-      sessions.push({
-        id: `${dayOfWeek}-${i}-${date.getTime()}`,
-        sport: type.sport,
-        title: type.titles[titleIndex],
-        duration: type.durations[titleIndex],
-        intensity: Math.floor(Math.random() * 5) + 1,
-        time: i === 0 ? "6:00 AM" : "6:00 PM",
-        completed: date < today,
-      })
-    }
+// Helper function to convert API sessions to WeekSession format
+const convertApiSessionToWeekSession = (session: SessionData): WeekSession => {
+  const duration = session.planned_duration_min || session.actual_duration_min || 60
+  const hours = Math.floor(duration / 60)
+  const minutes = duration % 60
+  const durationStr = `${hours}:${minutes.toString().padStart(2, '0')}`
+  
+  return {
+    id: session.session_id,
+    sport: session.sport as "swim" | "bike" | "run",
+    title: session.title,
+    duration: durationStr,
+    intensity: session.planned_zone_primary ? parseInt(session.planned_zone_primary.replace('z', '')) : 3,
+    time: "6:00 AM", // Default time since we don't have this in the API
+    completed: session.status === 'completed',
+    compliance: session.planned_load || 100
   }
-
-  return sessions
 }
+
+// Unused function - removed to fix linting
+// const generateWeekSessions = (date: Date): WeekSession[] => {
 
 const formatDuration = (duration: string): string => {
   const [hours, minutes] = duration.split(":").map(Number)
@@ -226,13 +84,6 @@ const getIntensityDots = (intensity: number) => {
     5: 3, // vo2
   }
   return intensityLevels[intensity as keyof typeof intensityLevels] || 1
-}
-
-const getWorkoutType = (intensity: number): { label: string; color: string } => {
-  if (intensity <= 2) return { label: "Recovery", color: "badge badge-good" }
-  if (intensity === 3) return { label: "Endurance", color: "badge badge-info" }
-  if (intensity === 4) return { label: "Tempo", color: "badge badge-ok" }
-  return { label: "VO2max", color: "badge badge-critical" }
 }
 
 const getStatusBadge = (session: WeekSession) => {
@@ -259,7 +110,7 @@ const getSessionCardColor = (session: WeekSession): string => {
   return "border-border-weak bg-bg-raised"
 }
 
-export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLaneProps) {
+export function WeekLane({ weekStart, adaptations = {}, sessionsData = {} }: WeekLaneProps) {
   // Generate week days
   const weekDays: WeekDay[] = []
 
@@ -267,7 +118,9 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
     const date = new Date(weekStart)
     date.setDate(date.getDate() + i)
 
-    const sessions = generateWeekSessions(date)
+    const dateStr = date.toISOString().split('T')[0]
+    const daySessions = sessionsData[dateStr] || []
+    const sessions = daySessions.map(convertApiSessionToWeekSession)
     const totalLoad = sessions.reduce((acc, session) => {
       const minutes =
         Number.parseInt(session.duration.split(":")[0]) * 60 + Number.parseInt(session.duration.split(":")[1])
@@ -290,13 +143,25 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
 
-  const getTotalWeekLoad = () => {
-    return weekDays.reduce((acc, day) => acc + day.totalLoad, 0)
-  }
-
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false)
   const [selectedSessionForSwap, setSelectedSessionForSwap] = useState<WeekSession | null>(null)
   const [showAdaptationModal, setShowAdaptationModal] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null)
+
+  // Handle keyboard navigation and focus management
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSwapDrawerOpen(false)
+        setSelectedSessionForSwap(null)
+      }
+    }
+
+    if (swapDrawerOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [swapDrawerOpen])
 
   const handleSwapSession = (session: WeekSession) => {
     setSelectedSessionForSwap(session)
@@ -311,25 +176,10 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
   const SwapSessionDrawer = () => {
     if (!selectedSessionForSwap) return null
 
-    const drawerRef = useRef<HTMLDivElement>(null)
-
-    // Handle keyboard navigation and focus management
-    useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          setSwapDrawerOpen(false)
-          setSelectedSessionForSwap(null)
-        }
-      }
-
-      // Focus the drawer when it opens
-      if (drawerRef.current) {
-        drawerRef.current.focus()
-      }
-
-      document.addEventListener('keydown', handleKeyDown)
-      return () => document.removeEventListener('keydown', handleKeyDown)
-    }, [])
+    // Focus the drawer when it opens
+    if (drawerRef.current) {
+      drawerRef.current.focus()
+    }
 
     const swapOptions = [
       {
@@ -461,7 +311,7 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                 <div>
                   <h3 className="text-lg font-semibold text-text-1">Swap Session</h3>
                   <p className="text-sm text-text-2 mt-1">
-                    Replace "{selectedSessionForSwap.title}" with an alternative
+                    Replace &quot;{selectedSessionForSwap.title}&quot; with an alternative
                   </p>
                 </div>
               </div>
@@ -504,15 +354,10 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
                 <h4 className="text-text-1 font-medium">Alternative workouts for {selectedSessionForSwap.title}</h4>
                 <div className="space-y-3">
                   {swapOptions.map((option) => {
-                    const workoutType = getWorkoutType(option.intensity)
                     const isRest = option.sport === "rest"
                     const Icon = isRest ? Heart : (
                       option.sport === "swim" ? Waves :
                       option.sport === "bike" ? Bike : Footprints
-                    )
-                    const disciplineName = isRest ? "Rest" : (
-                      option.sport === "swim" ? "Swim" :
-                      option.sport === "bike" ? "Bike" : "Run"
                     )
                     const intensityDots = isRest ? 0 : getIntensityDots(option.intensity)
                     const formattedDuration = formatDuration(option.duration)
@@ -732,7 +577,6 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {} }: WeekLa
               <div className="space-y-2">
                 {day.sessions.map((session) => {
                   const statusBadge = getStatusBadge(session)
-                  const workoutType = getWorkoutType(session.intensity)
                   const tssValue = Math.round(session.intensity * 50)
 
                   return (

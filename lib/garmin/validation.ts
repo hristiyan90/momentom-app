@@ -223,7 +223,7 @@ export function validateTransformedSession(session: any): ValidationResult {
   const errors: string[] = []
   const warnings: string[] = []
   
-  // Required fields
+  // Required fields (metadata is optional since current schema doesn't support it)
   const requiredFields = [
     'session_id', 
     'athlete_id', 

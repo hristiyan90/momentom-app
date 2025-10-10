@@ -16,6 +16,7 @@ export interface BulkImportOptions {
   batchSize?: number
   progressCallback?: ProgressCallback
   dryRun?: boolean // For testing without actual database writes
+  supabaseClient?: any // Optional: use provided client instead of creating new one
 }
 
 export interface BulkImportResult {
@@ -71,7 +72,7 @@ function mockTransformActivity(activity: GarminActivity, athleteId: string): Moc
   const distanceM = activity.distance ? Math.round(activity.distance * 1000) : null
 
   return {
-    session_id: `garmin-${activity.activity_id}-${Date.now()}`, // Mock UUID
+    session_id: crypto.randomUUID(), // Generate proper UUID
     athlete_id: athleteId,
     date: activity.start_time.split(' ')[0], // Extract date part
     sport,
@@ -79,10 +80,8 @@ function mockTransformActivity(activity: GarminActivity, athleteId: string): Moc
     actual_duration_min: durationMin,
     actual_distance_m: distanceM,
     status: 'completed',
-    source_file_type: 'garmin',
-    metadata: {
-      garmin_activity_id: activity.activity_id
-    }
+    source_file_type: 'garmin'
+    // Note: metadata field omitted - current sessions table schema doesn't support it
   }
 }
 
@@ -98,8 +97,12 @@ function parseDurationToMinutes(timeString: string): number {
  * Main bulk import service class
  */
 export class BulkImportService {
-  private supabase = serverClient()
+  private supabase: any
   private progressTracker?: ProgressTracker
+
+  constructor(supabaseClient?: any) {
+    this.supabase = supabaseClient || serverClient()
+  }
 
   /**
    * Executes the complete bulk import process
@@ -110,6 +113,9 @@ export class BulkImportService {
     const batchSize = options.batchSize || 50
     const importedSessionIds: string[] = []
     const errors: BulkImportResult['errors'] = []
+
+    // Use provided Supabase client if available (for background sync)
+    const supabase = options.supabaseClient || this.supabase
 
     try {
       // Phase 1: Read and filter activities
@@ -140,7 +146,7 @@ export class BulkImportService {
         this.progressTracker.setPhase('importing', `Processing batch ${batchIndex + 1}/${totalBatches}`)
 
         try {
-          const batchResult = await this.processBatch(batch, options, batchIndex)
+          const batchResult = await this.processBatch(batch, options, batchIndex, supabase)
           successCount += batchResult.successCount
           duplicateCount += batchResult.duplicateCount
           importedSessionIds.push(...batchResult.sessionIds)
@@ -254,7 +260,8 @@ export class BulkImportService {
   private async processBatch(
     activities: GarminActivity[],
     options: BulkImportOptions,
-    batchIndex: number
+    batchIndex: number,
+    supabase: any
   ): Promise<{
     successCount: number
     duplicateCount: number
@@ -272,7 +279,7 @@ export class BulkImportService {
         const session = mockTransformActivity(activity, options.athleteId)
 
         // Check for duplicates (mock implementation)
-        const isDuplicate = await this.checkForDuplicate(activity.activity_id, options.athleteId)
+        const isDuplicate = await this.checkForDuplicate(activity.activity_id, options.athleteId, supabase)
         
         if (isDuplicate) {
           duplicateCount++
@@ -281,7 +288,7 @@ export class BulkImportService {
 
         // Insert session (mock implementation for dry run)
         if (!options.dryRun) {
-          const { error } = await this.supabase
+          const { error } = await supabase
             .from('sessions')
             .insert(session)
 
@@ -316,15 +323,19 @@ export class BulkImportService {
 
   /**
    * Checks if an activity has already been imported
+   * Uses title pattern matching since metadata column doesn't exist in current schema
    */
-  private async checkForDuplicate(activityId: number, athleteId: string): Promise<boolean> {
+  private async checkForDuplicate(activityId: number, athleteId: string, supabase: any): Promise<boolean> {
     try {
-      const { data, error } = await this.supabase
+      // Since metadata column doesn't exist, we'll use a combination of:
+      // 1. source_file_type = 'garmin' 
+      // 2. title contains the activity ID (garmin activities include ID in title)
+      const { data, error } = await supabase
         .from('sessions')
         .select('session_id')
         .eq('athlete_id', athleteId)
         .eq('source_file_type', 'garmin')
-        .contains('metadata', { garmin_activity_id: activityId })
+        .ilike('title', `%${activityId}%`)
         .limit(1)
 
       if (error) {

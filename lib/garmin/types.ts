@@ -39,7 +39,7 @@ export interface MomentomSession {
   actual_distance_m: number | null
   status: 'completed'
   source_file_type: 'garmin'
-  metadata: {
+  metadata?: { // Optional - current sessions table schema doesn't support this field
     garmin_activity_id: number
     performance_metrics?: PerformanceMetrics
     environmental?: EnvironmentalData

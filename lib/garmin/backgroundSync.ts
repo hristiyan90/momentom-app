@@ -150,7 +150,8 @@ export class BackgroundSyncService {
         dbPath: options.config?.garmin_db_path || this.getDefaultGarminDbPath(),
         filters: importRequest.filters,
         batchSize: importRequest.batchSize,
-        dryRun: importRequest.dryRun
+        dryRun: importRequest.dryRun,
+        supabaseClient: this.supabase // Pass authenticated client
       }
 
       const result = await importService.importActivities(importOptions)
@@ -158,7 +159,7 @@ export class BackgroundSyncService {
       return {
         imported: result.summary.successfulImports,
         skipped: result.summary.duplicateSkips + result.summary.filteredOut,
-        errors: result.errors.map(e => `Activity import: ${e}`)
+        errors: result.errors.map(e => `Activity import: ${e.error}`)
       }
 
     } catch (error) {
@@ -185,10 +186,13 @@ export class BackgroundSyncService {
       const { WellnessReader } = await import('./wellnessReader')
       const { transformWellnessBatch } = await import('./wellnessTransform')
       
-      const reader = new WellnessReader(
-        options.config?.garmin_db_path || this.getDefaultGarminDbPath(),
-        options.config?.garmin_monitoring_db_path || this.getDefaultMonitoringDbPath()
-      )
+      // For wellness data, we need garmin.db (not garmin_activities.db)
+      const wellnessDbPath = options.config?.garmin_db_path?.replace('garmin_activities.db', 'garmin.db') || 
+                            '/Users/chris/HealthData/DBs/garmin.db'
+      const monitoringDbPath = options.config?.garmin_monitoring_db_path || 
+                              '/Users/chris/HealthData/DBs/garmin_monitoring.db'
+      
+      const reader = new WellnessReader(wellnessDbPath, monitoringDbPath)
 
       // Validate databases
       const dbValidation = await reader.validateDatabases()
@@ -221,8 +225,8 @@ export class BackgroundSyncService {
         new Map() // Empty historical context for now
       )
 
-      // Import to database
-      const supabase = serverClient()
+      // Import to database using authenticated client
+      const supabase = this.supabase
       let imported = 0
       let skipped = 0
       const errors: string[] = []

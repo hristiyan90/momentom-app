@@ -116,26 +116,33 @@ export function applyFilters(
  * Generates SQL WHERE clause for filtering activities in GarminDB
  * 
  * @param options - Filter options
- * @returns SQL WHERE clause string
+ * @returns Object with whereClause and params for prepared statements
  */
-export function generateSqlFilter(options: FilterOptions = DEFAULT_FILTER_OPTIONS): string {
+export function generateSqlFilter(options: FilterOptions = DEFAULT_FILTER_OPTIONS): { whereClause: string; params: any[] } {
   const conditions: string[] = []
+  const params: any[] = []
 
   // Time range filter
   if (options.startDate) {
-    conditions.push(`start_time >= '${options.startDate} 00:00:00'`)
+    conditions.push(`start_time >= ?`)
+    params.push(`${options.startDate} 00:00:00`)
   }
   if (options.endDate) {
-    conditions.push(`start_time <= '${options.endDate} 23:59:59'`)
+    conditions.push(`start_time <= ?`)
+    params.push(`${options.endDate} 23:59:59`)
   }
 
   // Sports filter
   if (options.sports && options.sports.length > 0) {
-    const sportsClause = options.sports.map(sport => `'${sport}'`).join(', ')
-    conditions.push(`sport IN (${sportsClause})`)
+    const placeholders = options.sports.map(() => '?').join(', ')
+    conditions.push(`sport IN (${placeholders})`)
+    params.push(...options.sports)
   }
 
-  return conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+  return {
+    whereClause: conditions.length > 0 ? conditions.join(' AND ') : '',
+    params
+  }
 }
 
 /**

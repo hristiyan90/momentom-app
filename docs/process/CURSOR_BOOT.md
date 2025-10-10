@@ -8,6 +8,7 @@ This file tells Cursor exactly what to read and how to operate before it propose
 - `docs/process/CURSOR_WORKFLOW.md` - High-level workflow overview
 - `docs/process/AUTO_LOG.md` - Decision log and task tracking process
 - `docs/process/CONTRIBUTING.md` - Setup and testing guide
+- Multi-Agent Workflow: `docs/process/MULTI_AGENT_WORKFLOW.md` - understand the agent ecosystem
 
 ---
 
