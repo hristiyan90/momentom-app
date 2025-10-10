@@ -26,13 +26,25 @@ interface WeekLaneProps {
   weekStart: Date
   onSessionClick?: (session: WeekSession) => void
   adaptations?: { [key: string]: boolean } // Date string -> has adaptation
-  sessionsData?: Record<string, any[]> // ADD THIS LINE
+  sessionsData?: Record<string, SessionData[]> // ADD THIS LINE
+}
+
+interface SessionData {
+  session_id: string
+  date: string
+  sport: string
+  title: string
+  planned_duration_min?: number
+  actual_duration_min?: number
+  planned_zone_primary?: string
+  planned_load?: number
+  status: string
 }
 
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 // Helper function to convert API sessions to WeekSession format
-const convertApiSessionToWeekSession = (session: any): WeekSession => {
+const convertApiSessionToWeekSession = (session: SessionData): WeekSession => {
   const duration = session.planned_duration_min || session.actual_duration_min || 60
   const hours = Math.floor(duration / 60)
   const minutes = duration % 60
@@ -50,7 +62,8 @@ const convertApiSessionToWeekSession = (session: any): WeekSession => {
   }
 }
 
-const generateWeekSessions = (date: Date): WeekSession[] => {
+// Unused function - removed to fix linting
+// const generateWeekSessions = (date: Date): WeekSession[] => {
   const sessions: WeekSession[] = []
   const dayOfWeek = (date.getDay() + 6) % 7 // 0=Monday, 1=Tuesday, etc.
   const today = new Date()
@@ -312,13 +325,25 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessions
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
 
-  const getTotalWeekLoad = () => {
-    return weekDays.reduce((acc, day) => acc + day.totalLoad, 0)
-  }
-
   const [swapDrawerOpen, setSwapDrawerOpen] = useState(false)
   const [selectedSessionForSwap, setSelectedSessionForSwap] = useState<WeekSession | null>(null)
   const [showAdaptationModal, setShowAdaptationModal] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null)
+
+  // Handle keyboard navigation and focus management
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSwapDrawerOpen(false)
+        setSelectedSessionForSwap(null)
+      }
+    }
+
+    if (swapDrawerOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [swapDrawerOpen])
 
   const handleSwapSession = (session: WeekSession) => {
     setSelectedSessionForSwap(session)

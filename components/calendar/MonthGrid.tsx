@@ -22,12 +22,24 @@ interface MonthGridProps {
   selectedDateRange?: { start: Date; end: Date } | null
   onLifeBlockerClick?: (date: Date) => void
   onRaceClick?: (race: Race) => void
-  sessionsData?: Record<string, any[]>
+  sessionsData?: Record<string, SessionData[]>
   loading?: boolean
 }
 
+interface SessionData {
+  session_id: string
+  date: string
+  sport: string
+  title: string
+  planned_duration_min?: number
+  actual_duration_min?: number
+  planned_zone_primary?: string
+  planned_load?: number
+  status: string
+}
+
 // Helper function to convert sessions data to DayAggregate
-const getDayDataFromSessions = (date: Date, sessionsData: Record<string, any[]>): DayAggregate | undefined => {
+const getDayDataFromSessions = (date: Date, sessionsData: Record<string, SessionData[]>): DayAggregate | undefined => {
   const dateStr = date.toISOString().split('T')[0]
   const daySessions = sessionsData[dateStr] || []
   
@@ -175,15 +187,6 @@ const getMacroBlockForDate = (date: Date, macroBlocks: MacroBlock[]): MacroBlock
   return null
 }
 
-const isPhaseStart = (date: Date, macroBlocks: MacroBlock[]): MacroBlock | null => {
-  for (const block of macroBlocks) {
-    if (date.toDateString() === block.startDate.toDateString()) {
-      return block
-    }
-  }
-  return null
-}
-
 // Function to determine if a date should show the macro phase line
 const shouldShowMacroLine = (date: Date, macroBlocks: MacroBlock[]): MacroBlock | null => {
   // Show line for all days within an active macro phase
@@ -215,7 +218,6 @@ export function MonthGrid({
 
   const today = new Date()
   const firstDay = new Date(year, month, 1)
-  const lastDay = new Date(year, month + 1, 0)
   const startDate = new Date(firstDay)
   startDate.setDate(startDate.getDate() - ((firstDay.getDay() + 6) % 7))
 
