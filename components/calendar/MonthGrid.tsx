@@ -209,7 +209,6 @@ export function MonthGrid({
   onLifeBlockerClick,
   onRaceClick,
   sessionsData = {},
-  loading = false,
 }: MonthGridProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState<Date | null>(null)

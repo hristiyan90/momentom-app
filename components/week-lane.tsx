@@ -24,9 +24,8 @@ interface WeekDay {
 
 interface WeekLaneProps {
   weekStart: Date
-  onSessionClick?: (session: WeekSession) => void
   adaptations?: { [key: string]: boolean } // Date string -> has adaptation
-  sessionsData?: Record<string, SessionData[]> // ADD THIS LINE
+  sessionsData?: Record<string, SessionData[]>
 }
 
 interface SessionData {
@@ -87,13 +86,6 @@ const getIntensityDots = (intensity: number) => {
   return intensityLevels[intensity as keyof typeof intensityLevels] || 1
 }
 
-const getWorkoutType = (intensity: number): { label: string; color: string } => {
-  if (intensity <= 2) return { label: "Recovery", color: "badge badge-good" }
-  if (intensity === 3) return { label: "Endurance", color: "badge badge-info" }
-  if (intensity === 4) return { label: "Tempo", color: "badge badge-ok" }
-  return { label: "VO2max", color: "badge badge-critical" }
-}
-
 const getStatusBadge = (session: WeekSession) => {
   if (session.missed) {
     return { label: "Missed", color: "badge badge-critical" }
@@ -118,7 +110,7 @@ const getSessionCardColor = (session: WeekSession): string => {
   return "border-border-weak bg-bg-raised"
 }
 
-export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessionsData = {} }: WeekLaneProps) {
+export function WeekLane({ weekStart, adaptations = {}, sessionsData = {} }: WeekLaneProps) {
   // Generate week days
   const weekDays: WeekDay[] = []
 
@@ -184,25 +176,10 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessions
   const SwapSessionDrawer = () => {
     if (!selectedSessionForSwap) return null
 
-    const drawerRef = useRef<HTMLDivElement>(null)
-
-    // Handle keyboard navigation and focus management
-    useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          setSwapDrawerOpen(false)
-          setSelectedSessionForSwap(null)
-        }
-      }
-
-      // Focus the drawer when it opens
-      if (drawerRef.current) {
-        drawerRef.current.focus()
-      }
-
-      document.addEventListener('keydown', handleKeyDown)
-      return () => document.removeEventListener('keydown', handleKeyDown)
-    }, [])
+    // Focus the drawer when it opens
+    if (drawerRef.current) {
+      drawerRef.current.focus()
+    }
 
     const swapOptions = [
       {
@@ -334,7 +311,7 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessions
                 <div>
                   <h3 className="text-lg font-semibold text-text-1">Swap Session</h3>
                   <p className="text-sm text-text-2 mt-1">
-                    Replace "{selectedSessionForSwap.title}" with an alternative
+                    Replace &quot;{selectedSessionForSwap.title}&quot; with an alternative
                   </p>
                 </div>
               </div>
@@ -377,15 +354,10 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessions
                 <h4 className="text-text-1 font-medium">Alternative workouts for {selectedSessionForSwap.title}</h4>
                 <div className="space-y-3">
                   {swapOptions.map((option) => {
-                    const workoutType = getWorkoutType(option.intensity)
                     const isRest = option.sport === "rest"
                     const Icon = isRest ? Heart : (
                       option.sport === "swim" ? Waves :
                       option.sport === "bike" ? Bike : Footprints
-                    )
-                    const disciplineName = isRest ? "Rest" : (
-                      option.sport === "swim" ? "Swim" :
-                      option.sport === "bike" ? "Bike" : "Run"
                     )
                     const intensityDots = isRest ? 0 : getIntensityDots(option.intensity)
                     const formattedDuration = formatDuration(option.duration)
@@ -605,7 +577,6 @@ export function WeekLane({ weekStart, onSessionClick, adaptations = {}, sessions
               <div className="space-y-2">
                 {day.sessions.map((session) => {
                   const statusBadge = getStatusBadge(session)
-                  const workoutType = getWorkoutType(session.intensity)
                   const tssValue = Math.round(session.intensity * 50)
 
                   return (
