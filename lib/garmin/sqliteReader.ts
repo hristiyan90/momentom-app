@@ -4,6 +4,7 @@
  */
 
 import Database from 'better-sqlite3'
+import { statSync } from 'fs'
 import { FilterOptions, generateSqlFilter, type GarminActivity } from './dataFilters'
 
 export interface SqliteReaderOptions {
@@ -156,8 +157,7 @@ export class SqliteReader {
       const sportsResult = db.prepare('SELECT DISTINCT sport FROM activities WHERE sport IS NOT NULL').all() as { sport: string }[]
       
       // Get file size
-      const fs = require('fs')
-      const stats = fs.statSync(this.dbPath)
+      const stats = statSync(this.dbPath)
       
       db.close()
       
