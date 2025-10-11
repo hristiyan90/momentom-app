@@ -320,7 +320,11 @@ jobs:
           # Validate template JSON
           echo "Validating template JSON..."
           node -e "
-            const template = JSON.parse(require('fs').readFileSync('docs/library/template.workout.json', 'utf8'));
+            // Read file and extract JSON portion (before comments)
+            const fs = require('fs');
+            const content = fs.readFileSync('docs/library/template.workout.json', 'utf8');
+            const jsonContent = content.split('//')[0].trim(); // Get content before first comment
+            const template = JSON.parse(jsonContent);
             const requiredFields = ['workout_id', 'sport', 'title', 'description', 'phase', 'focus_tags', 'primary_zone', 'duration_min', 'load_hint', 'structure_json'];
             const missingFields = requiredFields.filter(field => !(field in template));
             if (missingFields.length > 0) throw new Error('Template missing fields: ' + missingFields.join(', '));
