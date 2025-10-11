@@ -10,3 +10,4 @@
 | 0008 | All Fitness Thresholds Optional | Accepted | 2025-10-11 | Product Architect | —          | [1.5-C-athlete-schema-expansion.md](../specs/1.5-C-athlete-schema-expansion.md) |
 | 0009 | Experience Level Mapping | Accepted | 2025-10-11 | Product Architect | —          | [1.5-C-athlete-schema-expansion.md](../specs/1.5-C-athlete-schema-expansion.md) |
 | 0010 | Hybrid Garmin Integration Approach | Accepted | 2025-10-11 | Product Architect | —          | [0010-garmin-integration.md](0010-garmin-integration.md) |
+| 0011 | Workout Library v1 Expansion | Accepted | 2025-10-11 | Sports Science | 0004 | [workout-library-v1.md](../library/workout-library-v1.md) |
