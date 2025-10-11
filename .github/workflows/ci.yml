@@ -289,8 +289,8 @@ jobs:
           echo "Checking required files..."
           [ -f "docs/library/README.md" ] || (echo "❌ docs/library/README.md missing" && exit 1)
           [ -f "docs/library/template.workout.json" ] || (echo "❌ docs/library/template.workout.json missing" && exit 1)
-          [ -f "docs/library/coverage-checklist.md" ] || (echo "❌ docs/library/coverage-checklist.md missing" && exit 1)
-          [ -f "docs/library/evidence-brief.md" ] || (echo "❌ docs/library/evidence-brief.md missing" && exit 1)
+          [ -f "docs/library/coverage_checklist.md" ] || (echo "❌ docs/library/coverage_checklist.md missing" && exit 1)
+          [ -f "docs/library/evidence_brief.md" ] || (echo "❌ docs/library/evidence_brief.md missing" && exit 1)
           [ -f "library/workouts.json" ] || (echo "❌ library/workouts.json missing" && exit 1)
           echo "✅ All required files present"
           
