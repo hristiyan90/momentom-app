@@ -5,7 +5,7 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1.5** (Foundation & User Lifecycle)
-- Active focus: **Specification Phase Complete → Ready for Implementation**
+- Active focus: **All Specifications Complete → Implementation Ready**
 - Planning Doc: [Sprint 1.5 Plan](sprints/cycle-2-sprint-1-5-plan.md)
 
 ## Recently completed
@@ -53,29 +53,45 @@ Update this file per merged task.
   - Documentation: 0010-garmin-integration.md, garmin-setup.md
 - *Decisions: 0010 (Hybrid Garmin approach)*
 
+### Task 1.5-D: Expand Workout Library (50-100 workouts)
+- *Agent: Sports Science ✅*
+- *Status: Complete - 101 Workouts Delivered*
+- *Deliverables:*
+  - expanded_workout_library.json (101 workouts)
+  - workout-library-v1.md (Complete documentation)
+  - qa-validation-report.md (100% pass rate)
+  - friel-validation-addendum.md (Triathlon protocol alignment)
+  - Breakdown: Run (26), Bike (26), Swim (21), Strength (18)
+  - All phases covered: Base, Build, Peak, Taper, Recovery
+- *Decisions: 0011 (Workout Library v1 Expansion)*
+
 ### Task 1.5-B: Wire Onboarding UI to Storage
 - *Agent: M_PR (implementation) + UX/UI*
-- *Status: Ready to Start (blocked on 1.5-A and 1.5-C implementation)*
-- *Dependencies: Requires auth middleware + athlete schema deployed*
+- *Status: Ready to Start*
+- *Dependencies: All specifications delivered (1.5-A, 1.5-C, 1.5-D)*
 
-### Task 1.5-D: Expand Workout Library (50-100 workouts)
-- *Agent: Sports Science*
-- *Status: ⏳ In Progress - Awaiting Deliverable*
-- *Expected: Expanded workouts.json (50-100 workouts across disciplines)*
+### Task 1.5-F/G: GarminDB Daily Sync (Wellness + Workouts)
+- *Agent: M_PR (implementation)*
+- *Status: Ready to Start*
+- *Dependencies: All specifications delivered (1.5-E, 1.5-D)*
 
-## Sprint 1.5 - Implementation Phase (Next)
+## Sprint 1.5 - Implementation Phase (Ready to Start)
 
-**Ready to Start:**
-- Day 1: RLS policies + Athlete schema migrations
-- Day 2: Auth middleware (JWT verification)
-- Day 3: Auth routes (signup, login, logout)
-- Day 4-5: Onboarding UI wiring (after Sports Science delivers)
-- Day 6: Session management
-- Day 7-8: GarminDB sync
+**Day 1-2: Foundation**
+- RLS policies + Athlete schema migrations (1.5-C)
+- Auth middleware (JWT verification) (1.5-A)
 
-**Blocked Until Sports Science Completes:**
-- Workout library seeding (Task 1.5-D)
-- Full onboarding flow testing
+**Day 3-4: Authentication**
+- Auth routes (signup, login, logout) (1.5-A)
+- Session management implementation
+
+**Day 5-6: User Lifecycle**
+- Onboarding UI wiring (1.5-B)
+- Workout library database seeding (1.5-D)
+
+**Day 7-8: Garmin Integration**
+- GarminDB wellness sync (1.5-F)
+- GarminDB workout sync (1.5-G)
 
 ## Sprint 2 - NEXT (Planned)
 - Plan generation engine (deterministic, library-based)
@@ -99,8 +115,8 @@ Update this file per merged task.
 
 ## 📊 Sprint 1.5 Progress
 
-**Specifications:** ✅ 3/3 Complete (PA delivered all tasks)
-**Implementation:** ⏳ 0/6 Started (awaiting Sports Science + kickoff)
-**Blockers:** Sports Science Task 1.5-D (workout library expansion)
+**Specifications:** ✅ 4/4 Complete (PA: 3/3, Sports Science: 1/1)
+**Implementation:** ⏳ 0/6 Started (ready for kickoff)
+**Blockers:** None - All specifications delivered
 
-**Next Action:** Review Sports Science deliverable, then start implementation Phase 1
+**Next Action:** Start implementation Phase 1 (Foundation: Auth + Schema)
