@@ -1,6 +1,6 @@
 # Cycle 2, Sprint 1.5: Foundation & User Lifecycle
 
-**Status:** 🔵 In Planning  
+**Status:** 🟢 In Progress  
 **Start Date:** October 10, 2025  
 **Expected Duration:** 2-3 weeks  
 **Dependencies:** Sprint 1 (B3e) complete  
