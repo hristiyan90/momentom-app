@@ -1,8 +1,17 @@
 # Auth Mapping (JWT → athlete_id)
 
-
 ## Overview
 This policy defines the JWT to athlete_id mapping system for authentication and authorization in the Momentom API. It covers JWT verification using Supabase secrets, athlete_id resolution from user metadata, RLS enforcement, and development vs production authentication modes.
+
+**Implementation Reference:** See `docs/specs/1.5-A-complete-supabase-auth.md` for Sprint 1.5 implementation details, code samples, and complete RLS policies.
+
+**Related Documentation:**
+- `docs/architecture/auth-flow.md` - Detailed authentication flows
+- `docs/architecture/auth-modes.md` - Production vs development modes
+- `supabase/migrations/20251011000001_rls_policies.sql` - RLS policy implementation
+
+---
+
 ## TL;DR
 - **Verify** JWT (HS256 via `SUPABASE_JWT_SECRET`) using `Authorization: Bearer <jwt>` or `sb-access-token` cookie.
 - **Resolve athlete_id**: prefer `user_metadata.athlete_id` (UUID). If absent, **fallback** to `sub` **only if** it is a UUID. Else **401**.
@@ -63,6 +72,18 @@ Content-Type: application/json
 
 ---
 
+## Session Management
+
+**Token Lifecycle:**
+- **JWT Access Token:** 1 hour expiration
+- **Refresh Token:** 7 day expiration
+- **Auto-Refresh:** Client refreshes 5 minutes before JWT expiration
+- **Failed Refresh:** Redirect to login after 3 consecutive failures
+
+**Implementation:** See `docs/specs/1.5-A-complete-supabase-auth.md` Section 5 for session refresh code.
+
+---
+
 ## Implementation Notes
 
 ### JWT Verification Error Handling
@@ -70,24 +91,6 @@ Content-Type: application/json
 - **Invalid signature**: Return 401 with `error="invalid_token", error_description="signature_verification_failed"`
 - **Missing token**: Return 401 with `error="invalid_token", error_description="token_missing"`
 - **Malformed token**: Return 401 with `error="invalid_token", error_description="malformed_token"`
-
-### Optional DDL
-```sql
-create table if not exists public.athlete_user_map (
-  user_sub text primary key,
-  athlete_id uuid not null unique
-);
-
-insert into public.athlete_user_map (user_sub, athlete_id)
-select u.id::text,
-       coalesce( (u.raw_user_meta_data->>'athlete_id')::uuid, u.id ) as athlete_id
-from auth.users u
-on conflict (user_sub) do update
-set athlete_id = excluded.athlete_id;
-
-create or replace view public.v_athlete_identity as
-select m.user_sub, m.athlete_id from public.athlete_user_map m;
-```
 
 ### Environment Variables
 - `AUTH_MODE`: Set to `"prod"` for production, `"dev"` for development
@@ -102,26 +105,38 @@ select m.user_sub, m.athlete_id from public.athlete_user_map m;
 - **Rate Limiting**: Implement rate limiting on auth endpoints
 - **Audit Logging**: Log authentication attempts (without sensitive data)
 
-### Testing Requirements
-- Unit tests for JWT verification with various token states
-- Integration tests for athlete_id resolution logic
-- Error handling tests for all failure scenarios
-- Performance tests for token verification under load
+### RLS Implementation
+Complete RLS policies provided in `supabase/migrations/20251011000001_rls_policies.sql` including:
+- `athlete_profiles` - SELECT/INSERT/UPDATE policies
+- `athlete_preferences` - SELECT/INSERT/UPDATE policies
+- `race_calendar` - SELECT/INSERT/UPDATE/DELETE policies
+- `athlete_constraints` - SELECT/INSERT/UPDATE/DELETE policies
+- `sessions` - SELECT/INSERT/UPDATE/DELETE policies
+- `readiness_daily` - SELECT/INSERT policies
+- `plan` - SELECT/ALL policies
 
-### Monitoring & Observability
+**Validation:** 3-account RLS test required (see `supabase/tests/rls_validation.sql`)
+
+---
+
+## Policy Compliance
+
+**Sprint 1.5 Implementation Must:**
+- ✅ Implement all authentication flows per this policy
+- ✅ Enforce RLS on every athlete-scoped table
+- ✅ Use correct error response formats
+- ✅ Gate dev overrides properly (AUTH_MODE + ALLOW_HEADER_OVERRIDE)
+- ✅ Pass 3-account RLS isolation test
+- ✅ Never expose JWT secrets in logs or client code
+
+**Testing Requirements:**
+- Unit tests: JWT verification with valid/invalid/expired tokens
+- Integration tests: athlete_id resolution from various token states
+- Security tests: 3-account RLS isolation (zero leakage)
+- Performance tests: JWT verification < 10ms
+
+**Monitoring:**
 - Track authentication success/failure rates
 - Monitor JWT verification performance
 - Alert on unusual authentication patterns
-- Log correlation IDs for request tracing
-
-### Migration Strategy
-- Phase 1: Implement JWT verification alongside existing auth
-- Phase 2: Add athlete_id mapping logic
-- Phase 3: Enable RLS enforcement
-- Phase 4: Remove legacy auth mechanisms
-
-### Troubleshooting Guide
-- **401 errors**: Check JWT secret, token format, expiration
-- **Athlete mapping failures**: Verify user_metadata structure
-- **RLS issues**: Confirm athlete_id is properly set in request context
-- **Dev override not working**: Check AUTH_MODE and ALLOW_HEADER_OVERRIDE settings
+- Log correlation IDs (X-Request-Id) for request tracing

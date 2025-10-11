@@ -1,11 +1,38 @@
 {
   "workout_id": "template-workout-uuid",
   "sport": "run|bike|swim|strength",
-  "title": "Workout Title - Phase Focus (Zone)",
+  "title": "Sport — Type Duration (Zone)",
   "description": "Brief description of the workout's purpose and benefits.",
   "phase": "base|build|peak|taper|recovery",
   "focus_tags": [
-    "endurance|threshold|strength|taper_safe|neuromuscular|injury_prevention|strength_general|strength_run_support|css|tempo"
+    "endurance",
+    "aerobic",
+    "threshold",
+    "tempo",
+    "vo2max",
+    "sweet_spot",
+    "css",
+    "taper_safe",
+    "neuromuscular",
+    "injury_prevention",
+    "strength_general",
+    "strength_lower",
+    "strength_upper",
+    "strength_power",
+    "strength_maintenance",
+    "strength_run_support",
+    "strength_swim",
+    "mobility",
+    "race_pace",
+    "race_simulation",
+    "race_sharpening",
+    "brick",
+    "anaerobic",
+    "recovery",
+    "technique",
+    "pre_race",
+    "opener",
+    "open_water_suitable"
   ],
   "primary_zone": "z1|z2|z3|z4|z5|strength",
   "duration_min": 30,
@@ -33,3 +60,111 @@
     ]
   }
 }
+
+// NOTES FOR CREATING NEW WORKOUTS:
+// 
+// Sport Selection:
+// - "run" - Running workouts
+// - "bike" - Cycling workouts (indoor/outdoor agnostic)
+// - "swim" - Swimming workouts (pool or open water)
+// - "strength" - Resistance training
+//
+// Phase Guidelines:
+// - "base" - Aerobic development, general strength (8-12 weeks)
+// - "build" - Threshold work, intensity (6-12 weeks)
+// - "peak" - Race-specific preparation (2-4 weeks)
+// - "taper" - Sharpening without fatigue (1-2 weeks)
+// - "recovery" - Active recovery (1-4 weeks or every 3-4 weeks)
+//
+// Focus Tags (select 1-4 relevant tags):
+// - Training Focus: endurance, aerobic, threshold, tempo, vo2max, sweet_spot
+// - Sport-Specific: css (swim), technique, neuromuscular, brick, anaerobic
+// - Strength: strength_general, strength_lower, strength_upper, strength_power, 
+//   strength_maintenance, strength_run_support, strength_swim
+// - Safety: taper_safe, recovery, injury_prevention, mobility
+// - Race: race_pace, race_simulation, race_sharpening, pre_race, opener
+// - Environment: open_water_suitable (swim only - for continuous/long intervals)
+//
+// Primary Zone:
+// - "z1" - Recovery (50-60% max HR)
+// - "z2" - Aerobic (60-70% max HR) 
+// - "z3" - Tempo (70-80% max HR)
+// - "z4" - Threshold (80-90% max HR)
+// - "z5" - VO2max (90-100% max HR)
+// - "strength" - Resistance training (use RPE)
+//
+// Duration & Load Hints:
+// - duration_min: Total workout time (must match segment sum)
+// - load_hint: Proxy for TSS (typically 50-150% of duration)
+//   * Base Z2: ~100% of duration (e.g., 60' = 60 load)
+//   * Threshold Z4: ~120-130% of duration (e.g., 60' = 75 load)
+//   * VO2max Z5: ~140-150% of duration (e.g., 60' = 85 load)
+//   * Taper: ~50-70% of duration (e.g., 30' = 20 load)
+//   * Recovery: ~60-80% of duration (e.g., 30' = 20 load)
+//
+// Segment Types:
+// - "warmup" - Gradual intensity build (8-20 min)
+// - "steady" - Sustained effort (continuous or tempo)
+// - "interval" - Work intervals (threshold, VO2max)
+// - "recovery" - Active recovery between intervals
+// - "cooldown" - Gradual intensity reduction (5-20 min)
+// - "strength" - Resistance training work
+//
+// Target Types:
+// - "zone" - Use for run/bike HR zones
+// - "pace" - Use for swim (CSS pace, threshold)
+// - "rpe" - Use for strength (RPE 5-8) or neuromuscular work
+// - "none" - Use for warmup/cooldown without specific target
+//
+// Work:Rest Ratios (Evidence-Based):
+// - Z4 Threshold: 1:0.3 to 1:0.5 (e.g., 10' work : 3' recovery)
+// - Z5 VO2max: 1:1 to 1:1.5 (e.g., 3' work : 3-4' recovery)
+// - Sweet Spot: 1:0.2 to 1:0.33 (e.g., 15' work : 5' recovery)
+//
+// Swimming Environment Tags:
+// - Add "open_water_suitable" for:
+//   * Continuous endurance swims (2500m+)
+//   * Long intervals (200m+ with manageable rest)
+//   * Race pace and race simulation workouts
+//   * Recovery swims (continuous easy)
+// - Pool-only (no tag needed):
+//   * Technique/drill sessions
+//   * Short intervals (50m, 100m with precise rest)
+//   * CSS testing
+//   * Taper sharpeners
+//
+// Safety Requirements:
+// - Include warmup for all non-recovery workouts (8-20 min)
+// - Include cooldown for all non-recovery workouts (5-20 min)
+// - No intensity jumps (Z1→Z5) without gradual build
+// - Appropriate recovery between hard intervals
+// - Duration realistic for target intensity
+//
+// Example Durations by Intensity:
+// - Z1-Z2 continuous: 20-180 minutes
+// - Z3 tempo: 20-90 minutes sustained
+// - Z4 threshold intervals: 8-20 minutes per interval
+// - Z5 VO2max intervals: 2-4 minutes per interval
+// - Taper workouts: 20-50 minutes total
+// - Recovery workouts: 20-45 minutes total
+//
+// Title Format:
+// "Sport — Type Duration (Zone)"
+// Examples:
+// - "Run — Endurance 60′ (Z2)"
+// - "Bike — Threshold 3×12′ (Z4)"
+// - "Swim — CSS 10×2′ (Z4)"
+// - "Strength — Full-Body 45′ (Strength)"
+//
+// Description Best Practices:
+// - 1-2 sentences maximum
+// - Explain workout purpose and benefits
+// - Use athlete-facing language (not coach jargon)
+// - Be motivating and clear
+//
+// Notes Best Practices:
+// - Specific and actionable instructions
+// - Athlete-facing language
+// - Include key cues (e.g., "nose-breathing OK", "controlled effort")
+// - Avoid overly technical terms
+// - Keep concise but informative
