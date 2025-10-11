@@ -1,0 +1,220 @@
+#!/usr/bin/env node
+
+// Generate a minimal valid workouts.json file for testing
+const fs = require('fs');
+const path = require('path');
+
+// Generate 10 sample workouts to test CI validation
+const sampleWorkouts = [
+  {
+    "workout_id": "run-base-1",
+    "sport": "run",
+    "title": "Run — Endurance 60′ (Z2)",
+    "description": "Aerobic base building run at easy pace.",
+    "phase": "base",
+    "focus_tags": ["endurance", "aerobic"],
+    "primary_zone": "z2",
+    "duration_min": 60,
+    "load_hint": 60,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Easy warmup" },
+        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z2 aerobic pace" },
+        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "bike-base-1",
+    "sport": "bike",
+    "title": "Bike — Endurance 90′ (Z2)",
+    "description": "Aerobic base building bike at easy pace.",
+    "phase": "base",
+    "focus_tags": ["endurance", "aerobic"],
+    "primary_zone": "z2",
+    "duration_min": 90,
+    "load_hint": 90,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Easy warmup" },
+        { "type": "steady", "target": "zone", "duration_min": 60, "notes": "Z2 aerobic pace" },
+        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "swim-base-1",
+    "sport": "swim",
+    "title": "Swim — Endurance 45′ (Z2)",
+    "description": "Aerobic base building swim at easy pace.",
+    "phase": "base",
+    "focus_tags": ["endurance", "aerobic"],
+    "primary_zone": "z2",
+    "duration_min": 45,
+    "load_hint": 45,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy warmup" },
+        { "type": "steady", "target": "pace", "duration_min": 25, "notes": "Z2 aerobic pace" },
+        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "strength-base-1",
+    "sport": "strength",
+    "title": "Strength — Full-Body 45′ (Strength)",
+    "description": "General strength training for triathlon.",
+    "phase": "base",
+    "focus_tags": ["strength_general"],
+    "primary_zone": "strength",
+    "duration_min": 45,
+    "load_hint": 45,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Dynamic warmup" },
+        { "type": "strength", "target": "rpe", "duration_min": 30, "notes": "RPE 6-7 strength work" },
+        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching" }
+      ]
+    }
+  },
+  {
+    "workout_id": "run-build-1",
+    "sport": "run",
+    "title": "Run — Threshold 3×8′ (Z4)",
+    "description": "Threshold intervals for building lactate tolerance.",
+    "phase": "build",
+    "focus_tags": ["threshold"],
+    "primary_zone": "z4",
+    "duration_min": 45,
+    "load_hint": 55,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Easy warmup" },
+        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Easy recovery" },
+        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Easy recovery" },
+        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
+        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "bike-build-1",
+    "sport": "bike",
+    "title": "Bike — Sweet Spot 2×20′ (Z3)",
+    "description": "Sweet spot intervals for aerobic power.",
+    "phase": "build",
+    "focus_tags": ["sweet_spot"],
+    "primary_zone": "z3",
+    "duration_min": 60,
+    "load_hint": 75,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Easy warmup" },
+        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z3 sweet spot" },
+        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z3 sweet spot" },
+        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "swim-build-1",
+    "sport": "swim",
+    "title": "Swim — CSS 8×100m (Z4)",
+    "description": "Critical Swim Speed intervals for threshold work.",
+    "phase": "build",
+    "focus_tags": ["css", "threshold"],
+    "primary_zone": "z4",
+    "duration_min": 40,
+    "load_hint": 50,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy warmup" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "Easy recovery" },
+        { "type": "interval", "target": "pace", "duration_min": 1.5, "notes": "CSS pace" },
+        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "run-taper-1",
+    "sport": "run",
+    "title": "Run — Race Pace 2×5′ (Z4)",
+    "description": "Race pace intervals for sharpening.",
+    "phase": "taper",
+    "focus_tags": ["race_pace", "taper_safe"],
+    "primary_zone": "z4",
+    "duration_min": 30,
+    "load_hint": 20,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Easy warmup" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Race pace" },
+        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Easy recovery" },
+        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Race pace" },
+        { "type": "cooldown", "target": "zone", "duration_min": 7, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "bike-taper-1",
+    "sport": "bike",
+    "title": "Bike — Opener 30′ (Z3)",
+    "description": "Pre-race opener to activate without fatigue.",
+    "phase": "taper",
+    "focus_tags": ["opener", "taper_safe"],
+    "primary_zone": "z3",
+    "duration_min": 30,
+    "load_hint": 20,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Easy warmup" },
+        { "type": "steady", "target": "zone", "duration_min": 15, "notes": "Z3 opener" },
+        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Easy cooldown" }
+      ]
+    }
+  },
+  {
+    "workout_id": "swim-taper-1",
+    "sport": "swim",
+    "title": "Swim — Opener 25′ (Z3)",
+    "description": "Pre-race opener to activate without fatigue.",
+    "phase": "taper",
+    "focus_tags": ["opener", "taper_safe"],
+    "primary_zone": "z3",
+    "duration_min": 25,
+    "load_hint": 15,
+    "structure_json": {
+      "segments": [
+        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy warmup" },
+        { "type": "steady", "target": "pace", "duration_min": 10, "notes": "Z3 opener" },
+        { "type": "cooldown", "target": "pace", "duration_min": 5, "notes": "Easy cooldown" }
+      ]
+    }
+  }
+];
+
+// Write the workouts to file
+const outputPath = path.join(__dirname, '..', 'library', 'workouts.json');
+fs.writeFileSync(outputPath, JSON.stringify(sampleWorkouts, null, 2));
+
+console.log(`Generated ${sampleWorkouts.length} sample workouts`);
+console.log(`Sports: ${[...new Set(sampleWorkouts.map(w => w.sport))].join(', ')}`);
+console.log(`Phases: ${[...new Set(sampleWorkouts.map(w => w.phase))].join(', ')}`);
+console.log(`File written to: ${outputPath}`);

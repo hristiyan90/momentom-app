@@ -1,1953 +1,491 @@
 [
   {
-    "workout_id": "8c8a9e1d-6a1b-4e9a-9f59-0f3b8f2d51e5",
-    "sport": "run",
-    "title": "Run — Endurance 45′ (Z2)",
-    "description": "Steady aerobic run to build aerobic base and durability.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 45,
-    "load_hint": 45,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy; relaxed cadence" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 aerobic; nose-breathing OK" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 walk or easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3a2f7b68-5c3d-4b97-9a6e-1c2d7f4e8b90",
-    "sport": "run",
-    "title": "Run — Threshold 3×10′ (Z4)",
-    "description": "Sustained LT2 work to raise threshold pace; short recoveries.",
-    "phase": "build",
-    "focus_tags": ["threshold"],
-    "primary_zone": "z4",
-    "duration_min": 60,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 12, "notes": "Z1→low Z2 + 4×20″ strides (easy)" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "Z4 threshold" },
-        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5e4d6c72-9b3f-4e1a-8a67-2f1c9d3b7a24",
-    "sport": "run",
-    "title": "Run — Taper Sharpener 30′ + 6×1′ Strides (Z2)",
-    "description": "Keep legs snappy without fatigue; taper-safe opener.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "neuromuscular"],
-    "primary_zone": "z2",
-    "duration_min": 30,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Easy jog; relaxed" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8; fast but relaxed" },
-        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
-        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
-        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
-        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
-        { "type": "recovery", "target": "rpe", "duration_min": 1, "notes": "RPE 2–3 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 1, "notes": "Stride ~RPE 8" },
-        { "type": "cooldown", "target": "none", "duration_min": 8, "notes": "Easy walk/jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0f9a1b2c-3d4e-4f60-8a9b-0c1d2e3f4a5b",
-    "sport": "bike",
-    "title": "Bike — Endurance 90′ + Tempo Blocks (Z2)",
-    "description": "Aerobic endurance with light tempo exposures for muscular endurance.",
-    "phase": "base",
-    "focus_tags": ["endurance", "tempo"],
-    "primary_zone": "z2",
-    "duration_min": 90,
-    "load_hint": 80,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 spin" },
-        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z2 aerobic" },
-        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 5, "notes": "Z3 tempo" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7c6b5a49-3827-4d16-91a3-6e5f4d3c2b10",
-    "sport": "bike",
-    "title": "Bike — Threshold 3×12′ (Z4)",
-    "description": "Raise sustainable power with long LT2 intervals.",
-    "phase": "build",
-    "focus_tags": ["threshold"],
-    "primary_zone": "z4",
-    "duration_min": 75,
-    "load_hint": 95,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 3×1′ high-cadence" },
-        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 12, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "cooldown", "target": "zone", "duration_min": 12, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "e1f2d3c4-b5a6-4d89-8c7d-6e5f4a3b2c10",
-    "sport": "bike",
-    "title": "Bike — Taper Opener 50′ (Z2)",
-    "description": "Maintain intensity feel without accumulating fatigue.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "opener"],
-    "primary_zone": "z2",
-    "duration_min": 50,
-    "load_hint": 45,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 controlled" },
-        { "type": "steady", "target": "zone", "duration_min": 10, "notes": "Z2 steady" },
-        { "type": "steady", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "cooldown", "target": "zone", "duration_min": 7, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2b3c4d5e-6f70-4a81-92a3-b4c5d6e7f890",
-    "sport": "swim",
-    "title": "Swim — Taper Sharpener 30′ (6×1′ Fast) (Z2)",
-    "description": "Keep feel for the water; short fast reps with plenty of easy.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "neuromuscular"],
-    "primary_zone": "z2",
-    "duration_min": 30,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy; drills optional, e.g., 4×50" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5; e.g., 25–50m at CSS−5″/100" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Fast ~Z5" },
-        { "type": "cooldown", "target": "pace", "duration_min": 8, "notes": "Easy; choice stroke" }
-      ]
-    }
-  },
-  {
-    "workout_id": "91a2b3c4-d5e6-47f8-9012-3b4c5d6e7f80",
-    "sport": "swim",
-    "title": "Swim — CSS 10×2′ (Z4)",
-    "description": "Threshold/CSS reps to improve sustainable swim pace.",
-    "phase": "build",
-    "focus_tags": ["threshold", "css"],
-    "primary_zone": "z4",
-    "duration_min": 45,
-    "load_hint": 60,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy + drills (e.g., 4×50)" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace (e.g., 100s)" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z4 CSS pace" },
-        { "type": "cooldown", "target": "pace", "duration_min": 5, "notes": "Easy" }
-      ]
-    }
-  },
-  {
-    "workout_id": "a1b2c3d4-e5f6-4a7b-8c90-1d2e3f4a5b6c",
-    "sport": "strength",
-    "title": "Strength — Full-Body 45′ (Strength)",
-    "description": "General strength: hinge, squat, push, pull and trunk; RPE 6–7.",
-    "phase": "base",
-    "focus_tags": ["strength_general", "injury_prevention"],
-    "primary_zone": "strength",
-    "duration_min": 45,
-    "load_hint": 50,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Mobility and activation" },
-        { "type": "strength", "target": "rpe", "duration_min": 32, "notes": "3×5–8 reps main lifts @ RPE 6–7; accessories 2–3×10–12" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and breathing" }
-      ]
-    }
-  },
-  {
-    "workout_id": "d0e1f2a3-b4c5-46d7-98e9-0a1b2c3d4e5f",
-    "sport": "strength",
-    "title": "Strength — Run-Support 30′ (Strength)",
-    "description": "Calf complex, hamstrings, hip stabilisers; low volume to avoid soreness.",
-    "phase": "taper",
-    "focus_tags": ["strength_run_support", "taper_safe"],
-    "primary_zone": "strength",
-    "duration_min": 30,
-    "load_hint": 20,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Mobility and band activation" },
-        { "type": "strength", "target": "rpe", "duration_min": 20, "notes": "Calf raises 3×10, RDL 2×8 light, hip abduction 2×12, plank 3×30–45s @ RPE 5–6" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Light stretch" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "workout_id": "run-base-1",
     "sport": "run",
     "title": "Run — Endurance 60′ (Z2)",
-    "description": "Moderate aerobic run; builds endurance volume progressively.",
+    "description": "Aerobic base building run at easy pace.",
     "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
+    "focus_tags": [
+      "endurance",
+      "aerobic"
+    ],
     "primary_zone": "z2",
     "duration_min": 60,
     "load_hint": 60,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy warm-up" },
-        { "type": "steady", "target": "zone", "duration_min": 45, "notes": "Z2 steady aerobic pace" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy cooldown" }
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 10,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "steady",
+          "target": "zone",
+          "duration_min": 40,
+          "notes": "Z2 aerobic pace"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 10,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
-    "sport": "run",
-    "title": "Run — Endurance 75′ (Z2)",
-    "description": "Long aerobic run for endurance capacity; builds weekly mileage.",
+    "workout_id": "bike-base-1",
+    "sport": "bike",
+    "title": "Bike — Endurance 90′ (Z2)",
+    "description": "Aerobic base building bike at easy pace.",
     "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 75,
-    "load_hint": 75,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy" },
-        { "type": "steady", "target": "zone", "duration_min": 60, "notes": "Z2 aerobic; comfortable conversation pace" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 walk/jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
-    "sport": "run",
-    "title": "Run — Endurance 90′ (Z2)",
-    "description": "Weekly long run; cornerstone of aerobic development.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
+    "focus_tags": [
+      "endurance",
+      "aerobic"
+    ],
     "primary_zone": "z2",
     "duration_min": 90,
     "load_hint": 90,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 gradual warm-up" },
-        { "type": "steady", "target": "zone", "duration_min": 75, "notes": "Z2 steady; maintain nose-breathing" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy finish" }
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "steady",
+          "target": "zone",
+          "duration_min": 60,
+          "notes": "Z2 aerobic pace"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
-    "sport": "run",
-    "title": "Run — Endurance 120′ (Z2)",
-    "description": "Extended long run for race-specific endurance; builds fatigue resistance.",
+    "workout_id": "swim-base-1",
+    "sport": "swim",
+    "title": "Swim — Endurance 45′ (Z2)",
+    "description": "Aerobic base building swim at easy pace.",
     "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
+    "focus_tags": [
+      "endurance",
+      "aerobic"
+    ],
     "primary_zone": "z2",
-    "duration_min": 120,
-    "load_hint": 120,
+    "duration_min": 45,
+    "load_hint": 45,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1 gradual build" },
-        { "type": "steady", "target": "zone", "duration_min": 100, "notes": "Z2 aerobic; stay controlled" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy walk/jog" }
+        {
+          "type": "warmup",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "steady",
+          "target": "pace",
+          "duration_min": 25,
+          "notes": "Z2 aerobic pace"
+        },
+        {
+          "type": "cooldown",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
-    "sport": "run",
-    "title": "Run — Progression 60′ (Z2→Z3)",
-    "description": "Gradual pace progression to teach pacing discipline and finish strong.",
+    "workout_id": "strength-base-1",
+    "sport": "strength",
+    "title": "Strength — Full-Body 45′ (Strength)",
+    "description": "General strength training for triathlon.",
     "phase": "base",
-    "focus_tags": ["endurance", "tempo"],
-    "primary_zone": "z2",
-    "duration_min": 60,
-    "load_hint": 65,
+    "focus_tags": [
+      "strength_general"
+    ],
+    "primary_zone": "strength",
+    "duration_min": 45,
+    "load_hint": 45,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 comfortable aerobic" },
-        { "type": "steady", "target": "zone", "duration_min": 15, "notes": "Z3 tempo; controlled effort" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy" }
+        {
+          "type": "warmup",
+          "target": "none",
+          "duration_min": 10,
+          "notes": "Dynamic warmup"
+        },
+        {
+          "type": "strength",
+          "target": "rpe",
+          "duration_min": 30,
+          "notes": "RPE 6-7 strength work"
+        },
+        {
+          "type": "cooldown",
+          "target": "none",
+          "duration_min": 5,
+          "notes": "Stretching"
+        }
       ]
     }
   },
   {
-    "workout_id": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+    "workout_id": "run-build-1",
     "sport": "run",
-    "title": "Run — Base with Strides 60′ (Z2)",
-    "description": "Aerobic run with neuromuscular activation; maintains leg speed.",
-    "phase": "base",
-    "focus_tags": ["endurance", "neuromuscular"],
-    "primary_zone": "z2",
-    "duration_min": 60,
+    "title": "Run — Threshold 3×8′ (Z4)",
+    "description": "Threshold intervals for building lactate tolerance.",
+    "phase": "build",
+    "focus_tags": [
+      "threshold"
+    ],
+    "primary_zone": "z4",
+    "duration_min": 45,
     "load_hint": 55,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy warm-up" },
-        { "type": "steady", "target": "zone", "duration_min": 35, "notes": "Z2 aerobic" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride ~RPE 8; relaxed fast" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy jog" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy finish" }
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 8,
+          "notes": "Z4 threshold"
+        },
+        {
+          "type": "recovery",
+          "target": "zone",
+          "duration_min": 3,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 8,
+          "notes": "Z4 threshold"
+        },
+        {
+          "type": "recovery",
+          "target": "zone",
+          "duration_min": 3,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 8,
+          "notes": "Z4 threshold"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 10,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
-    "sport": "run",
-    "title": "Run — Tempo 60′ (Z3)",
-    "description": "Sustained tempo effort to build muscular endurance and lactate clearance.",
+    "workout_id": "bike-build-1",
+    "sport": "bike",
+    "title": "Bike — Sweet Spot 2×20′ (Z3)",
+    "description": "Sweet spot intervals for aerobic power.",
     "phase": "build",
-    "focus_tags": ["tempo"],
+    "focus_tags": [
+      "sweet_spot"
+    ],
     "primary_zone": "z3",
     "duration_min": 60,
     "load_hint": 75,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1→Z2 gradual" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z3 tempo; comfortably hard" },
-        { "type": "steady", "target": "zone", "duration_min": 10, "notes": "Z2 aerobic recovery" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 easy" }
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 20,
+          "notes": "Z3 sweet spot"
+        },
+        {
+          "type": "recovery",
+          "target": "zone",
+          "duration_min": 5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 20,
+          "notes": "Z3 sweet spot"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 10,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e",
-    "sport": "run",
-    "title": "Run — Threshold 4×8′ (Z4)",
-    "description": "Classic threshold intervals to raise lactate threshold.",
-    "phase": "build",
-    "focus_tags": ["threshold"],
-    "primary_zone": "z4",
-    "duration_min": 60,
-    "load_hint": 75,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 12, "notes": "Z1→Z2 + 4×20s strides" },
-        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold pace" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1–Z2 jog" },
-        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1–Z2 jog" },
-        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1–Z2 jog" },
-        { "type": "interval", "target": "zone", "duration_min": 8, "notes": "Z4 threshold" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
-    "sport": "run",
-    "title": "Run — VO2max 6×3′ (Z5)",
-    "description": "High-intensity intervals to develop maximum aerobic capacity.",
-    "phase": "build",
-    "focus_tags": ["vo2max"],
-    "primary_zone": "z5",
-    "duration_min": 60,
-    "load_hint": 85,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 4×20s strides" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max effort; hard but controlled" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy jog" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z1–Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 3, "notes": "Z5 VO2max" },
-        { "type": "cooldown", "target": "zone", "duration_min": 9, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a",
-    "sport": "run",
-    "title": "Run — Sweet Spot 3×10′ (Z3–Z4)",
-    "description": "Sub-threshold intervals at 88–94% threshold HR to build sustainable pace.",
-    "phase": "build",
-    "focus_tags": ["threshold", "tempo"],
-    "primary_zone": "z3",
-    "duration_min": 65,
-    "load_hint": 80,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 12, "notes": "Z1→Z2 gradual build" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "High Z3/low Z4 (88–94% threshold HR)" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z2 easy jog" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "High Z3/low Z4 sweet spot" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 10, "notes": "High Z3/low Z4 sweet spot" },
-        { "type": "cooldown", "target": "zone", "duration_min": 17, "notes": "Z1 easy finish" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
-    "sport": "run",
-    "title": "Run — Fartlek 60′ (Z2–Z4)",
-    "description": "Unstructured speed play; varied pace with surges to build adaptability.",
-    "phase": "build",
-    "focus_tags": ["tempo", "threshold"],
-    "primary_zone": "z2",
-    "duration_min": 60,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 warm-up" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Fartlek: alternate Z2/Z3/Z4; e.g., 3′ Z2, 2′ Z3, 1′ Z4, repeat" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1–Z2 easy finish" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
-    "sport": "run",
-    "title": "Run — Hill Repeats 8×90s (Z4–Z5)",
-    "description": "Uphill strength-endurance to build power and running economy.",
-    "phase": "build",
-    "focus_tags": ["threshold", "strength_run"],
-    "primary_zone": "z4",
-    "duration_min": 60,
-    "load_hint": 75,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 on flat terrain" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill; 5–7% grade" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down recovery" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z1 jog down" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z4–Z5 uphill" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d",
+    "workout_id": "swim-build-1",
     "sport": "swim",
-    "title": "Swim — Technique 40′ (Z2)",
-    "description": "Drill-focused session to refine stroke mechanics and efficiency.",
-    "phase": "base",
-    "focus_tags": ["technique", "aerobic"],
-    "primary_zone": "z2",
+    "title": "Swim — CSS 8×100m (Z4)",
+    "description": "Critical Swim Speed intervals for threshold work.",
+    "phase": "build",
+    "focus_tags": [
+      "css",
+      "threshold"
+    ],
+    "primary_zone": "z4",
     "duration_min": 40,
-    "load_hint": 35,
+    "load_hint": 50,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy swim; 400m mixed strokes" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: catch-up drill 6×50" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim 100" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: fingertip drag 6×50" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim 100" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: 6-3-6 breathing 6×50" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy swim 100" },
-        { "type": "steady", "target": "pace", "duration_min": 8, "notes": "Z2 continuous swim 500m focusing on technique" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 500m" }
+        {
+          "type": "warmup",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "recovery",
+          "target": "pace",
+          "duration_min": 0.5,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "pace",
+          "duration_min": 1.5,
+          "notes": "CSS pace"
+        },
+        {
+          "type": "cooldown",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e",
-    "sport": "swim",
-    "title": "Swim — Negative Split 50′ (5×200) (Z3→Z4)",
-    "description": "Second-half faster intervals to develop finishing speed and race tactics.",
-    "phase": "peak",
-    "focus_tags": ["race_pace", "tempo", "open_water_suitable"],
+    "workout_id": "run-taper-1",
+    "sport": "run",
+    "title": "Run — Race Pace 2×5′ (Z4)",
+    "description": "Race pace intervals for sharpening.",
+    "phase": "taper",
+    "focus_tags": [
+      "race_pace",
+      "taper_safe"
+    ],
+    "primary_zone": "z4",
+    "duration_min": 30,
+    "load_hint": 20,
+    "structure_json": {
+      "segments": [
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 5,
+          "notes": "Race pace"
+        },
+        {
+          "type": "recovery",
+          "target": "zone",
+          "duration_min": 3,
+          "notes": "Easy recovery"
+        },
+        {
+          "type": "interval",
+          "target": "zone",
+          "duration_min": 5,
+          "notes": "Race pace"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 7,
+          "notes": "Easy cooldown"
+        }
+      ]
+    }
+  },
+  {
+    "workout_id": "bike-taper-1",
+    "sport": "bike",
+    "title": "Bike — Opener 30′ (Z3)",
+    "description": "Pre-race opener to activate without fatigue.",
+    "phase": "taper",
+    "focus_tags": [
+      "opener",
+      "taper_safe"
+    ],
     "primary_zone": "z3",
-    "duration_min": 50,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 500m" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m: first 100 Z3, second 100 Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m negative split" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m negative split" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m negative split" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m negative split" },
-        { "type": "cooldown", "target": "pace", "duration_min": 20, "notes": "Easy 1000m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f",
-    "sport": "swim",
-    "title": "Swim — Sprint Prep 45′ (8×50) (Z5)",
-    "description": "Short fast reps to sharpen speed and prepare for race intensity.",
-    "phase": "peak",
-    "focus_tags": ["vo2max", "race_sharpening"],
-    "primary_zone": "z5",
-    "duration_min": 45,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 fast 50m sprint" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "Z5 sprint 50m" },
-        { "type": "steady", "target": "pace", "duration_min": 8, "notes": "Z3 continuous 400m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 400m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
-    "sport": "swim",
-    "title": "Swim — Taper Pre-Race 30′ (Z2)",
-    "description": "Race-week swim to maintain feel without fatigue.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "pre_race"],
-    "primary_zone": "z2",
     "duration_min": 30,
     "load_hint": 20,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 400m" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "4×50 build to Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "4×50 build" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "4×50 build" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "interval", "target": "pace", "duration_min": 1, "notes": "4×50 build" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 400m" }
+        {
+          "type": "warmup",
+          "target": "zone",
+          "duration_min": 10,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "steady",
+          "target": "zone",
+          "duration_min": 15,
+          "notes": "Z3 opener"
+        },
+        {
+          "type": "cooldown",
+          "target": "zone",
+          "duration_min": 5,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   },
   {
-    "workout_id": "9e0f1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
+    "workout_id": "swim-taper-1",
     "sport": "swim",
-    "title": "Swim — Recovery 30′ (Z1)",
-    "description": "Active recovery swim; flush muscles and maintain technique.",
-    "phase": "recovery",
-    "focus_tags": ["recovery", "open_water_suitable"],
-    "primary_zone": "z1",
-    "duration_min": 30,
-    "load_hint": 20,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "pace", "duration_min": 30, "notes": "Z1 very easy 1500m; focus on smooth strokes, no intensity" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-    "sport": "swim",
-    "title": "Swim — Drill Focus 35′ (Z1–Z2)",
-    "description": "Technique refinement with low-intensity drill emphasis.",
-    "phase": "recovery",
-    "focus_tags": ["recovery", "technique"],
-    "primary_zone": "z1",
-    "duration_min": 35,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 5, "notes": "Easy 300m" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: 6×50 catch-up Z1" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: 6×50 fingertip drag Z1" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Drill: 6×50 single-arm Z1" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "Easy 50m" },
-        { "type": "steady", "target": "pace", "duration_min": 8, "notes": "Z1–Z2 easy swim 500m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 300m choice stroke" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-    "sport": "strength",
-    "title": "Strength — Lower Body 50′ (Strength)",
-    "description": "Squat, deadlift, and single-leg work; builds running and cycling power.",
-    "phase": "base",
-    "focus_tags": ["strength_general", "strength_lower"],
-    "primary_zone": "strength",
-    "duration_min": 50,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Hip mobility, glute activation, leg swings" },
-        { "type": "strength", "target": "rpe", "duration_min": 35, "notes": "Back squat 4×6 @ RPE 7; RDL 3×8; Bulgarian split squat 3×8 each; calf raises 3×15" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and foam rolling" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
-    "sport": "strength",
-    "title": "Strength — Upper Body + Core 45′ (Strength)",
-    "description": "Push, pull, and core stability; supports swim power and posture.",
-    "phase": "base",
-    "focus_tags": ["strength_general", "strength_upper"],
-    "primary_zone": "strength",
-    "duration_min": 45,
-    "load_hint": 50,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Shoulder mobility, band pull-aparts, arm circles" },
-        { "type": "strength", "target": "rpe", "duration_min": 32, "notes": "Push-ups 3×12; pull-ups/rows 3×8; overhead press 3×10; core circuit 3 rounds @ RPE 6–7" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Upper body stretching" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
-    "sport": "strength",
-    "title": "Strength — Functional Movement 45′ (Strength)",
-    "description": "Kettlebell swings, Turkish get-ups, carries; develops whole-body power.",
-    "phase": "base",
-    "focus_tags": ["strength_general", "injury_prevention"],
-    "primary_zone": "strength",
-    "duration_min": 45,
-    "load_hint": 50,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Full-body dynamic warm-up" },
-        { "type": "strength", "target": "rpe", "duration_min": 32, "notes": "KB swings 4×15; Turkish get-ups 3×3 each; farmer carries 4×40m; step-ups 3×10 each @ RPE 6–7" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and breathing" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
-    "sport": "strength",
-    "title": "Strength — Mobility + Stability 35′ (Strength)",
-    "description": "Hip mobility, T-spine rotation, single-leg balance; injury prevention focus.",
-    "phase": "base",
-    "focus_tags": ["injury_prevention", "mobility"],
-    "primary_zone": "strength",
-    "duration_min": 35,
-    "load_hint": 30,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Light cardio and joint prep" },
-        { "type": "strength", "target": "rpe", "duration_min": 25, "notes": "Hip CARs 2×5; 90/90 stretches; T-spine rotations; single-leg balance 3×45s each; plank variations @ RPE 5–6" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Deep stretching and breathwork" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
-    "sport": "strength",
-    "title": "Strength — Power Development 55′ (Strength)",
-    "description": "Explosive movements: box jumps, power cleans, medicine ball throws.",
-    "phase": "build",
-    "focus_tags": ["power", "strength_power"],
-    "primary_zone": "strength",
-    "duration_min": 55,
-    "load_hint": 60,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Dynamic warm-up with jumps and bounds" },
-        { "type": "strength", "target": "rpe", "duration_min": 40, "notes": "Box jumps 4×6; power cleans 4×5; med ball slams 4×8; jump squats 4×8 @ RPE 7–8" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and cool-down" }
-      ]
-    }
-  },
-  {
-    "workout_id": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
-    "sport": "strength",
-    "title": "Strength — Hill Power 50′ (Strength)",
-    "description": "Heavy squats, deadlifts, Bulgarian splits; builds cycling and running strength.",
-    "phase": "build",
-    "focus_tags": ["strength_power", "strength_lower"],
-    "primary_zone": "strength",
-    "duration_min": 50,
-    "load_hint": 60,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Hip and leg prep" },
-        { "type": "strength", "target": "rpe", "duration_min": 35, "notes": "Heavy squats 4×6 @ RPE 8; deadlifts 4×5; Bulgarian split squats 3×8 each; box step-ups 3×10 each" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Foam rolling and stretching" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
-    "sport": "strength",
-    "title": "Strength — Olympic Lift Focus 55′ (Strength)",
-    "description": "Hang cleans, front squats, push press; explosive triple extension.",
-    "phase": "build",
-    "focus_tags": ["power", "strength_power"],
-    "primary_zone": "strength",
-    "duration_min": 55,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Full-body prep with PVC/bar work" },
-        { "type": "strength", "target": "rpe", "duration_min": 40, "notes": "Hang cleans 5×5; front squats 4×6; push press 4×6; core power work @ RPE 7–8" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and mobility" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e",
-    "sport": "strength",
-    "title": "Strength — Plyometric Circuit 45′ (Strength)",
-    "description": "Depth jumps, bounding, single-leg hops; develops reactive strength.",
-    "phase": "build",
-    "focus_tags": ["power", "neuromuscular"],
-    "primary_zone": "strength",
-    "duration_min": 45,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Dynamic warm-up with skips and bounds" },
-        { "type": "strength", "target": "rpe", "duration_min": 30, "notes": "4 rounds: depth jumps 6 reps; bounding 20m; single-leg hops 8 each; med ball slams 10 @ RPE 7–8" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Walking and light stretching" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
-    "sport": "strength",
-    "title": "Strength — Sprint Strength 50′ (Strength)",
-    "description": "Heavy squats, RDLs, sled pushes; maximal strength for speed development.",
-    "phase": "build",
-    "focus_tags": ["strength_power", "strength_lower"],
-    "primary_zone": "strength",
-    "duration_min": 50,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 10, "notes": "Progressive warm-up to working loads" },
-        { "type": "strength", "target": "rpe", "duration_min": 35, "notes": "Heavy squats 5×5 @ RPE 8–9; RDL 4×8; sled pushes 6×20m; single-leg deadlifts 3×8 each" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and recovery" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a",
-    "sport": "strength",
-    "title": "Strength — Maintenance Full Body 35′ (Strength)",
-    "description": "Reduced volume strength maintenance for race season; avoid excessive fatigue.",
-    "phase": "peak",
-    "focus_tags": ["strength_maintenance"],
-    "primary_zone": "strength",
-    "duration_min": 35,
-    "load_hint": 35,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 8, "notes": "Light mobility prep" },
-        { "type": "strength", "target": "rpe", "duration_min": 22, "notes": "2 sets: squats 2×8; push-ups 2×10; rows 2×10; core 2 rounds @ RPE 6–7" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Light stretching" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
-    "sport": "strength",
-    "title": "Strength — Quick Strength 25′ (Strength)",
-    "description": "Time-efficient circuit for race season; minimal DOMS.",
-    "phase": "peak",
-    "focus_tags": ["strength_maintenance"],
-    "primary_zone": "strength",
-    "duration_min": 25,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Quick mobility prep" },
-        { "type": "strength", "target": "rpe", "duration_min": 15, "notes": "2–3 rounds: bodyweight squats 15; push-ups 12; planks 45s; lunges 10 each @ RPE 6" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Brief stretch" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
-    "sport": "strength",
-    "title": "Strength — Taper Core 25′ (Strength)",
-    "description": "Low-volume core and stability work; taper-safe, no leg DOMS.",
+    "title": "Swim — Opener 25′ (Z3)",
+    "description": "Pre-race opener to activate without fatigue.",
     "phase": "taper",
-    "focus_tags": ["taper_safe", "injury_prevention"],
-    "primary_zone": "strength",
+    "focus_tags": [
+      "opener",
+      "taper_safe"
+    ],
+    "primary_zone": "z3",
     "duration_min": 25,
     "load_hint": 15,
     "structure_json": {
       "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Light activation" },
-        { "type": "strength", "target": "rpe", "duration_min": 15, "notes": "2 sets: planks 3×30–45s; bird dogs 2×10 each; dead bugs 2×10 each; pallof press 2×10 each @ RPE 5" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Light stretch" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d",
-    "sport": "strength",
-    "title": "Strength — Taper Activation 20′ (Strength)",
-    "description": "Neuromuscular activation without fatigue; race-week primer.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "neuromuscular"],
-    "primary_zone": "strength",
-    "duration_min": 20,
-    "load_hint": 10,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Light movement prep" },
-        { "type": "strength", "target": "rpe", "duration_min": 10, "notes": "1 set: bodyweight squats 10; band pull-aparts 15; glute bridges 15; planks 30s @ RPE 4–5" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Breathing and relaxation" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e",
-    "sport": "strength",
-    "title": "Strength — Hip + Glute Activation 35′ (Strength)",
-    "description": "Clamshells, hip bridges, monster walks; prevents IT band and knee issues.",
-    "phase": "recovery",
-    "focus_tags": ["injury_prevention", "recovery"],
-    "primary_zone": "strength",
-    "duration_min": 35,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Light movement and foam rolling" },
-        { "type": "strength", "target": "rpe", "duration_min": 25, "notes": "Clamshells 3×15 each; hip bridges 3×15; monster walks 3×20; single-leg balance 3×45s each; IT band work @ RPE 4–5" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Stretching and mobility" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f",
-    "sport": "strength",
-    "title": "Strength — Runner Prevention 35′ (Strength)",
-    "description": "Calf strengthening, foot intrinsics, hip flexor work; addresses common weak points.",
-    "phase": "recovery",
-    "focus_tags": ["injury_prevention", "recovery"],
-    "primary_zone": "strength",
-    "duration_min": 35,
-    "load_hint": 25,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "none", "duration_min": 5, "notes": "Ankle and foot mobility" },
-        { "type": "strength", "target": "rpe", "duration_min": 25, "notes": "Calf raises 3×15; toe curls 2×20; hip flexor stretches; core anti-rotation 3×10 each @ RPE 4–5" },
-        { "type": "cooldown", "target": "none", "duration_min": 5, "notes": "Deep stretching" }
+        {
+          "type": "warmup",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Easy warmup"
+        },
+        {
+          "type": "steady",
+          "target": "pace",
+          "duration_min": 10,
+          "notes": "Z3 opener"
+        },
+        {
+          "type": "cooldown",
+          "target": "pace",
+          "duration_min": 5,
+          "notes": "Easy cooldown"
+        }
       ]
     }
   }
-]": "Easy 300m choice stroke" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e",
-    "sport": "swim",
-    "title": "Swim — Endurance 50′ (2500m) (Z2)",
-    "description": "Continuous aerobic swim to build endurance and stroke efficiency.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic", "open_water_suitable"],
-    "primary_zone": "z2",
-    "duration_min": 50,
-    "load_hint": 45,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 500m with drills" },
-        { "type": "steady", "target": "pace", "duration_min": 30, "notes": "Z2 continuous 2000m; focus on rhythm and breathing" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 500m cooldown" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f",
-    "sport": "swim",
-    "title": "Swim — CSS Baseline 40′ (10×100) (Z3)",
-    "description": "Critical swim speed baseline set to establish threshold pace.",
-    "phase": "base",
-    "focus_tags": ["css", "threshold"],
-    "primary_zone": "z3",
-    "duration_min": 40,
-    "load_hint": 50,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 400m + drills" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS pace 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z3 CSS 100m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 400m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a",
-    "sport": "swim",
-    "title": "Swim — Pull + Kick 45′ (Z2)",
-    "description": "Isolated work to build upper body strength and leg power.",
-    "phase": "base",
-    "focus_tags": ["strength_swim", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 45,
-    "load_hint": 50,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 400m swim" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m pull with buoy Z2" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m kick Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m pull Z2" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m kick Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m pull Z2" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m kick Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m pull Z2" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m kick Z2" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 400m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b",
-    "sport": "swim",
-    "title": "Swim — Endurance 60′ (3000m) (Z2)",
-    "description": "Extended continuous swim for aerobic capacity and mental endurance.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic", "open_water_suitable"],
-    "primary_zone": "z2",
-    "duration_min": 60,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 500m" },
-        { "type": "steady", "target": "pace", "duration_min": 40, "notes": "Z2 continuous 2500m; maintain stroke count" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 500m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",
-    "sport": "swim",
-    "title": "Swim — Threshold 5×300 (Z4)",
-    "description": "Mid-distance threshold intervals to build sustainable pace.",
-    "phase": "build",
-    "focus_tags": ["threshold", "css"],
-    "primary_zone": "z4",
-    "duration_min": 50,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m + drills" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "Z4 threshold 300m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "Z4 threshold 300m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "Z4 threshold 300m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "Z4 threshold 300m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "Z4 threshold 300m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 500m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
-    "sport": "swim",
-    "title": "Swim — Descending Ladder 55′ (Z3–Z4)",
-    "description": "Descending intervals to develop pace judgment and speed endurance.",
-    "phase": "build",
-    "focus_tags": ["threshold", "tempo"],
-    "primary_zone": "z3",
-    "duration_min": 55,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "400m Z3 pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "300m Z3–Z4 faster" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m Z4 faster" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4–Z5 fast" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "1min rest" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "400m Z3" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 6, "notes": "300m Z3–Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 4, "notes": "200m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.5, "notes": "30s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4–Z5" },
-        { "type": "cooldown", "target": "pace", "duration_min": 8, "notes": "Easy 400m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
-    "sport": "swim",
-    "title": "Swim — CSS Progression 50′ (10×150) (Z4)",
-    "description": "Progressive CSS work at faster than race pace to build speed reserve.",
-    "phase": "build",
-    "focus_tags": ["css", "threshold"],
-    "primary_zone": "z4",
-    "duration_min": 50,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 500m" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s/100 pace for 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 3, "notes": "Z4 CSS-5s 150m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes": "Easy 500m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-    "sport": "swim",
-    "title": "Swim — Mixed Pace 60′ (12×100) (Z2/Z4)",
-    "description": "Alternating easy and hard reps to develop pace control and recovery.",
-    "phase": "build",
-    "focus_tags": ["threshold", "tempo"],
-    "primary_zone": "z3",
-    "duration_min": 60,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Odd rep: 100m Z4 hard" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Even rep: 100m Z2 easy" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z4" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.25, "notes": "15s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "100m Z2" },
-        { "type": "cooldown", "target": "pace", "duration_min": 12, "notes": "Easy 600m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
-    "sport": "swim",
-    "title": "Swim — Threshold Extended 60′ (2×800) (Z4)",
-    "description": "Long threshold reps to build race-distance stamina at pace.",
-    "phase": "build",
-    "focus_tags": ["threshold", "css", "open_water_suitable"],
-    "primary_zone": "z4",
-    "duration_min": 60,
-    "load_hint": 80,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 16, "notes": "Z4 threshold 800m; hold CSS pace" },
-        { "type": "recovery", "target": "pace", "duration_min": 1, "notes": "1min rest" },
-        { "type": "interval", "target": "pace", "duration_min": 16, "notes": "Z4 threshold 800m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 15, "notes": "Easy 600m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
-    "sport": "swim",
-    "title": "Swim — VO2max 10×100 (Z5)",
-    "description": "Short high-intensity reps to develop speed and anaerobic capacity.",
-    "phase": "build",
-    "focus_tags": ["vo2max"],
-    "primary_zone": "z5",
-    "duration_min": 45,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.33, "notes": "20s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 2, "notes": "Z5 fast 100m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 12, "notes": "Easy 600m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
-    "sport": "swim",
-    "title": "Swim — Race Pace 4×400 (Z4)",
-    "description": "Race-distance intervals at goal pace to build confidence and pacing.",
-    "phase": "peak",
-    "focus_tags": ["race_pace", "css", "open_water_suitable"],
-    "primary_zone": "z4",
-    "duration_min": 55,
-    "load_hint": 75,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 12, "notes": "Easy 600m" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "Z4 at goal race pace 400m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.75, "notes": "45s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "Z4 race pace 400m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.75, "notes": "45s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "Z4 race pace 400m" },
-        { "type": "recovery", "target": "pace", "duration_min": 0.75, "notes": "45s rest" },
-        { "type": "interval", "target": "pace", "duration_min": 8, "notes": "Z4 race pace 400m" },
-        { "type": "cooldown", "target": "pace", "duration_min": 12, "notes": "Easy 600m" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
-    "sport": "swim",
-    "title": "Swim — Open Water Simulation 60′ (Z3–Z4)",
-    "description": "Continuous swim with minimal rest to simulate open water race conditions.",
-    "phase": "peak",
-    "focus_tags": ["race_simulation", "endurance", "open_water_suitable"],
-    "primary_zone": "z3",
-    "duration_min": 60,
-    "load_hint": 75,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "pace", "duration_min": 10, "notes": "Easy 500m" },
-        { "type": "steady", "target": "pace", "duration_min": 40, "notes": "Z3–Z4 continuous swim 2500m; minimal wall contact, practice sighting" },
-        { "type": "cooldown", "target": "pace", "duration_min": 10, "notes4f5a6b7c8d",
-    "sport": "run",
-    "title": "Run — Race Pace 3×15′ (Z4)",
-    "description": "Race-specific pace work to dial in goal pace and mental preparation.",
-    "phase": "peak",
-    "focus_tags": ["race_pace", "threshold"],
-    "primary_zone": "z4",
-    "duration_min": 75,
-    "load_hint": 90,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 3×20s strides" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "Z4 at goal race pace" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy jog" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "Z4 race pace" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "Z4 race pace; hold form" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4b5c6d7e-8f9a-0b1c-2d3e-4f5a6b7c8d9e",
-    "sport": "run",
-    "title": "Run — Brick Off Bike 30′ (Z3–Z4)",
-    "description": "Transition simulation; run immediately after bike to practice T2 fatigue.",
-    "phase": "peak",
-    "focus_tags": ["brick", "race_simulation"],
-    "primary_zone": "z3",
-    "duration_min": 30,
-    "load_hint": 45,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "zone", "duration_min": 20, "notes": "Z3–Z4; legs heavy initially, settle into rhythm" },
-        { "type": "steady", "target": "zone", "duration_min": 5, "notes": "Z2 ease off" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy walk/jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f",
-    "sport": "run",
-    "title": "Run — Negative Split 90′ (Z2→Z3–Z4)",
-    "description": "Long run with second half faster; builds race-day pacing discipline.",
-    "phase": "peak",
-    "focus_tags": ["race_simulation", "endurance"],
-    "primary_zone": "z2",
-    "duration_min": 90,
-    "load_hint": 100,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy" },
-        { "type": "steady", "target": "zone", "duration_min": 35, "notes": "Z2 comfortable; first half controlled" },
-        { "type": "steady", "target": "zone", "duration_min": 35, "notes": "Z3–Z4 increase pace; second half faster" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1–Z2 easy finish" }
-      ]
-    }
-  },
-  {
-    "workout_id": "6d7e8f9a-0b1c-2d3e-4f5a-6b7c8d9e0f1a",
-    "sport": "run",
-    "title": "Run — VO2max Short 10×90s (Z5)",
-    "description": "Short high-intensity reps to sharpen VO2max and speed.",
-    "phase": "peak",
-    "focus_tags": ["vo2max", "race_sharpening"],
-    "primary_zone": "z5",
-    "duration_min": 60,
-    "load_hint": 85,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 4×20s strides" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5 hard effort" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy jog" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z1 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1.5, "notes": "Z5" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b",
-    "sport": "run",
-    "title": "Run — Threshold Extended 60′ (Z4)",
-    "description": "Sustained threshold run for race-day confidence; builds stamina at pace.",
-    "phase": "peak",
-    "focus_tags": ["threshold", "race_pace"],
-    "primary_zone": "z4",
-    "duration_min": 60,
-    "load_hint": 80,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1→Z2" },
-        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z4 threshold; sustained hard effort" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 easy jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",
-    "sport": "run",
-    "title": "Run — Taper Pre-Race 20′ (Z2)",
-    "description": "Race-week shakeout; keep legs loose without fatigue.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "pre_race"],
-    "primary_zone": "z2",
-    "duration_min": 20,
-    "load_hint": 15,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1–Z2 easy; relax" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride ~RPE 8" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "recovery", "target": "zone", "duration_min": 1, "notes": "Z1 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.33, "notes": "20s stride" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy walk/jog" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
-    "sport": "run",
-    "title": "Run — Recovery 20′ (Z1)",
-    "description": "Active recovery; flush legs and promote adaptation without stress.",
-    "phase": "recovery",
-    "focus_tags": ["recovery"],
-    "primary_zone": "z1",
-    "duration_min": 20,
-    "load_hint": 15,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "zone", "duration_min": 20, "notes": "Z1 very easy; no pace goals, focus on form" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
-    "sport": "run",
-    "title": "Run — Recovery 30′ (Z1)",
-    "description": "Extended recovery run; maintain aerobic stimulus with minimal stress.",
-    "phase": "recovery",
-    "focus_tags": ["recovery"],
-    "primary_zone": "z1",
-    "duration_min": 30,
-    "load_hint": 20,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z1 easy; conversational pace, focus on smooth mechanics" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-    "sport": "bike",
-    "title": "Bike — Endurance 60′ (Z2)",
-    "description": "Base aerobic ride; high cadence, low resistance.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 60,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy spin" },
-        { "type": "steady", "target": "zone", "duration_min": 45, "notes": "Z2 aerobic; 90–100 rpm cadence" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
-    "sport": "bike",
-    "title": "Bike — Endurance 120′ (Z2)",
-    "description": "Long endurance ride for aerobic capacity; steady effort.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 120,
-    "load_hint": 110,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 gradual build" },
-        { "type": "steady", "target": "zone", "duration_min": 100, "notes": "Z2 steady aerobic; maintain 85–95 rpm" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
-    "sport": "bike",
-    "title": "Bike — Endurance 150′ (Z2)",
-    "description": "Weekly long ride; cornerstone of cycling endurance development.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 150,
-    "load_hint": 140,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 easy spin" },
-        { "type": "steady", "target": "zone", "duration_min": 130, "notes": "Z2 aerobic; comfortable, sustainable effort" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
-    "sport": "bike",
-    "title": "Bike — Endurance 180′ (Z2)",
-    "description": "Extended long ride; builds race-specific endurance and mental toughness.",
-    "phase": "base",
-    "focus_tags": ["endurance", "aerobic"],
-    "primary_zone": "z2",
-    "duration_min": 180,
-    "load_hint": 170,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 gradual" },
-        { "type": "steady", "target": "zone", "duration_min": 160, "notes": "Z2 steady; manage nutrition and pacing" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 easy" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
-    "sport": "bike",
-    "title": "Bike — Cadence Work 75′ (Z2)",
-    "description": "High-cadence drills to improve pedaling efficiency and leg speed.",
-    "phase": "base",
-    "focus_tags": ["endurance", "neuromuscular"],
-    "primary_zone": "z2",
-    "duration_min": 75,
-    "load_hint": 65,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy spin" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 aerobic base" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm cadence; Z2 effort" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 normal cadence" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 normal" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 normal" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 normal" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 normal" },
-        { "type": "interval", "target": "rpe", "duration_min": 3, "notes": "100 rpm" },
-        { "type": "cooldown", "target": "zone", "duration_min": 7, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e",
-    "sport": "bike",
-    "title": "Bike — Spin-Ups 60′ (Z2)",
-    "description": "Short high-cadence bursts to develop neuromuscular coordination.",
-    "phase": "base",
-    "focus_tags": ["endurance", "neuromuscular"],
-    "primary_zone": "z2",
-    "duration_min": 60,
-    "load_hint": 55,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1 easy" },
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z2 aerobic" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up to 110+ rpm" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "recovery", "target": "zone", "duration_min": 1.5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "rpe", "duration_min": 0.5, "notes": "30s spin-up" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f",
-    "sport": "bike",
-    "title": "Bike — Progression 90′ (Z2→Z3)",
-    "description": "Gradual build to tempo; teaches pacing and muscular endurance.",
-    "phase": "base",
-    "focus_tags": ["endurance", "tempo"],
-    "primary_zone": "z2",
-    "duration_min": 90,
-    "load_hint": 85,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
-        { "type": "steady", "target": "zone", "duration_min": 40, "notes": "Z2 aerobic" },
-        { "type": "steady", "target": "zone", "duration_min": 20, "notes": "Z3 tempo build" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1–Z2 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
-    "sport": "bike",
-    "title": "Bike — Sweet Spot 90′ (Z3–Z4)",
-    "description": "Sub-threshold intervals at 88–94% FTP to maximize training efficiency.",
-    "phase": "build",
-    "focus_tags": ["sweet_spot", "threshold"],
-    "primary_zone": "z3",
-    "duration_min": 90,
-    "load_hint": 110,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 gradual" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "High Z3/low Z4 (88–94% FTP)" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "High Z3/low Z4 sweet spot" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 15, "notes": "High Z3/low Z4 sweet spot" },
-        { "type": "cooldown", "target": "zone", "duration_min": 20, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9e0f1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b",
-    "sport": "bike",
-    "title": "Bike — Threshold 2×20′ (Z4)",
-    "description": "Classic FTP builder; sustained power at lactate threshold.",
-    "phase": "build",
-    "focus_tags": ["threshold"],
-    "primary_zone": "z4",
-    "duration_min": 75,
-    "load_hint": 100,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 + 3×1′ high-cadence" },
-        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z4 threshold power (FTP)" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy spin" },
-        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z4 threshold; hold steady power" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-    "sport": "bike",
-    "title": "Bike — Over-Unders 3×12′ (Z4/Z5)",
-    "description": "Alternating threshold and VO2max to improve lactate clearance.",
-    "phase": "build",
-    "focus_tags": ["threshold", "vo2max"],
-    "primary_zone": "z4",
-    "duration_min": 75,
-    "load_hint": 100,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 build" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 threshold" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over (105–110% FTP)" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 threshold" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 threshold" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z4 under" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z5 over" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-    "sport": "bike",
-    "title": "Bike — VO2max 5×4′ (Z5)",
-    "description": "High-intensity intervals to develop maximum aerobic power.",
-    "phase": "build",
-    "focus_tags": ["vo2max"],
-    "primary_zone": "z5",
-    "duration_min": 75,
-    "load_hint": 100,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 20, "notes": "Z1→Z2 + 3×1′ build to Z3" },
-        { "type": "interval", "target": "zone", "duration_min": 4, "notes": "Z5 VO2max (106–120% FTP)" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy spin" },
-        { "type": "interval", "target": "zone", "duration_min": 4, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 4, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 4, "notes": "Z5 VO2max" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 4, "notes": "Z5 VO2max" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
-    "sport": "bike",
-    "title": "Bike — Tempo 90′ (Z3)",
-    "description": "Sustained tempo ride to build muscular endurance and sub-threshold power.",
-    "phase": "build",
-    "focus_tags": ["tempo"],
-    "primary_zone": "z3",
-    "duration_min": 90,
-    "load_hint": 95,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 gradual" },
-        { "type": "steady", "target": "zone", "duration_min": 60, "notes": "Z3 tempo; comfortably hard" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1–Z2 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
-    "sport": "bike",
-    "title": "Bike — 40/20 Intervals 3×8′ (Z5)",
-    "description": "Short high-intensity reps to develop anaerobic capacity and repeatability.",
-    "phase": "build",
-    "focus_tags": ["vo2max", "anaerobic"],
-    "primary_zone": "z5",
-    "duration_min": 75,
-    "load_hint": 95,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 20, "notes": "Z1→Z2 + 3×1′ build" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5 hard" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy spin" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 4, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 0.33, "notes": "20s Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 0.67, "notes": "40s Z5" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
-    "sport": "bike",
-    "title": "Bike — Sweet Spot Long 2×25′ (Z3–Z4)",
-    "description": "Extended sweet spot intervals for race-day power endurance.",
-    "phase": "build",
-    "focus_tags": ["sweet_spot", "threshold"],
-    "primary_zone": "z3",
-    "duration_min": 90,
-    "load_hint": 115,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
-        { "type": "interval", "target": "zone", "duration_min": 25, "notes": "High Z3/low Z4 (88–94% FTP)" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy spin" },
-        { "type": "interval", "target": "zone", "duration_min": 25, "notes": "High Z3/low Z4 sweet spot; hold steady" },
-        { "type": "cooldown", "target": "zone", "duration_min": 20, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
-    "sport": "bike",
-    "title": "Bike — Race Pace 3×20′ (Z4)",
-    "description": "Race-specific power intervals to dial in goal wattage and pacing strategy.",
-    "phase": "peak",
-    "focus_tags": ["race_pace", "threshold"],
-    "primary_zone": "z4",
-    "duration_min": 90,
-    "load_hint": 110,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 20, "notes": "Z1→Z2 + 3×1′ build" },
-        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z4 at goal race power" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z4 race power; hold steady" },
-        { "type": "recovery", "target": "zone", "duration_min": 5, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 20, "notes": "Z4 race power; practice nutrition" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
-    "sport": "bike",
-    "title": "Bike — VO2max Short 8×2′ (Z5)",
-    "description": "Short high-power intervals to sharpen VO2max and race readiness.",
-    "phase": "peak",
-    "focus_tags": ["vo2max", "race_sharpening"],
-    "primary_zone": "z5",
-    "duration_min": 75,
-    "load_hint": 95,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 20, "notes": "Z1→Z2 + 3×1′ build" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5 VO2max effort" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy spin" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "recovery", "target": "zone", "duration_min": 2, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 2, "notes": "Z5" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
-    "sport": "bike",
-    "title": "Bike — Threshold Extended 60′ (Z4)",
-    "description": "Sustained threshold effort for mental toughness and race simulation.",
-    "phase": "peak",
-    "focus_tags": ["threshold", "race_simulation"],
-    "primary_zone": "z4",
-    "duration_min": 90,
-    "load_hint": 110,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2" },
-        { "type": "steady", "target": "zone", "duration_min": 60, "notes": "Z4 threshold; sustained effort" },
-        { "type": "cooldown", "target": "zone", "duration_min": 15, "notes": "Z1 easy spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e",
-    "sport": "bike",
-    "title": "Bike — Brick to Run 60′ (Z3–Z4)",
-    "description": "Transition practice; hold race power then dismount for run.",
-    "phase": "peak",
-    "focus_tags": ["brick", "race_simulation"],
-    "primary_zone": "z3",
-    "duration_min": 60,
-    "load_hint": 70,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1→Z2" },
-        { "type": "steady", "target": "zone", "duration_min": 45, "notes": "Z3–Z4 race effort; practice nutrition and T2 prep" },
-        { "type": "cooldown", "target": "zone", "duration_min": 5, "notes": "Z2 ease off; prepare for run" }
-      ]
-    }
-  },
-  {
-    "workout_id": "9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
-    "sport": "bike",
-    "title": "Bike — Race Simulation 120′ (Variable)",
-    "description": "Full race-distance effort with variable pacing to simulate race demands.",
-    "phase": "peak",
-    "focus_tags": ["race_simulation"],
-    "primary_zone": "z3",
-    "duration_min": 120,
-    "load_hint": 140,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 10, "notes": "Z1→Z2" },
-        { "type": "steady", "target": "zone", "duration_min": 100, "notes": "Variable Z3–Z4; simulate race terrain, wind, nutrition" },
-        { "type": "cooldown", "target": "zone", "duration_min": 10, "notes": "Z2 easy; prepare for transition" }
-      ]
-    }
-  },
-  {
-    "workout_id": "0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a",
-    "sport": "bike",
-    "title": "Bike — Taper Pre-Race 40′ (Z2)",
-    "description": "Race-week opener; short intensity touches to maintain sharpness.",
-    "phase": "taper",
-    "focus_tags": ["taper_safe", "pre_race"],
-    "primary_zone": "z2",
-    "duration_min": 40,
-    "load_hint": 35,
-    "structure_json": {
-      "segments": [
-        { "type": "warmup", "target": "zone", "duration_min": 15, "notes": "Z1→Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z4 controlled effort" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z4" },
-        { "type": "recovery", "target": "zone", "duration_min": 3, "notes": "Z2 easy" },
-        { "type": "interval", "target": "zone", "duration_min": 1, "notes": "Z4" },
-        { "type": "steady", "target": "zone", "duration_min": 8, "notes": "Z2 steady" },
-        { "type": "cooldown", "target": "zone", "duration_min": 8, "notes": "Z1 spin" }
-      ]
-    }
-  },
-  {
-    "workout_id": "1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
-    "sport": "bike",
-    "title": "Bike — Recovery Spin 30′ (Z1)",
-    "description": "Active recovery; flush legs without stress.",
-    "phase": "recovery",
-    "focus_tags": ["recovery"],
-    "primary_zone": "z1",
-    "duration_min": 30,
-    "load_hint": 20,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "zone", "duration_min": 30, "notes": "Z1 very easy; high cadence, low resistance, no pace goals" }
-      ]
-    }
-  },
-  {
-    "workout_id": "2f3a4b5c-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
-    "sport": "bike",
-    "title": "Bike — Recovery Spin 45′ (Z1)",
-    "description": "Extended recovery ride; smooth pedaling and aerobic maintenance.",
-    "phase": "recovery",
-    "focus_tags": ["recovery"],
-    "primary_zone": "z1",
-    "duration_min": 45,
-    "load_hint": 30,
-    "structure_json": {
-      "segments": [
-        { "type": "steady", "target": "zone", "duration_min": 45, "notes": "Z1 easy; focus on smooth circles, relaxed upper body" }
-      ]
-    }
-  },
-  {
-    "workout_id": "3a4b5c6d-7e8f-9a0b-1c2d-3e
+]
