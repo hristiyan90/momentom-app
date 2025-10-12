@@ -176,8 +176,7 @@ CREATE TABLE IF NOT EXISTS public.athlete_constraints (
 -- Indexes
 CREATE INDEX idx_athlete_constraints_athlete ON public.athlete_constraints(athlete_id);
 CREATE INDEX idx_athlete_constraints_dates ON public.athlete_constraints(athlete_id, start_date, end_date);
-CREATE INDEX idx_athlete_constraints_active ON public.athlete_constraints(athlete_id, start_date, end_date) 
-  WHERE end_date IS NULL OR end_date >= CURRENT_DATE;
+CREATE INDEX idx_athlete_constraints_active ON public.athlete_constraints(athlete_id, start_date, end_date);
 
 CREATE TRIGGER update_athlete_constraints_updated_at
   BEFORE UPDATE ON public.athlete_constraints
