@@ -310,10 +310,10 @@ Branch: feat/sprint-1.5-foundation → PR TBD
 Plan: Establish complete athlete data schema with 4 tables (profiles, preferences, race_calendar, constraints) and RLS policies for all athlete-scoped data. Core functions: athlete profile storage, training preferences, race planning with A/B/C priorities, injury/constraint tracking. Database: 4 new tables with validation rules (age ≥13, date ranges, fitness thresholds), 3 helper functions, 7 tables with RLS policies. Validation: Comprehensive constraint testing, 3-account RLS isolation test. Performance: Indexes on all foreign keys and date ranges. Target: Complete database foundation ready for onboarding UI and plan generation.
 ```
 
-### Sprint 1.5 - Task 2: Auth Middleware ⏳
+### Sprint 1.5 - Task 2: Auth Middleware ✅
 
-Branch: feat/sprint-1.5-auth-middleware → PR TBD
-Status: ⏳ C1 Implementation Complete - Awaiting C5
+Branch: feat/sprint-1.5-auth-middleware → PR #31
+Status: ✅ C5 Completed - Ready for PR Review
 Contract: No API changes - middleware and utilities only
 Core Functionality:
   - Authentication error classes with typed error codes
@@ -321,6 +321,24 @@ Core Functionality:
   - Session management helpers (refresh, getSession)
   - Improved JWT verification with explicit expiration checks
   - Better error messages and dev mode console warnings
+Implementation:
+  - Created lib/auth/errors.ts (36 lines)
+  - Created lib/auth/client.ts (26 lines)
+  - Created lib/auth/session.ts (55 lines)
+  - Created lib/auth/__tests__/middleware.test.ts (280 lines, 16 tests)
+  - Refactored lib/auth/athlete.ts (improved error handling)
+Verification:
+  - ✅ All 16 tests pass (100% success rate)
+  - ✅ Zero linter errors
+  - ✅ No breaking changes (function signature preserved)
+  - ✅ All existing API routes compatible
+Testing Evidence:
+  - Unit tests cover all authentication scenarios
+  - JWT verification with valid/invalid/expired tokens
+  - Dev mode override behavior validated
+  - Error code coverage complete
+Impact: Foundation for Task 3 (auth routes), better error debugging
+Next: Task 3 - Auth Routes (signup, login, logout)
 
 **C0 Entry:**
 ```
@@ -354,6 +372,24 @@ Testing:
   - ✅ Dev mode override behavior validated
   - ✅ Error code coverage complete
 Next: C5 verification and PR creation
+```
+
+**C5 Entry:**
+```
+C5: Sprint 1.5 - Task 2: Authentication Middleware ✅
+Branch: feat/sprint-1.5-auth-middleware → PR #31
+Status: ✅ Completed - Ready for PR Review
+Implementation: 4 new files (errors, client, session, tests), 1 refactored file (athlete.ts)
+Verification: All tests pass (16/16), zero linter errors, no breaking changes
+Evidence: 
+  - Unit tests: 16 tests pass, 100% coverage of core auth logic
+  - JWT verification: valid/invalid/expired tokens all handled correctly
+  - Dev mode override: console warnings logged, prod mode ignores header
+  - Error codes: AUTHENTICATION_REQUIRED, INVALID_TOKEN, TOKEN_EXPIRED, ATHLETE_MAPPING_FAILED
+  - API compatibility: All existing routes compatible (readiness, sessions, plan, fuel, etc.)
+CI: Expected to pass (tests pass locally, no schema changes, no OpenAPI changes)
+Impact: Foundation for Task 3 (auth routes), better error debugging for all API routes
+Follow-ups: Task 3 (Auth Routes: signup, login, logout), Task 4 (Session Management)
 ```
 
 ---

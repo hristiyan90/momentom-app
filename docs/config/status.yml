@@ -16,6 +16,7 @@ Cycle 2 Sprint 1:
 
 Cycle 2 Sprint 1.5:
   C2-S1.5-Task1: "implemented"  # Database Foundation (Schema + RLS)
+  C2-S1.5-Task2: "implemented"  # Auth Middleware (JWT verification, error classes)
 
 policies:
   etag-policy: "active"
