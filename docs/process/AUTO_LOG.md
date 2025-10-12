@@ -262,7 +262,7 @@ Plan: Add automated sync scheduling and manual sync UI controls to complete Garm
 
 ### Sprint 1.5 - Task 1: Database Foundation ✅
 
-Branch: feat/sprint-1.5-foundation → PR #[TBD]
+Branch: feat/sprint-1.5-foundation → PR #30
 Status: ✅ C5 Completed - Ready for PR Review
 Contract: No API changes - database schema and RLS policies only
 Policies: RLS enabled on all athlete-scoped tables with auth.uid() enforcement
@@ -295,7 +295,7 @@ Next: PR review and merge, then Task 2 (Auth middleware and API routes)
 **C5 Entry:**
 ```
 C5: Sprint 1.5 - Task 1: Database Foundation ✅
-Branch: feat/sprint-1.5-foundation → PR #[TBD]
+Branch: feat/sprint-1.5-foundation → PR #30
 Status: ✅ Completed - Ready for PR Review
 Implementation: 4 athlete tables (9.8KB), 21 RLS policies (7.4KB), validation tests (8.7KB), test data (5.3KB)
 Verification: All C0 deliverables complete, STATUS.md updated, README.md synced, DECISION_LOG updated
