@@ -1,0 +1,756 @@
+{
+  "info": {
+    "name": "Sprint 1.5 - Task 3: Authentication Routes",
+    "description": "Integration tests for authentication API endpoints (signup, login, logout, reset-password, session)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "test_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_password",
+      "value": "SecurePass123!",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "etag",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Signup - Valid Data",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('test_email', 'test-' + Date.now() + '@example.com');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has tokens', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('access_token');",
+              "    pm.expect(jsonData).to.have.property('refresh_token');",
+              "    pm.expect(jsonData.token_type).to.eql('bearer');",
+              "    pm.expect(jsonData.expires_in).to.eql(3600);",
+              "    pm.collectionVariables.set('access_token', jsonData.access_token);",
+              "});",
+              "",
+              "pm.test('Response has user info', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.user).to.have.property('id');",
+              "    pm.expect(jsonData.user).to.have.property('email');",
+              "});",
+              "",
+              "pm.test('Has required headers', function () {",
+              "    pm.response.to.have.header('X-Request-Id');",
+              "    pm.response.to.have.header('Cache-Control', 'no-store');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\",\n  \"name\": \"Test Athlete\",\n  \"date_of_birth\": \"1990-01-01\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/signup",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "2. Signup - Duplicate Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 409', function () {",
+              "    pm.response.to.have.status(409);",
+              "});",
+              "",
+              "pm.test('Error message indicates duplicate', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('already exists');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\",\n  \"name\": \"Test Athlete\",\n  \"date_of_birth\": \"1990-01-01\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/signup",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "3. Signup - Invalid Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Error message indicates invalid email', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('email');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"{{test_password}}\",\n  \"name\": \"Test Athlete\",\n  \"date_of_birth\": \"1990-01-01\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/signup",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "4. Signup - Weak Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Error message indicates weak password', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('8 characters');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test-weak@example.com\",\n  \"password\": \"short\",\n  \"name\": \"Test Athlete\",\n  \"date_of_birth\": \"1990-01-01\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/signup",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "5. Signup - Under 13 Years Old",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Calculate date for someone who is 10 years old",
+              "const tenYearsAgo = new Date();",
+              "tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);",
+              "pm.collectionVariables.set('under_age_dob', tenYearsAgo.toISOString().split('T')[0]);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Error message indicates age requirement', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('13 years old');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test-young@example.com\",\n  \"password\": \"{{test_password}}\",\n  \"name\": \"Young Athlete\",\n  \"date_of_birth\": \"{{under_age_dob}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/signup",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "6. Login - Valid Credentials",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has tokens', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('access_token');",
+              "    pm.expect(jsonData).to.have.property('refresh_token');",
+              "    pm.expect(jsonData.token_type).to.eql('bearer');",
+              "    pm.collectionVariables.set('access_token', jsonData.access_token);",
+              "});",
+              "",
+              "pm.test('Has required headers', function () {",
+              "    pm.response.to.have.header('X-Request-Id');",
+              "    pm.response.to.have.header('Cache-Control', 'no-store');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "7. Login - Invalid Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Has WWW-Authenticate header', function () {",
+              "    pm.response.to.have.header('WWW-Authenticate');",
+              "});",
+              "",
+              "pm.test('Error message indicates invalid credentials', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('credentials');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"WrongPassword123!\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "8. Login - Non-existent Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Error message indicates invalid credentials', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('credentials');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"nonexistent-user@example.com\",\n  \"password\": \"{{test_password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "9. Login - Missing Fields",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Error message indicates missing fields', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('required');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "10. Session - With Valid Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has user info', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.user).to.have.property('id');",
+              "    pm.expect(jsonData.user).to.have.property('email');",
+              "    pm.expect(jsonData).to.have.property('expires_at');",
+              "});",
+              "",
+              "pm.test('Has ETag header', function () {",
+              "    pm.response.to.have.header('ETag');",
+              "    pm.collectionVariables.set('etag', pm.response.headers.get('ETag'));",
+              "});",
+              "",
+              "pm.test('Has required cache headers', function () {",
+              "    pm.response.to.have.header('Cache-Control', 'private, no-cache');",
+              "    pm.response.to.have.header('Vary');",
+              "    pm.expect(pm.response.headers.get('Vary')).to.include('Authorization');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/session",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "session"]
+        }
+      }
+    },
+    {
+      "name": "11. Session - With ETag (304)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 304', function () {",
+              "    pm.response.to.have.status(304);",
+              "});",
+              "",
+              "pm.test('Has ETag header', function () {",
+              "    pm.response.to.have.header('ETag');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "If-None-Match",
+            "value": "{{etag}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/session",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "session"]
+        }
+      }
+    },
+    {
+      "name": "12. Session - Without Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Has WWW-Authenticate header', function () {",
+              "    pm.response.to.have.header('WWW-Authenticate');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/auth/session",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "session"]
+        }
+      }
+    },
+    {
+      "name": "13. Password Reset - Valid Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Has generic success message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('password reset');",
+              "});",
+              "",
+              "pm.test('Has required headers', function () {",
+              "    pm.response.to.have.header('X-Request-Id');",
+              "    pm.response.to.have.header('Cache-Control', 'no-store');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{test_email}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/reset-password",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "reset-password"]
+        }
+      }
+    },
+    {
+      "name": "14. Password Reset - Invalid Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Error message indicates invalid email', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('email');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"not-an-email\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/reset-password",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "reset-password"]
+        }
+      }
+    },
+    {
+      "name": "15. Password Reset - Non-existent Email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 (security - no enumeration)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Has generic success message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('password reset');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"nonexistent-12345@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/reset-password",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "reset-password"]
+        }
+      }
+    },
+    {
+      "name": "16. Logout - With Valid Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Has success message', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('logged out');",
+              "});",
+              "",
+              "pm.test('Has required headers', function () {",
+              "    pm.response.to.have.header('X-Request-Id');",
+              "    pm.response.to.have.header('Cache-Control', 'no-store');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/logout",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "logout"]
+        }
+      }
+    },
+    {
+      "name": "17. Logout - Without Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Has WWW-Authenticate header', function () {",
+              "    pm.response.to.have.header('WWW-Authenticate');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/auth/logout",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "logout"]
+        }
+      }
+    },
+    {
+      "name": "18. Session - After Logout (Expired)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "",
+              "pm.test('Has WWW-Authenticate header', function () {",
+              "    pm.response.to.have.header('WWW-Authenticate');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/session",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "session"]
+        }
+      }
+    }
+  ]
+}
+
