@@ -258,6 +258,43 @@ Plan: Add automated sync scheduling and manual sync UI controls to complete Garm
 
 ---
 
+## Cycle 2, Sprint 1.5: Foundation & User Lifecycle
+
+### Sprint 1.5 - Task 1: Database Foundation 🏗️
+
+Branch: feat/sprint-1.5-foundation → PR TBD
+Status: 🏗️ C1 Implementation in Progress
+Contract: No API changes - database schema and RLS policies only
+Policies: RLS enabled on all athlete-scoped tables with auth.uid() enforcement
+Core Functionality:
+  - Complete athlete data schema with 4 new tables: athlete_profiles, athlete_preferences, race_calendar, athlete_constraints
+  - Comprehensive validation rules: age ≥13 (COPPA), date ranges, fitness thresholds (FTP 50-500W, pace 2.5-8.0 min/km)
+  - Helper functions: get_athlete_age, get_active_constraints, get_next_a_race, get_current_athlete_id
+  - RLS policies for all athlete-scoped tables (4 new + 3 existing: sessions, readiness_daily, plan)
+  - Indexes for performance: foreign keys, date ranges, active constraints
+  - Updated_at triggers for all tables
+Database Migrations:
+  - Migration 1: 20251011000002_athlete_schema.sql (tables, functions, triggers)
+  - Migration 2: 20251011000001_rls_policies.sql (RLS on 7 tables)
+  - Test queries: supabase/tests/rls_validation.sql
+  - Test data: supabase/seed/test_athletes.sql
+Verification Planned:
+  - Schema validation: 4 tables created, 4 helper functions working
+  - Constraint validation: Age, dates, ranges enforced correctly
+  - RLS isolation: 3-account test confirming no cross-athlete access
+  - Performance: Indexed queries < 5ms
+Impact: Foundational database structure for Sprint 1.5 onboarding and plan generation
+Next: C5 verification and PR creation, then Task 2 (Auth middleware and API routes)
+
+**C0 Entry:**
+```
+C0: Sprint 1.5 - Task 1: Database Foundation Planning
+Branch: feat/sprint-1.5-foundation → PR TBD
+Plan: Establish complete athlete data schema with 4 tables (profiles, preferences, race_calendar, constraints) and RLS policies for all athlete-scoped data. Core functions: athlete profile storage, training preferences, race planning with A/B/C priorities, injury/constraint tracking. Database: 4 new tables with validation rules (age ≥13, date ranges, fitness thresholds), 3 helper functions, 7 tables with RLS policies. Validation: Comprehensive constraint testing, 3-account RLS isolation test. Performance: Indexes on all foreign keys and date ranges. Target: Complete database foundation ready for onboarding UI and plan generation.
+```
+
+---
+
 ## Historical Entries (Superseded)
 
 ### B3: UX Wiring to Live GETs - Original Scope (Superseded)
