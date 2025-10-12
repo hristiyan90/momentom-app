@@ -143,22 +143,11 @@ CREATE POLICY "Athletes delete own sessions"
   USING (athlete_id = auth.uid());
 
 -- =====================================================
--- readiness_daily (existing table from Cycle 1)
+-- readiness_daily - REMOVED (table doesn't exist, replaced by wellness_data)
 -- =====================================================
-
-ALTER TABLE public.readiness_daily ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Athletes read own readiness"
-  ON public.readiness_daily
-  FOR SELECT
-  USING (athlete_id = auth.uid());
-
-CREATE POLICY "System insert readiness"
-  ON public.readiness_daily
-  FOR INSERT
-  WITH CHECK (athlete_id = auth.uid());
-
--- No UPDATE/DELETE - readiness is immutable after calculation
+-- Note: readiness_daily table was planned but never created
+-- Database uses wellness_data table instead (created in B3e-T5)
+-- RLS policies for wellness_data will be added in a future migration if needed
 
 -- =====================================================
 -- plan (existing table from Cycle 1)
@@ -200,8 +189,7 @@ CREATE POLICY "System manage plan"
 -- DROP POLICY IF EXISTS "Athletes insert own sessions" ON public.sessions;
 -- DROP POLICY IF EXISTS "Athletes update own sessions" ON public.sessions;
 -- DROP POLICY IF EXISTS "Athletes delete own sessions" ON public.sessions;
--- DROP POLICY IF EXISTS "Athletes read own readiness" ON public.readiness_daily;
--- DROP POLICY IF EXISTS "System insert readiness" ON public.readiness_daily;
+-- readiness_daily policies removed (table doesn't exist)
 -- DROP POLICY IF EXISTS "Athletes read own plan" ON public.plan;
 -- DROP POLICY IF EXISTS "System manage plan" ON public.plan;
 -- DROP FUNCTION IF EXISTS public.get_current_athlete_id();
@@ -212,6 +200,6 @@ CREATE POLICY "System manage plan"
 -- ALTER TABLE public.race_calendar DISABLE ROW LEVEL SECURITY;
 -- ALTER TABLE public.athlete_constraints DISABLE ROW LEVEL SECURITY;
 -- ALTER TABLE public.sessions DISABLE ROW LEVEL SECURITY;
--- ALTER TABLE public.readiness_daily DISABLE ROW LEVEL SECURITY;
+-- readiness_daily removed (table doesn't exist)
 -- ALTER TABLE public.plan DISABLE ROW LEVEL SECURITY;
 

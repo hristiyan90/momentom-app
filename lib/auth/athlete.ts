@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as jose from 'jose';
+import { UnauthorizedError } from './errors';
 
 /**
  * Get normalized authentication flags from environment
@@ -16,10 +17,16 @@ export function getAuthFlags() {
 
 type JwtAthleteClaims = {
   sub?: string;
+  exp?: number;
   user_metadata?: { athlete_id?: string } | null;
   [k: string]: unknown;
 };
 
+/**
+ * Verify and decode a Supabase JWT token
+ * @param token - JWT token string
+ * @returns Decoded JWT payload or null if verification fails
+ */
 async function verifySupabaseJwt(token: string): Promise<JwtAthleteClaims | null> {
   try {
     const secret = process.env.SUPABASE_JWT_SECRET;
@@ -33,6 +40,11 @@ async function verifySupabaseJwt(token: string): Promise<JwtAthleteClaims | null
   }
 }
 
+/**
+ * Extract JWT token from request headers or cookies
+ * @param req - NextRequest object
+ * @returns JWT token string or null if not found
+ */
 function readAuthToken(req: NextRequest): string | null {
   const h = req.headers.get('authorization');
   if (h && /^bearer\s+/i.test(h)) return h.split(/\s+/)[1] ?? null;
@@ -41,6 +53,11 @@ function readAuthToken(req: NextRequest): string | null {
   return cookie ?? null;
 }
 
+/**
+ * Validate UUID format
+ * @param value - String to validate
+ * @returns True if valid UUID, false otherwise
+ */
 function isUuid(value: string): boolean {
   const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
   return uuidRegex.test(value);
@@ -56,7 +73,7 @@ function isUuid(value: string): boolean {
  * 
  * @param req - NextRequest object
  * @returns Promise<string> - Athlete ID
- * @throws Error when authentication fails or invalid tokens
+ * @throws UnauthorizedError when authentication fails or invalid tokens
  */
 export async function getAthleteId(req: NextRequest): Promise<string> {
   const { mode, allow } = getAuthFlags();
@@ -65,24 +82,30 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   const rawHeader = req.headers.get('x-athlete-id');
   if (mode !== 'prod' && allow && rawHeader) {
     const id = rawHeader.trim();
-    if (!isUuid(id)) throw new Error('invalid athlete id header');
+    if (!isUuid(id)) {
+      throw new UnauthorizedError('Invalid athlete ID header format', 'INVALID_ATHLETE_ID');
+    }
+    console.warn('[DEV MODE] Using X-Athlete-Id header override:', id);
     return id;
   }
 
   // Prod (and dev without override): require Supabase JWT
   const token = readAuthToken(req);
   if (!token) {
-    if (mode === 'prod') throw new Error('prod mapping pending (A4)');
-    // dev fallback when no override/token
-    throw new Error('authentication required');
+    throw new UnauthorizedError('Valid JWT token required', 'AUTHENTICATION_REQUIRED');
   }
 
   const claims = await verifySupabaseJwt(token);
   if (!claims) {
-    if (mode === 'prod') throw new Error('invalid token');
-    throw new Error('invalid token');
+    throw new UnauthorizedError('JWT verification failed', 'INVALID_TOKEN');
   }
 
+  // Check token expiration explicitly
+  if (claims.exp && claims.exp < Math.floor(Date.now() / 1000)) {
+    throw new UnauthorizedError('Token expired', 'TOKEN_EXPIRED');
+  }
+
+  // Resolve athlete_id: prefer user_metadata.athlete_id, fallback to sub
   const metaId = claims.user_metadata?.athlete_id;
   if (typeof metaId === 'string' && isUuid(metaId)) return metaId;
 
@@ -90,7 +113,7 @@ export async function getAthleteId(req: NextRequest): Promise<string> {
   if (isUuid(sub)) return sub;
 
   // No usable mapping in token
-  throw new Error('authentication required');
+  throw new UnauthorizedError('Unable to resolve athlete_id from token', 'ATHLETE_MAPPING_FAILED');
 }
 
 /**
