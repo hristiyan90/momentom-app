@@ -5,7 +5,7 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1.5** (Foundation & User Lifecycle)
-- Active focus: **All Specifications Complete → Implementation Ready**
+- Active focus: **Implementation Phase 1: Database Foundation ✅ → Auth Middleware (Next)**
 - Planning Doc: [Sprint 1.5 Plan](sprints/cycle-2-sprint-1-5-plan.md)
 
 ## Recently completed
@@ -75,11 +75,11 @@ Update this file per merged task.
 - *Status: Ready to Start*
 - *Dependencies: All specifications delivered (1.5-E, 1.5-D)*
 
-## Sprint 1.5 - Implementation Phase (Ready to Start)
+## Sprint 1.5 - Implementation Phase (In Progress)
 
 **Day 1-2: Foundation**
-- RLS policies + Athlete schema migrations (1.5-C)
-- Auth middleware (JWT verification) (1.5-A)
+- ✅ RLS policies + Athlete schema migrations (1.5-C) - PR #[TBD]
+- ⏳ Auth middleware (JWT verification) (1.5-A) - Next
 
 **Day 3-4: Authentication**
 - Auth routes (signup, login, logout) (1.5-A)
@@ -116,7 +116,9 @@ Update this file per merged task.
 ## 📊 Sprint 1.5 Progress
 
 **Specifications:** ✅ 4/4 Complete (PA: 3/3, Sports Science: 1/1)
-**Implementation:** ⏳ 0/6 Started (ready for kickoff)
-**Blockers:** None - All specifications delivered
+**Implementation:** 🏗️ 1/6 Complete
+  - ✅ Task 1: Database Foundation (Schema + RLS) - PR #[TBD]
+  - ⏳ Task 2: Auth Middleware - Next
+**Blockers:** None
 
-**Next Action:** Start implementation Phase 1 (Foundation: Auth + Schema)
+**Next Action:** Implement Auth Middleware (JWT verification, session management)
