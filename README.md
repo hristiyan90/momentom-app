@@ -86,7 +86,7 @@ Update this file per merged task.
 ## Sprint 1.5 - Implementation Phase (In Progress)
 
 **Day 1-2: Foundation**
-- ✅ RLS policies + Athlete schema migrations (1.5-C) - PR #[TBD]
+- ✅ RLS policies + Athlete schema migrations (1.5-C) - PR #30
 - ⏳ Auth middleware (JWT verification) (1.5-A) - Next
 
 **Day 3-4: Authentication**
@@ -125,7 +125,7 @@ Update this file per merged task.
 
 **Specifications:** ✅ 4/4 Complete (PA: 3/3, Sports Science: 1/1)
 **Implementation:** 🏗️ 1/6 Complete
-  - ✅ Task 1: Database Foundation (Schema + RLS) - PR #[TBD]
+  - ✅ Task 1: Database Foundation (Schema + RLS) - PR #30
   - ⏳ Task 2: Auth Middleware - Next
 **Blockers:** None
 
