@@ -394,6 +394,67 @@ Follow-ups: Task 3 (Auth Routes: signup, login, logout), Task 4 (Session Managem
 
 ---
 
+### Sprint 1.5 - Task 3: Authentication Routes
+
+**C0 Entry:**
+```
+C0: Sprint 1.5 - Task 3: Authentication Routes Planning
+Branch: feat/sprint-1.5-auth-routes → PR TBD
+Plan: Implement 5 authentication API routes (signup, login, logout, reset-password, session) using Supabase Auth and Task 2 middleware. Signup creates auth user + athlete_profiles with rollback on failure. Session endpoint includes ETag caching and auto-refresh logic. Input validation enforces COPPA compliance (age ≥13). All routes use Task 2 error classes and follow ETag/Auth policies. Comprehensive integration tests (18 scenarios). No schema changes. Estimated 5 hours.
+Deliverables:
+  - POST /api/auth/signup (with athlete_profiles creation)
+  - POST /api/auth/login (with HTTP-only cookies)
+  - POST /api/auth/logout (requires authentication)
+  - POST /api/auth/reset-password (with email validation)
+  - GET /api/auth/session (with ETag caching)
+  - lib/auth/validation.ts (email, password, age validation)
+  - postman/auth-routes-tests.json (18 test scenarios)
+Next: C1 implementation
+```
+
+**C1 Entry:**
+```
+C1: Sprint 1.5 - Task 3: Authentication Routes Implementation
+Status: ✅ Completed - Ready for Testing
+Branch: feat/sprint-1.5-auth-routes
+Files Created:
+  - lib/auth/validation.ts (email, password, age validation utilities)
+  - lib/auth/__tests__/validation.test.ts (14 unit tests, all passing)
+  - app/api/auth/signup/route.ts (POST with athlete_profiles creation)
+  - app/api/auth/login/route.ts (POST with cookie management)
+  - app/api/auth/logout/route.ts (POST with auth required)
+  - app/api/auth/reset-password/route.ts (POST with email validation)
+  - app/api/auth/session/route.ts (GET with ETag caching)
+  - postman/auth-routes-tests.json (18 integration tests)
+  - postman/environments/local.json (local testing environment)
+Key Features:
+  - Complete auth flow (signup → login → session → logout)
+  - COPPA compliance (age ≥13 validation)
+  - Email verification (non-blocking per Decision 0005)
+  - Rollback safety (delete auth user if profile creation fails)
+  - ETag caching on session endpoint (304 support)
+  - Auto-refresh for expiring tokens (< 5 min)
+  - HTTP-only cookies for token storage
+  - Generic password reset messages (security - no email enumeration)
+  - Uses Task 2 error classes (UnauthorizedError)
+  - Uses Task 2 middleware (getAthleteId)
+  - All routes follow ETag policy (GET cached, POST no-store)
+Commits:
+  1. feat: add auth input validation utilities
+  2. feat: add signup endpoint with athlete profile creation
+  3. feat: add login endpoint with cookie management
+  4. feat: add logout endpoint
+  5. feat: add password reset endpoint
+  6. feat: add session endpoint with ETag caching
+  7. test: add comprehensive auth routes integration tests
+  8. docs: update AUTO_LOG with Task 3 C1 entry
+Unit Tests: 14/14 passing (validation utilities)
+Integration Tests: 18 scenarios ready for manual/Newman testing
+Next: Manual testing, then C5 for verification and PR creation
+```
+
+---
+
 ## Historical Entries (Superseded)
 
 ### B3: UX Wiring to Live GETs - Original Scope (Superseded)
