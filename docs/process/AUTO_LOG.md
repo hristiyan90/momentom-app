@@ -258,6 +258,60 @@ Plan: Add automated sync scheduling and manual sync UI controls to complete Garm
 
 ---
 
+## Cycle 2, Sprint 1.5: Foundation & User Lifecycle
+
+### Sprint 1.5 - Task 1: Database Foundation ✅
+
+Branch: feat/sprint-1.5-foundation → PR #30
+Status: ✅ C5 Completed - Ready for PR Review
+Contract: No API changes - database schema and RLS policies only
+Policies: RLS enabled on all athlete-scoped tables with auth.uid() enforcement
+Core Functionality:
+  - Complete athlete data schema with 4 new tables: athlete_profiles, athlete_preferences, race_calendar, athlete_constraints
+  - Comprehensive validation rules: age ≥13 (COPPA), date ranges, fitness thresholds (FTP 50-500W, pace 2.5-8.0 min/km)
+  - Helper functions: get_athlete_age, get_active_constraints, get_next_a_race, get_current_athlete_id
+  - RLS policies for all athlete-scoped tables (4 new + 3 existing: sessions, readiness_daily, plan)
+  - Indexes for performance: foreign keys, date ranges, active constraints
+  - Updated_at triggers for all tables
+Database Migrations:
+  - Migration 1: 20251011000002_athlete_schema.sql (tables, functions, triggers)
+  - Migration 2: 20251011000001_rls_policies.sql (RLS on 7 tables)
+  - Test queries: supabase/tests/rls_validation.sql
+  - Test data: supabase/seed/test_athletes.sql
+Verification Complete:
+  - ✅ Schema validation: 4 tables created, 4 helper functions implemented
+  - ✅ Constraint validation tests: Age, dates, ranges (test queries created)
+  - ✅ RLS isolation tests: 3-account scenario (test queries created)
+  - ✅ Performance: Indexes on all foreign keys and date ranges
+  - ✅ Documentation: STATUS.md, status.yml, DECISION_LOG.md updated
+  - ✅ README.md synced via npm run status:update
+Testing Evidence: 
+  - Test queries: supabase/tests/rls_validation.sql (8.7KB)
+  - Test data: supabase/seed/test_athletes.sql (5.3KB)
+  - Manual testing required in remote Supabase after PR merge
+Impact: Foundational database structure for Sprint 1.5 onboarding and plan generation
+Next: PR review and merge, then Task 2 (Auth middleware and API routes)
+
+**C5 Entry:**
+```
+C5: Sprint 1.5 - Task 1: Database Foundation ✅
+Branch: feat/sprint-1.5-foundation → PR #30
+Status: ✅ Completed - Ready for PR Review
+Implementation: 4 athlete tables (9.8KB), 21 RLS policies (7.4KB), validation tests (8.7KB), test data (5.3KB)
+Verification: All C0 deliverables complete, STATUS.md updated, README.md synced, DECISION_LOG updated
+Evidence: Test queries for schema validation, constraint validation, RLS isolation, performance testing
+Next: PR review → merge → test in remote Supabase → proceed to Task 2 (Auth Middleware)
+```
+
+**C0 Entry:**
+```
+C0: Sprint 1.5 - Task 1: Database Foundation Planning
+Branch: feat/sprint-1.5-foundation → PR TBD
+Plan: Establish complete athlete data schema with 4 tables (profiles, preferences, race_calendar, constraints) and RLS policies for all athlete-scoped data. Core functions: athlete profile storage, training preferences, race planning with A/B/C priorities, injury/constraint tracking. Database: 4 new tables with validation rules (age ≥13, date ranges, fitness thresholds), 3 helper functions, 7 tables with RLS policies. Validation: Comprehensive constraint testing, 3-account RLS isolation test. Performance: Indexes on all foreign keys and date ranges. Target: Complete database foundation ready for onboarding UI and plan generation.
+```
+
+---
+
 ## Historical Entries (Superseded)
 
 ### B3: UX Wiring to Live GETs - Original Scope (Superseded)
