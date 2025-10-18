@@ -38,16 +38,28 @@ export async function getSession(request: Request): Promise<Session | null> {
     return null;
   }
   
-  const { data } = await supabaseClient.auth.getUser(token);
+  // Verify token and get user - this also validates the session is still active
+  const { data, error } = await supabaseClient.auth.getUser(token);
   
-  if (!data.user) {
+  if (error || !data.user) {
     return null;
+  }
+  
+  // Decode JWT to get expiration time
+  let expiresAt: number | undefined;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    expiresAt = payload.exp;
+  } catch {
+    // If we can't decode, use default 1 hour from now
+    expiresAt = Math.floor(Date.now() / 1000) + 3600;
   }
   
   return {
     access_token: token,
     refresh_token: '', // Not available from header
     expires_in: 3600,
+    expires_at: expiresAt,
     token_type: 'bearer',
     user: data.user
   };
