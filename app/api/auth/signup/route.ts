@@ -108,8 +108,18 @@ export async function POST(request: NextRequest) {
       throw authError;
     }
     
-    if (!authData.user || !authData.session) {
-      throw new Error('User or session not created');
+    if (!authData.user) {
+      console.error('No user data returned from Supabase');
+      return NextResponse.json(
+        { error: 'Failed to create user account' },
+        { 
+          status: 500,
+          headers: {
+            'X-Request-Id': correlationId,
+            'Cache-Control': 'no-store'
+          }
+        }
+      );
     }
     
     // 3. Create athlete_profiles record
@@ -139,28 +149,51 @@ export async function POST(request: NextRequest) {
       throw profileError;
     }
     
-    // 4. Return success with tokens
-    return NextResponse.json(
-      {
-        access_token: authData.session.access_token,
-        token_type: 'bearer',
-        expires_in: 3600,
-        refresh_token: authData.session.refresh_token,
-        user: {
-          id: authData.user.id,
-          email: authData.user.email,
-          email_confirmed_at: authData.user.email_confirmed_at
+    // 4. Return success with tokens (if session exists) or without tokens (if email confirmation required)
+    if (authData.session) {
+      // Session created - return tokens
+      return NextResponse.json(
+        {
+          access_token: authData.session.access_token,
+          token_type: 'bearer',
+          expires_in: 3600,
+          refresh_token: authData.session.refresh_token,
+          user: {
+            id: authData.user.id,
+            email: authData.user.email,
+            email_confirmed_at: authData.user.email_confirmed_at
+          }
+        },
+        { 
+          status: 201,
+          headers: {
+            'X-Request-Id': correlationId,
+            'Cache-Control': 'no-store',
+            'Content-Type': 'application/json; charset=utf-8'
+          }
         }
-      },
-      { 
-        status: 201,
-        headers: {
-          'X-Request-Id': correlationId,
-          'Cache-Control': 'no-store',
-          'Content-Type': 'application/json; charset=utf-8'
+      );
+    } else {
+      // No session - email confirmation required
+      return NextResponse.json(
+        {
+          user: {
+            id: authData.user.id,
+            email: authData.user.email,
+            email_confirmed_at: authData.user.email_confirmed_at
+          },
+          message: 'Account created successfully. Please check your email to confirm your account before logging in.'
+        },
+        { 
+          status: 201,
+          headers: {
+            'X-Request-Id': correlationId,
+            'Cache-Control': 'no-store',
+            'Content-Type': 'application/json; charset=utf-8'
+          }
         }
-      }
-    );
+      );
+    }
   } catch (error: any) {
     console.error('Signup error:', error);
     
