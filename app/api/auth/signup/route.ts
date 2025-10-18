@@ -228,6 +228,23 @@ export async function POST(request: NextRequest) {
       }
     }
     
+    // Handle database constraint violations (e.g., duplicate email in athlete_profiles)
+    if (error.code === '23505') {
+      // PostgreSQL unique constraint violation
+      if (error.message?.includes('email')) {
+        return NextResponse.json(
+          { error: 'Email already exists' },
+          { 
+            status: 409,
+            headers: {
+              'X-Request-Id': correlationId,
+              'Cache-Control': 'no-store'
+            }
+          }
+        );
+      }
+    }
+    
     // Generic server error for unexpected errors
     return NextResponse.json(
       { error: 'Internal server error' },
