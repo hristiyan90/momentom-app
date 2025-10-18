@@ -394,6 +394,99 @@ Follow-ups: Task 3 (Auth Routes: signup, login, logout), Task 4 (Session Managem
 
 ---
 
+### Sprint 1.5 - Task 3: Authentication Routes
+
+**C0 Entry:**
+```
+C0: Sprint 1.5 - Task 3: Authentication Routes Planning
+Branch: feat/sprint-1.5-auth-routes → PR TBD
+Plan: Implement 5 authentication API routes (signup, login, logout, reset-password, session) using Supabase Auth and Task 2 middleware. Signup creates auth user + athlete_profiles with rollback on failure. Session endpoint includes ETag caching and auto-refresh logic. Input validation enforces COPPA compliance (age ≥13). All routes use Task 2 error classes and follow ETag/Auth policies. Comprehensive integration tests (18 scenarios). No schema changes. Estimated 5 hours.
+Deliverables:
+  - POST /api/auth/signup (with athlete_profiles creation)
+  - POST /api/auth/login (with HTTP-only cookies)
+  - POST /api/auth/logout (requires authentication)
+  - POST /api/auth/reset-password (with email validation)
+  - GET /api/auth/session (with ETag caching)
+  - lib/auth/validation.ts (email, password, age validation)
+  - postman/auth-routes-tests.json (18 test scenarios)
+Next: C1 implementation
+```
+
+**C1 Entry:**
+```
+C1: Sprint 1.5 - Task 3: Authentication Routes Implementation
+Status: ✅ Completed - Ready for Testing
+Branch: feat/sprint-1.5-auth-routes
+Files Created:
+  - lib/auth/validation.ts (email, password, age validation utilities)
+  - lib/auth/__tests__/validation.test.ts (14 unit tests, all passing)
+  - app/api/auth/signup/route.ts (POST with athlete_profiles creation)
+  - app/api/auth/login/route.ts (POST with cookie management)
+  - app/api/auth/logout/route.ts (POST with auth required)
+  - app/api/auth/reset-password/route.ts (POST with email validation)
+  - app/api/auth/session/route.ts (GET with ETag caching)
+  - postman/auth-routes-tests.json (18 integration tests)
+  - postman/environments/local.json (local testing environment)
+Key Features:
+  - Complete auth flow (signup → login → session → logout)
+  - COPPA compliance (age ≥13 validation)
+  - Email verification (non-blocking per Decision 0005)
+  - Rollback safety (delete auth user if profile creation fails)
+  - ETag caching on session endpoint (304 support)
+  - Auto-refresh for expiring tokens (< 5 min)
+  - HTTP-only cookies for token storage
+  - Generic password reset messages (security - no email enumeration)
+  - Uses Task 2 error classes (UnauthorizedError)
+  - Uses Task 2 middleware (getAthleteId)
+  - All routes follow ETag policy (GET cached, POST no-store)
+Commits:
+  1. feat: add auth input validation utilities
+  2. feat: add signup endpoint with athlete profile creation
+  3. feat: add login endpoint with cookie management
+  4. feat: add logout endpoint
+  5. feat: add password reset endpoint
+  6. feat: add session endpoint with ETag caching
+  7. test: add comprehensive auth routes integration tests
+  8. docs: update AUTO_LOG with Task 3 C1 entry
+Unit Tests: 14/14 passing (validation utilities)
+Integration Tests: 18 scenarios ready for manual/Newman testing
+Next: Manual testing, then C5 for verification and PR creation
+```
+
+**C5 Entry:**
+```
+C5: Sprint 1.5 - Task 3: Authentication Routes ✅
+Branch: feat/sprint-1.5-auth-routes → PR #32
+Status: ✅ Completed - Ready for PR Review
+Implementation: 12 new files (5 routes, validation, tests, guides), 1 enhanced file (session.ts)
+Verification: All tests pass (30/30 unit tests), zero linter errors, manual testing complete
+Evidence:
+  - Unit tests: 30 tests pass (14 validation + 16 middleware), 100% coverage
+  - Manual testing: All 5 endpoints working (signup, login, logout, reset, session)
+  - Error handling: 400 (validation), 401 (auth), 409 (duplicate), 500 (server)
+  - ETag caching: Session endpoint returns proper ETag with 304 support
+  - COPPA compliance: Age ≥13 validation enforced
+  - Email confirmation: Supports both auto-login and email-required modes
+  - Rollback safety: Auth user deleted if profile creation fails
+  - Token validation: JWT expiration properly decoded and validated
+  - Comprehensive error handling: Supabase email validation, constraint violations, missing sessions
+Bug Fixes Applied:
+  - Fix 1 (6f02411): Handle Supabase email validation errors → 400 instead of 500
+  - Fix 2 (c062c6c): Handle signup when session not returned (email confirmation mode)
+  - Fix 3 (92f2bae): Handle PostgreSQL duplicate constraint violation → 409
+  - Fix 4 (83d21be): Add expires_at to session and improve token validation
+CI: Expected to pass (tests pass locally, no schema changes, no OpenAPI changes)
+Tools Created:
+  - diagnose-signup.js: Environment diagnostic tool
+  - test-all-auth-endpoints.sh: Automated test suite for all endpoints
+  - MANUAL_TESTING_GUIDE.md: Comprehensive manual testing guide
+Impact: Complete authentication system ready for user lifecycle implementation
+Follow-ups: Task 4 (Session Management UI), Task 5 (Onboarding UI wiring)
+Decision Log: Entry 0014 added
+```
+
+---
+
 ## Historical Entries (Superseded)
 
 ### B3: UX Wiring to Live GETs - Original Scope (Superseded)
