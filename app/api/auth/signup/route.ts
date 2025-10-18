@@ -76,6 +76,20 @@ export async function POST(request: NextRequest) {
     });
     
     if (authError) {
+      // Check for invalid email from Supabase
+      if (authError.message?.includes('is invalid') || authError.message?.includes('invalid email')) {
+        return NextResponse.json(
+          { error: 'Invalid email address format. Please use a valid email provider.' },
+          { 
+            status: 400,
+            headers: {
+              'X-Request-Id': correlationId,
+              'Cache-Control': 'no-store'
+            }
+          }
+        );
+      }
+      
       // Check for duplicate email
       if (authError.message.includes('already registered') || authError.message.includes('already been registered')) {
         return NextResponse.json(
@@ -147,8 +161,41 @@ export async function POST(request: NextRequest) {
         }
       }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Signup error:', error);
+    
+    // Handle Supabase-specific auth errors that weren't caught above
+    if (error.__isAuthError || error.name === 'AuthApiError') {
+      // Email validation error from Supabase
+      if (error.message?.includes('is invalid') || error.message?.includes('invalid email') || error.code === 'email_address_invalid') {
+        return NextResponse.json(
+          { error: 'Invalid email address format. Please use a valid email provider.' },
+          { 
+            status: 400,
+            headers: {
+              'X-Request-Id': correlationId,
+              'Cache-Control': 'no-store'
+            }
+          }
+        );
+      }
+      
+      // Email already registered
+      if (error.message?.includes('already registered') || error.code === 'user_already_exists') {
+        return NextResponse.json(
+          { error: 'Email already exists' },
+          { 
+            status: 409,
+            headers: {
+              'X-Request-Id': correlationId,
+              'Cache-Control': 'no-store'
+            }
+          }
+        );
+      }
+    }
+    
+    // Generic server error for unexpected errors
     return NextResponse.json(
       { error: 'Internal server error' },
       { 
