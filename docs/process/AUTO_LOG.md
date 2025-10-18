@@ -453,6 +453,38 @@ Integration Tests: 18 scenarios ready for manual/Newman testing
 Next: Manual testing, then C5 for verification and PR creation
 ```
 
+**C5 Entry:**
+```
+C5: Sprint 1.5 - Task 3: Authentication Routes ✅
+Branch: feat/sprint-1.5-auth-routes → PR #32
+Status: ✅ Completed - Ready for PR Review
+Implementation: 12 new files (5 routes, validation, tests, guides), 1 enhanced file (session.ts)
+Verification: All tests pass (30/30 unit tests), zero linter errors, manual testing complete
+Evidence:
+  - Unit tests: 30 tests pass (14 validation + 16 middleware), 100% coverage
+  - Manual testing: All 5 endpoints working (signup, login, logout, reset, session)
+  - Error handling: 400 (validation), 401 (auth), 409 (duplicate), 500 (server)
+  - ETag caching: Session endpoint returns proper ETag with 304 support
+  - COPPA compliance: Age ≥13 validation enforced
+  - Email confirmation: Supports both auto-login and email-required modes
+  - Rollback safety: Auth user deleted if profile creation fails
+  - Token validation: JWT expiration properly decoded and validated
+  - Comprehensive error handling: Supabase email validation, constraint violations, missing sessions
+Bug Fixes Applied:
+  - Fix 1 (6f02411): Handle Supabase email validation errors → 400 instead of 500
+  - Fix 2 (c062c6c): Handle signup when session not returned (email confirmation mode)
+  - Fix 3 (92f2bae): Handle PostgreSQL duplicate constraint violation → 409
+  - Fix 4 (83d21be): Add expires_at to session and improve token validation
+CI: Expected to pass (tests pass locally, no schema changes, no OpenAPI changes)
+Tools Created:
+  - diagnose-signup.js: Environment diagnostic tool
+  - test-all-auth-endpoints.sh: Automated test suite for all endpoints
+  - MANUAL_TESTING_GUIDE.md: Comprehensive manual testing guide
+Impact: Complete authentication system ready for user lifecycle implementation
+Follow-ups: Task 4 (Session Management UI), Task 5 (Onboarding UI wiring)
+Decision Log: Entry 0014 added
+```
+
 ---
 
 ## Historical Entries (Superseded)

@@ -13,7 +13,7 @@ Update this file per merged task.
 ## Current
 - Cycle: **2**
 - Sprint: **1.5** (Foundation & User Lifecycle)
-- Active focus: **Implementation Phase 2: Auth Middleware ✅ → Auth Routes (Next)**
+- Active focus: **Implementation Phase 3: Auth Routes ✅ → Session Management (Next)**
 - Planning Doc: [Sprint 1.5 Plan](sprints/cycle-2-sprint-1-5-plan.md)
 
 ## Recently completed
@@ -90,8 +90,8 @@ Update this file per merged task.
 - ✅ Auth middleware (JWT verification) (1.5-A) - PR #31
 
 **Day 3-4: Authentication**
-- ⏳ Auth routes (signup, login, logout) (1.5-A) - Next
-- Session management implementation
+- ✅ Auth routes (signup, login, logout, reset, session) (1.5-A) - PR #32
+- ⏳ Session management implementation - Next
 
 **Day 5-6: User Lifecycle**
 - Onboarding UI wiring (1.5-B)
