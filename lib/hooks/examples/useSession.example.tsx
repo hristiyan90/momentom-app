@@ -8,7 +8,7 @@
 'use client';
 
 import { useSession } from '@/lib/hooks/useSession';
-import { useSessionContext } from '@/lib/hooks/SessionProvider';
+import { useSessionContext, SessionProvider } from '@/lib/hooks/SessionProvider';
 
 /**
  * Example 1: Basic usage in a protected page
