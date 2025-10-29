@@ -830,8 +830,8 @@ export default function CockpitPage() {
 
       {showAdaptationModal && <AdaptationModal />}
 
-      {/* GAP-2 Testing Widget - Remove after testing */}
-      <SessionTestWidget />
+      {/* GAP-2 Testing Widget - TEMPORARILY DISABLED - Remove after testing */}
+      {/* <SessionTestWidget /> */}
     </>
   )
 }
