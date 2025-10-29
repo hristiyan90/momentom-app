@@ -1,13 +1,37 @@
 'use client';
 
-import { useSession } from '@/lib/hooks/useSession';
+import { useState, useEffect } from 'react';
+import { supabaseClient } from '@/lib/auth/client';
+import type { Session } from '@supabase/supabase-js';
 
 /**
  * Simple session status widget to add to any existing page for testing
  * Add this to cockpit page temporarily to test GAP-2
+ *
+ * NOTE: This version doesn't use useSession hook to avoid redirects during testing
  */
 export function SessionTestWidget() {
-  const { session, loading, error, isRefreshing } = useSession();
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch session directly without redirect
+    supabaseClient.auth.getSession()
+      .then(({ data: { session: s }, error: err }) => {
+        if (err) {
+          setError(err.message);
+        } else {
+          setSession(s);
+        }
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   if (loading) return null; // Don't show during initial load
 
@@ -27,8 +51,8 @@ export function SessionTestWidget() {
 
         {session ? (
           <>
-            <div className={isRefreshing ? 'text-blue-600 font-bold animate-pulse' : 'text-gray-600'}>
-              {isRefreshing ? '🔄 Refreshing...' : '✅ Active'}
+            <div className="text-gray-600">
+              ✅ Active
             </div>
 
             <div>
@@ -60,7 +84,12 @@ export function SessionTestWidget() {
             </div>
           </>
         ) : (
-          <div className="text-yellow-600">⚠️ No session</div>
+          <div>
+            <div className="text-yellow-600 mb-2">⚠️ No session</div>
+            <div className="text-xs text-gray-500">
+              You need to log in to test auto-refresh
+            </div>
+          </div>
         )}
       </div>
     </div>
