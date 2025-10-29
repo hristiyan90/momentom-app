@@ -299,18 +299,18 @@ jobs:
           node -e "
             const workouts = JSON.parse(require('fs').readFileSync('library/workouts.json', 'utf8'));
             if (!Array.isArray(workouts)) throw new Error('Workouts must be an array');
-            if (workouts.length !== 10) throw new Error('Expected 10 workouts, got ' + workouts.length);
-            
+            if (workouts.length < 85) throw new Error('Expected at least 85 workouts (GAP-3 target), got ' + workouts.length);
+
             const sports = [...new Set(workouts.map(w => w.sport))];
             const expectedSports = ['run', 'bike', 'swim', 'strength'];
             const missingSports = expectedSports.filter(s => !sports.includes(s));
             if (missingSports.length > 0) throw new Error('Missing sports: ' + missingSports.join(', '));
-            
+
             const phases = [...new Set(workouts.map(w => w.phase))];
-            const expectedPhases = ['base', 'build', 'taper'];
+            const expectedPhases = ['base', 'build', 'peak', 'taper', 'recovery'];
             const missingPhases = expectedPhases.filter(p => !phases.includes(p));
             if (missingPhases.length > 0) throw new Error('Missing phases: ' + missingPhases.join(', '));
-            
+
             console.log('✅ JSON structure valid');
             console.log('Sports:', sports.join(', '));
             console.log('Phases:', phases.join(', '));
