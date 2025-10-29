@@ -334,6 +334,62 @@ and reproducible."
 
 ### Implementation Specialists (Coding)
 
+#### UX/UI Designer
+**When to use:** Interface design, user flows, accessibility audits, responsive design, mobile optimization
+
+**Specialization:**
+- Review and optimize user flows and interaction patterns
+- Design component composition patterns
+- Audit accessibility compliance (WCAG 2.1 AA)
+- Ensure mobile-first responsive design
+- Maintain design system consistency (Radix UI + Tailwind)
+- Optimize information architecture
+- Review error states and loading patterns
+- Ensure keyboard navigation works
+- Test with screen readers
+- Create UX copy and microcopy
+- Design form validation UX
+
+**Files owned:** `app/**/page.tsx`, `components/**/*` (UX review)
+
+**Inputs:** Feature requirements, existing UI, accessibility goals, user feedback
+**Outputs:** UX recommendations, accessibility fixes, design pattern suggestions, component refactors
+
+**Example invocation:**
+```
+"Acting as UX/UI Designer for Momentum app, review the onboarding flow at
+/app/onboarding/page.tsx. Evaluate user experience, accessibility, and mobile
+responsiveness. Identify friction points and suggest improvements. Ensure WCAG
+2.1 AA compliance and optimal mobile experience."
+```
+
+#### Data Integration Engineer
+**When to use:** External data sources, file parsing, ETL pipelines, API integrations, data transformations
+
+**Specialization:**
+- Parse workout files (TCX, GPX, FIT formats)
+- Design and implement ETL pipelines
+- Integrate external APIs (Garmin Connect, Strava, etc.)
+- Transform data between formats (GarminDB SQLite → Postgres)
+- Handle data quality issues (missing data, malformed files)
+- Design sync strategies (batch vs real-time)
+- Implement duplicate detection
+- Validate data integrity
+- Build data reconciliation logic
+
+**Files owned:** `lib/garmin/*`, `lib/parsers/*`, `lib/integrations/*`
+
+**Inputs:** Data source specifications, file formats, sync requirements, API contracts
+**Outputs:** Parsers, ETL pipelines, integration code, data validation logic, sync scripts
+
+**Example invocation:**
+```
+"Acting as Data Integration Engineer for Momentum app, design the GarminDB to
+Postgres sync pipeline for wellness data (Task 1.5-F). Input: GarminDB SQLite
+tables. Output: Daily wellness data in readiness_daily table with proper
+normalization and data quality flags. Handle missing data gracefully."
+```
+
 #### Backend Engineer
 **When to use:** API routes, business logic, database queries, server-side auth
 
@@ -441,6 +497,88 @@ and reproducible."
 
 **Inputs:** Deployment requirements, environment needs, infrastructure issues
 **Outputs:** CI/CD config, deployment scripts, environment docs, runbooks
+
+### Future Specialists (Sprint 2+)
+
+#### Technical Writer
+**When to use:** API documentation, developer guides, architecture docs, decision records
+
+**Specialization:**
+- Write OpenAPI/Swagger documentation
+- Create developer onboarding guides
+- Write architecture decision records (ADRs)
+- Document API endpoints with examples
+- Create troubleshooting runbooks
+- Write migration guides
+- Maintain AUTO_LOG.md decision entries
+- Create tutorial content
+
+**Files owned:** `docs/**/*`, OpenAPI specs, README files
+
+**Inputs:** API specs, code changes, architectural decisions, troubleshooting scenarios
+**Outputs:** Documentation, guides, ADRs, API reference docs, runbooks
+
+**Example invocation:**
+```
+"Acting as Technical Writer for Momentum app, document the POST /api/athlete/profile
+endpoint. Include request/response schemas, authentication requirements, validation
+rules, error responses, and cURL examples. Follow OpenAPI 3.1 format."
+```
+
+**Status:** Not needed until Sprint 2 (plan generation documentation needs)
+
+#### Observability Engineer
+**When to use:** Logging, monitoring, alerting, performance tracking, error tracking
+
+**Specialization:**
+- Design structured JSON logging
+- Implement log redaction (PII, tokens)
+- Set up request ID correlation
+- Configure application monitoring (APM)
+- Integrate error tracking (Sentry)
+- Create monitoring dashboards
+- Configure alerts and thresholds
+- Implement performance monitoring
+
+**Files owned:** `lib/logging/*`, monitoring configs, alert rules
+
+**Inputs:** Logging requirements, monitoring needs, alert criteria
+**Outputs:** Logging setup, monitoring dashboards, alert configurations, runbooks
+
+**Example invocation:**
+```
+"Acting as Observability Engineer for Momentum app, set up structured logging
+for Sprint 3. Requirements: JSON format, request ID correlation, PII redaction,
+LOG_LEVEL environment variable, integration with Datadog. Follow Sprint 3 spec."
+```
+
+**Status:** Planned for Sprint 3 (observability setup)
+
+#### Mobile Engineer
+**When to use:** React Native development, mobile-specific features, offline sync, push notifications
+
+**Specialization:**
+- Implement React Native components
+- Handle iOS/Android platform differences
+- Design offline-first data sync
+- Implement mobile authentication flows
+- Set up push notifications
+- Optimize mobile performance
+- Handle app store deployment
+
+**Files owned:** `mobile/**/*` (future), mobile-specific code
+
+**Inputs:** Mobile requirements, platform specs, offline requirements
+**Outputs:** React Native code, platform configs, mobile app builds
+
+**Example invocation:**
+```
+"Acting as Mobile Engineer for Momentum app, implement the iOS calendar view
+using React Native. Ensure offline-first architecture, smooth scrolling for
+large datasets, and native calendar integration for workout reminders."
+```
+
+**Status:** Future (Sprint 4+, mobile app development)
 
 ---
 
@@ -846,6 +984,10 @@ npm run status:update    # Update STATUS.md (if script exists)
 | React components | Frontend Engineer | UI requirements, design | Components, hooks, tests |
 | Database changes | Database Engineer | Schema requirements | Migrations, RLS policies |
 | Auth implementation | Backend Engineer | Auth spec, security requirements | Auth middleware, session mgmt |
+| UI/UX review | UX/UI Designer | Feature requirements, existing UI | UX recommendations, accessibility fixes |
+| File parsing | Data Integration Engineer | File format specs, data source | Parsers, validation logic |
+| ETL pipelines | Data Integration Engineer | Source/target schemas, sync requirements | ETL code, data transformations |
+| External API integration | Data Integration Engineer | API docs, integration requirements | Integration code, error handling |
 
 ### Verification Phase
 
@@ -871,6 +1013,14 @@ npm run status:update    # Update STATUS.md (if script exists)
 | Code review | Me (Advisory) | Code changes, concerns | Review comments, suggestions |
 | Refactoring | Backend or Frontend Engineer | Technical debt, new pattern | Refactored code, migration guide |
 
+### Future Specialists (Sprint 2+)
+
+| Need | Agent | When Needed | Input | Output |
+|------|-------|-------------|-------|--------|
+| API documentation | Technical Writer | Sprint 2+ | API endpoints, schemas | OpenAPI specs, developer guides |
+| Logging setup | Observability Engineer | Sprint 3 | App requirements, monitoring needs | Structured logging, alerting |
+| Mobile app | Mobile Engineer | Sprint 4+ | Feature requirements | React Native implementation |
+
 ---
 
 ## Quick Decision Trees
@@ -890,10 +1040,11 @@ Is it complex? (>3 API routes, algorithm, multiple tables)
 
 ```
 What type?
-├─ Security (auth, RLS) → Launch Security Auditor
-├─ Performance (slow)   → Launch Performance Engineer
-├─ Data (wrong results) → Launch QA Engineer
-└─ UI (visual, UX)      → Launch Frontend Engineer
+├─ Security (auth, RLS)     → Launch Security Auditor
+├─ Performance (slow)       → Launch Performance Engineer
+├─ Data (wrong results)     → Launch QA Engineer
+├─ UX/accessibility issue   → Launch UX/UI Designer
+└─ UI (visual, rendering)   → Launch Frontend Engineer
 ```
 
 ### "I need to make a decision"
