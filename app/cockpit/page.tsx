@@ -5,6 +5,7 @@ import { SideWidgets } from "@/components/dashboard/side-widgets"
 import { Coffee, Zap, TrendingUp, Calendar, Target, Wifi, WifiOff, RefreshCw, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { SessionTestWidget } from "./test-session-widget"
 
 const mockCockpitData = {
   todayWorkouts: [
@@ -828,6 +829,9 @@ export default function CockpitPage() {
       </div>
 
       {showAdaptationModal && <AdaptationModal />}
+
+      {/* GAP-2 Testing Widget - Remove after testing */}
+      <SessionTestWidget />
     </>
   )
 }
