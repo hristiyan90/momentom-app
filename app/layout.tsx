@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { SidebarLayout } from "../components/sidebar-layout"
+import { SessionProvider } from "@/lib/hooks/SessionProvider"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`font-sans ${inter.variable} antialiased theme-default`}>
-        <SidebarLayout>{children}</SidebarLayout>
+        <SessionProvider>
+          <SidebarLayout>{children}</SidebarLayout>
+        </SessionProvider>
       </body>
     </html>
   )
