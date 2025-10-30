@@ -41,6 +41,7 @@ import {
   isAuthError,
   type ApiError,
 } from "@/lib/api/onboarding"
+import { useOnboardingPersistence } from "@/lib/hooks/useOnboardingPersistence"
 
 const ONBOARDING_STEPS = [
   { id: "profile", title: "Basic Profile", description: "Tell us about yourself" },
@@ -284,10 +285,20 @@ export default function OnboardingPage() {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [editFormData, setEditFormData] = useState<any>({})
 
-  // API Integration State
-  const [isSaving, setIsSaving] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [apiError, setApiError] = useState<string | null>(null)
+  // API Integration Hook
+  const {
+    isSaving,
+    isLoading,
+    error: apiError,
+    saveProfile,
+    loadProfile,
+    savePreferences,
+    loadPreferences,
+    saveRaceData,
+    loadRaces,
+    saveConstraintData,
+    clearError,
+  } = useOnboardingPersistence()
 
   const updateDataCallback = useCallback((stepData: Partial<OnboardingData>) => {
     setData((prev) => ({ ...prev, ...stepData }))
@@ -311,16 +322,23 @@ export default function OnboardingPage() {
     [router],
   )
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setHasAttemptedNext(true)
 
+    // Welcome step doesn't need validation
+    if (currentStep === 0) {
+      setCurrentStep(currentStep + 1)
+      setIsStepValid(false)
+      setHasAttemptedNext(false)
+      return
+    }
+
     if (currentStep < ONBOARDING_STEPS.length) {
-      // Special validation for metrics step (step 5)
-      if (currentStep === 5) {
-        // Validate thresholds for metrics step
+      // Special validation for metrics step (step 4)
+      if (currentStep === 4) {
         const thresholdErrors: Record<string, string> = {}
         const showThresholds = data.thresholds.estimateForMe
-        
+
         if (showThresholds) {
           if (data.metrics.swimMetric === "pace" && !data.thresholds.css) thresholdErrors.css = "Critical Swim Speed is required"
           if (data.metrics.bikeMetric === "power" && !data.thresholds.ftp) thresholdErrors.ftp = "Functional Threshold Power is required"
@@ -332,19 +350,67 @@ export default function OnboardingPage() {
           }
           if (data.metrics.runMetric === "pace" && !data.thresholds.ltp) thresholdErrors.ltp = "Lactate Threshold Pace is required"
         }
-        
+
         const hasThresholdErrors = Object.keys(thresholdErrors).length > 0
         const isMetricsStepValid = isStepValid && !hasThresholdErrors
-        
-        if (isMetricsStepValid) {
-          setCurrentStep(currentStep + 1)
-          setIsStepValid(false) // Reset validation for next step
-          setHasAttemptedNext(false)
+
+        if (!isMetricsStepValid) {
+          return
         }
-      } else if (isStepValid || currentStep === 0) {
-        // Welcome step doesn't need validation
+      } else if (!isStepValid) {
+        return
+      }
+
+      // Clear previous API errors
+      clearError()
+
+      // Save data based on current step
+      let saveSuccess = true
+
+      switch (currentStep) {
+        case 1: // Profile step
+          // Prepare profile data for saving
+          const profileData = {
+            ...data.profile,
+            experienceLevel: data.history.experienceLevel || 'intermediate',
+            weeklyHours: data.history.weeklyHours || '6-8',
+            trainingDays: String(data.history.restDay?.length ? 7 - data.history.restDay.length : 4),
+          }
+          saveSuccess = await saveProfile(profileData)
+          break
+
+        case 2: // Goals step - save races
+          if (data.savedRaces.length > 0) {
+            saveSuccess = await saveRaceData(data.savedRaces)
+          }
+          break
+
+        case 3: // Preferences step - save preferences with history and metrics
+          const preferencesData = {
+            restDay: data.preferences.restDay || data.history.restDay[0] || 'monday',
+            weeklyHours: data.preferences.weeklyHours || data.history.weeklyHours,
+            periodization: data.preferences.periodization || data.history.periodization,
+            runMetric: data.metrics.runMetric || 'pace',
+            bikeMetric: data.metrics.bikeMetric || 'power',
+            swimMetric: data.metrics.swimMetric || 'pace',
+            trainingTypes: data.preferences.trainingTypes,
+            sessionTypes: data.preferences.sessionTypes,
+            intensityPreference: data.preferences.intensityPreference,
+          }
+          saveSuccess = await savePreferences(preferencesData)
+          break
+
+        case 6: // Review step - save constraints if any
+          if (data.constraints.hasConstraints) {
+            saveSuccess = await saveConstraintData(data.constraints)
+          }
+          break
+      }
+
+      // Only proceed if save was successful (or no save needed)
+      if (saveSuccess) {
         setCurrentStep(currentStep + 1)
-        setIsStepValid(false) // Reset validation for next step
+        setIsStepValid(false)
         setHasAttemptedNext(false)
       }
     } else {
@@ -552,6 +618,31 @@ export default function OnboardingPage() {
             {/* Main Content */}
             <div className="col-span-9">
               <div className="bg-bg-surface rounded-lg border border-border-weak p-8">
+                {/* Error Display */}
+                {apiError && (
+                  <div className="mb-6 p-4 bg-status-danger/10 border border-status-danger rounded-lg flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-status-danger flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-status-danger font-medium">Error Saving Data</p>
+                      <p className="text-status-danger/80 text-sm mt-1">{apiError}</p>
+                    </div>
+                    <button
+                      onClick={clearError}
+                      className="text-status-danger hover:text-status-danger/80 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Loading overlay */}
+                {isLoading && (
+                  <div className="mb-6 p-4 bg-brand/10 border border-brand rounded-lg flex items-center gap-3">
+                    <Loader2 className="w-5 h-5 text-brand animate-spin" />
+                    <p className="text-brand">Loading your data...</p>
+                  </div>
+                )}
+
                 {renderStep()}
 
                 {/* Navigation */}
@@ -565,8 +656,19 @@ export default function OnboardingPage() {
                     >
                       Previous
                     </Button>
-                    <Button onClick={handleNext} className="px-6">
-                      Next Step
+                    <Button
+                      onClick={handleNext}
+                      disabled={isSaving || isLoading}
+                      className="px-6"
+                    >
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        'Next Step'
+                      )}
                     </Button>
                   </div>
                 )}

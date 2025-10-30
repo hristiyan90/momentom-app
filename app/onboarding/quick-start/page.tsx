@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { Target, Heart, Waves, Bike, Footprints, AlertCircle, Check, Calendar, Clock, Info } from "lucide-react"
+import { Target, Heart, Waves, Bike, Footprints, AlertCircle, Check, Calendar, Clock, Info, Loader2, X } from "lucide-react"
+import { useOnboardingPersistence } from "@/lib/hooks/useOnboardingPersistence"
 
 const QUICK_START_STEPS = [
   { id: "goals", title: "Goals & Races", description: "Tell us about your training goals" },
@@ -70,6 +71,17 @@ export default function QuickStartOnboarding() {
   const [hasAttemptedNext, setHasAttemptedNext] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [planGenerated, setPlanGenerated] = useState(false)
+
+  // API Integration Hook
+  const {
+    isSaving,
+    error: apiError,
+    saveProfile,
+    savePreferences,
+    saveRaceData,
+    clearError,
+  } = useOnboardingPersistence()
+
   const [data, setData] = useState<QuickStartData>({
     goals: {
       isMaintenanceMode: false,
@@ -122,9 +134,63 @@ export default function QuickStartOnboarding() {
 
   const generatePlan = async () => {
     setIsGenerating(true)
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-    setIsGenerating(false)
-    setPlanGenerated(true)
+    clearError()
+
+    try {
+      // Step 1: Save profile
+      const profileData = {
+        firstName: "Quick",
+        lastName: "Start User",
+        dateOfBirth: data.preferences.startDate,
+        experienceLevel: "intermediate",
+        weeklyHours: data.preferences.weeklyHours,
+        trainingDays: "5",
+      }
+
+      const profileSuccess = await saveProfile(profileData)
+      if (!profileSuccess) {
+        setIsGenerating(false)
+        return
+      }
+
+      // Step 2: Save preferences
+      const preferencesData = {
+        restDay: data.preferences.restDay,
+        weeklyHours: data.preferences.weeklyHours,
+        periodization: data.preferences.periodization,
+        runMetric: data.metrics.runMetric || 'pace',
+        bikeMetric: data.metrics.bikeMetric || 'power',
+        swimMetric: data.metrics.swimMetric || 'pace',
+      }
+
+      const prefsSuccess = await savePreferences(preferencesData)
+      if (!prefsSuccess) {
+        setIsGenerating(false)
+        return
+      }
+
+      // Step 3: Save race if in race training mode
+      if (!data.goals.isMaintenanceMode && data.goals.raceDate && data.goals.raceType) {
+        const races = [{
+          racePriority: data.goals.racePriority,
+          raceType: data.goals.raceType,
+          raceDate: data.goals.raceDate,
+          raceLocation: data.goals.raceLocation,
+          raceName: `${data.goals.raceType} - ${data.goals.raceLocation || 'TBD'}`,
+        }]
+
+        await saveRaceData(races)
+      }
+
+      // Simulate plan generation delay
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      setIsGenerating(false)
+      setPlanGenerated(true)
+    } catch (error) {
+      console.error('[Quick Start] Error generating plan:', error)
+      setIsGenerating(false)
+    }
   }
 
   const completePlan = () => {
@@ -196,6 +262,22 @@ export default function QuickStartOnboarding() {
         </div>
       </div>
 
+      {/* Error Display */}
+      {apiError && (
+        <div className="max-w-7xl mx-auto px-6 pt-4">
+          <div className="p-4 bg-status-danger/10 border border-status-danger rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-status-danger flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-status-danger font-medium">Error</p>
+              <p className="text-status-danger/80 text-sm mt-1">{apiError}</p>
+            </div>
+            <button onClick={clearError} className="text-status-danger hover:text-status-danger/80">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-12 gap-8">
           {/* Left Sidebar - Steps */}
@@ -261,8 +343,19 @@ export default function QuickStartOnboarding() {
                   >
                     Previous
                   </Button>
-                  <Button onClick={handleNext} disabled={!isValid && hasAttemptedNext} className="px-6">
-                    Next Step
+                  <Button
+                    onClick={handleNext}
+                    disabled={(!isValid && hasAttemptedNext) || isSaving}
+                    className="px-6"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Next Step'
+                    )}
                   </Button>
                 </div>
               )}
@@ -1360,8 +1453,20 @@ function PlanPreviewStep({
       </div>
 
       <div className="text-center">
-        <Button onClick={generatePlan} size="lg" className="px-8 py-3 text-lg">
-          Generate My Training Plan
+        <Button
+          onClick={generatePlan}
+          size="lg"
+          className="px-8 py-3 text-lg"
+          disabled={isSaving || isGenerating}
+        >
+          {isSaving || isGenerating ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              {isSaving ? 'Saving...' : 'Generating...'}
+            </>
+          ) : (
+            'Generate My Training Plan'
+          )}
         </Button>
         <p className="text-sm text-text-secondary mt-2">This will create your personalized 16-week training plan</p>
       </div>
