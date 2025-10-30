@@ -22,12 +22,25 @@ import {
   X,
   ChevronRight,
   ChevronDown,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { ReadinessInfoCard } from "@/components/readiness-info-card"
+import {
+  saveAthleteProfile,
+  getAthleteProfile,
+  saveAthletePreferences,
+  getAthletePreferences,
+  saveRaces,
+  getRaces,
+  saveConstraints,
+  getErrorMessage,
+  isAuthError,
+  type ApiError,
+} from "@/lib/api/onboarding"
 
 const ONBOARDING_STEPS = [
   { id: "profile", title: "Basic Profile", description: "Tell us about yourself" },
@@ -270,6 +283,11 @@ export default function OnboardingPage() {
   const [editingRace, setEditingRace] = useState<string | null>(null)
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [editFormData, setEditFormData] = useState<any>({})
+
+  // API Integration State
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   const updateDataCallback = useCallback((stepData: Partial<OnboardingData>) => {
     setData((prev) => ({ ...prev, ...stepData }))
